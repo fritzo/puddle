@@ -1,7 +1,7 @@
-var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var express = require('express');
+var corpus = require('./lib/corpus');
 
 var app = express();
 
@@ -35,29 +35,11 @@ app.get('/corpus/validities', function (req, res) {
   res.send(500, 'Not implemented');
 });
 
-
-// TODO move this out to another file
-var nextId = 0;
-var corpus = {};
-fs.readFileSync('corpus.dump').toString().split('\n').forEach(function(line){
-  line = line.replace(/#.*/, '').trim();
-  if (line) {
-    console.log('TODO ' + line);
-    corpus[nextId++] = line;
-  }
-});
+corpus.load();
 
 process.on('SIGINT', function() {
   //app.close();
-
-  console.log('dumping corpus...');
-  var dumped = _.values(corpus);
-  dumped.sort();
-  dumped.splice(0, 0, '# this file is managed by corpus.js');
-  fs.writeFileSync('temp.corpus.dump', dumped.join('\n'));
-  fs.renameSync('temp.corpus.dump', 'corpus.dump');
-  console.log('...corpus dumped');
-
+  corpus.dump();
   process.exit();
 });
 
