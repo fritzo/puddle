@@ -9,6 +9,7 @@
   "repository": {"type": "git", "url": "git://github.com/fritzo/puddle"},
   "dependencies": {
     "amdefine": ">=0.1.0",
+    "underscore": ">=1.6.0",
     "express": ">=3.4.8",
     "socket.io": ">=0.9.16"
   },
