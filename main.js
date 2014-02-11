@@ -38,7 +38,7 @@ app.get('/corpus/validities', function (req, res) {
 corpus.load();
 
 process.on('SIGINT', function() {
-  //app.close();
+  //app.close();  // is this necessary?
   corpus.dump();
   process.exit();
 });
