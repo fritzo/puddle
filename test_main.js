@@ -1,5 +1,4 @@
-var express = require('express');
 var corpus = require('./lib/corpus');
+var test = require('./lib/test');
 
-corpus.load();
-corpus.dump();
+test.runAll();
