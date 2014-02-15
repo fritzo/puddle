@@ -2,6 +2,7 @@ var path = require('path');
 var _ = require('underscore');
 var express = require('express');
 var corpus = require('./lib/corpus');
+var analyst = require('./lib/analyst');
 
 var app = express();
 app.use(express.bodyParser());
@@ -42,7 +43,14 @@ app.delete('/corpus/line/:id', function (req, res) {
 });
 
 app.get('/corpus/validities', function (req, res) {
-  res.send(500, 'Not implemented');
+  lines = corpus.findAll();
+  validitites = analyst.validateCorpus(lines);
+  validities = _.zip(lines, validitites).forEach(function(pair){
+    validity = pair[1];
+    validity.id = pair[0].id;
+    return validity;
+  });
+  res.send({'data': validitites});
 });
 
 corpus.load();

@@ -11,7 +11,9 @@
     "amdefine": ">=0.1.0",
     "underscore": ">=1.6.0",
     "express": ">=3.4.8",
-    "socket.io": ">=0.9.16"
+    "socket.io": ">=0.9.16",
+    "zmq": ">=2.6.0",
+    "protobufjs": ">=0.8.7"
   },
   "devDependencies": {
     "mocha": ">=1.17.1",
