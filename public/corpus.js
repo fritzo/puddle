@@ -197,7 +197,7 @@ define(function(require){
         fail();
       }).done(function(data){
         log('created line: ' + data.id);
-        line.id = data.data;
+        line.id = data.id;
         insertLine(line);
         done(line);
       });
@@ -327,8 +327,7 @@ define(function(require){
     var delayFail = 30000;
 
     var pushChanges = function () {
-      for (id in changes) {
-        var change = changes[id];
+      _.map(changes, function(change, id) {
         delete changes[id];
         switch (change.type) {
           case 'update':
@@ -363,7 +362,7 @@ define(function(require){
           default:
             log('ERROR unknown change type: ' + change.type)
         }
-      }
+      })
       setTimeout(pushChanges, delay);
     };
 

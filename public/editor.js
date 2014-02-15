@@ -83,13 +83,13 @@ define(function(require){
         cursorPos += 1;
         var id = line.id;
         ids = ids.slice(0, cursorPos).concat([id], ids.slice(cursorPos));
-        lambda = compiler.loadLine(line);
-        root = ast.load(lambda);
+        var lambda = compiler.loadLine(line);
+        var root = ast.load(lambda);
         ast.cursor.insertAbove(cursor, _.last(root.below));  // HACK
         asts[id] = root;
         validities[id] = _.clone(UNKNOWN);
         pollValidities();
-        $prev = $lines[ids[cursorPos - 1]];
+        var $prev = $lines[ids[cursorPos - 1]];
         $lines[id] = $('<pre>').attr('id', 'line' + id).insertAfter($prev);
         renderLine(id);
         scrollToCursor();
