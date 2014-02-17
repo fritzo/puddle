@@ -4,7 +4,7 @@
   "description": "A responsive editor built on Pomagma",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test_main.js"
+    "test": "mocha --reporter spec test_main.js"
   },
   "repository": {"type": "git", "url": "git://github.com/fritzo/puddle"},
   "dependencies": {
