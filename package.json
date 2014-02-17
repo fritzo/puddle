@@ -12,7 +12,7 @@
     "underscore": ">=1.6.0",
     "express": ">=3.4.8",
     "socket.io": ">=0.9.16",
-    "pomagma": ">=0.1.0"
+    "pomagma": ">=0.1.1"
   },
   "devDependencies": {
     "mocha": ">=1.17.1",
