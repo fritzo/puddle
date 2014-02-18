@@ -16,7 +16,8 @@
   },
   "devDependencies": {
     "mocha": ">=1.17.1",
-    "chai": ">=1.9.0"
+    "chai": ">=1.9.0",
+    "zombie": ">=2.0.0-alpha29"
   },
   "keywords": ["editor", "ide", "pomagma"],
   "author": "Fritz Obermeyer",

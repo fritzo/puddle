@@ -1,6 +1,5 @@
 var fs = require('fs');
 var path = require('path');
-
 var requiredir = function (dir) {
   fs.readdirSync(dir).forEach(function(stem){
     var name = path.join(dir, stem);
@@ -12,7 +11,9 @@ var requiredir = function (dir) {
     }
   });
 };
+
 requiredir(path.join(__dirname, 'lib'));
+require('./test_client');
 
 var test = require(path.join(__dirname, 'lib', 'test'));
 test.runAll();
