@@ -43,14 +43,16 @@ app.delete('/corpus/line/:id', function (req, res) {
 });
 
 app.get('/corpus/validities', function (req, res) {
-  lines = corpus.findAll();
-  validitites = analyst.validateCorpus(lines);
-  validities = _.zip(lines, validitites).forEach(function(pair){
-    validity = pair[1];
-    validity.id = pair[0].id;
-    return validity;
+  var lines = corpus.findAll();
+  analyst.validateCorpus(lines, function(validities){
+    assert.equal(validities.length, lines.length);
+    validities = _.zip(lines, validitites).forEach(function(pair){
+      validity = pair[1];
+      validity.id = pair[0].id;
+      return validity;
+    });
+    res.send({'data': validitites});
   });
-  res.send({'data': validitites});
 });
 
 corpus.load();
