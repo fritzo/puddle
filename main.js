@@ -54,11 +54,10 @@ app.get('/corpus/validities', function (req, res) {
     res.send({'data': validitites});
   });
 });
-
 corpus.load();
 
 process.on('SIGINT', function() {
-  //app.close();  // is this necessary?
+  analyst.close();
   corpus.dump();
   process.exit();
 });
