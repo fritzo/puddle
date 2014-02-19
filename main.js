@@ -2,7 +2,7 @@ var path = require('path');
 var _ = require('underscore');
 var express = require('express');
 var corpus = require('./lib/corpus');
-var analyst = require('pomagma').analyst();
+var analyst = require('pomagma').analyst.connect();
 
 var app = express();
 app.use(express.bodyParser());
