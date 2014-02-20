@@ -1,3 +1,4 @@
+var assert = require('assert');
 var path = require('path');
 var _ = require('underscore');
 var express = require('express');
@@ -44,14 +45,18 @@ app.delete('/corpus/line/:id', function (req, res) {
 
 app.get('/corpus/validities', function (req, res) {
   var lines = corpus.findAll();
-  analyst.validateCorpus(lines, function(validities){
-    assert.equal(validities.length, lines.length);
-    validities = _.zip(lines, validitites).forEach(function(pair){
-      validity = pair[1];
-      validity.id = pair[0].id;
+  var ids = _.pluck(lines, 'id');
+  var rawLines = _.map(lines, function(line){
+    return {'name': line.name, 'code': line.code};
+  });
+  analyst.validateCorpus(rawLines, function(validities){
+    assert.equal(validities.length, ids.length);
+    validities = _.map(_.zip(validities, ids), function(pair){
+      validity = pair[0];
+      validity.id = pair[1];
       return validity;
     });
-    res.send({'data': validitites});
+    res.send({'data': validities});
   });
 });
 corpus.load();
@@ -62,4 +67,5 @@ process.on('SIGINT', function() {
   process.exit();
 });
 
-app.listen(process.env.PUDDLE_PORT || 34934);
+var FROM_LOCALHOST = '127.0.0.1';
+app.listen(process.env.PUDDLE_PORT || 34934, FROM_LOCALHOST);
