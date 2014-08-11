@@ -1,8 +1,7 @@
 # Puddle [![Build Status](https://travis-ci.org/fritzo/puddle.svg?branch=master)](http://travis-ci.org/fritzo/puddle) [![NPM Version](https://badge.fury.io/js/puddle.svg)](https://badge.fury.io/js/puddle)
 
-Puddle is a reactive editor backed by the
-[Pomagma](https://github.com/fritzo/pomagma)
-inference engine.
+Puddle is a reactive coding environment backed by the
+[Pomagma](https://github.com/fritzo/pomagma) inference engine.
 
 ## Installing
 
@@ -13,17 +12,17 @@ inference engine.
 
 ## Running a Pomagma+Puddle system locally
 
-1. Install [Pomagma](https://github.com/fritzo/pomagma) and Puddle
+1.  Install [Pomagma](https://github.com/fritzo/pomagma) and Puddle
 
-2. Start a Pomagma server
+2.  Start a Pomagma server
 
-    python -m pomagma analyze   # Ctrl-C to stop
+        python -m pomagma analyze   # Ctrl-C to stop
 
-3. In another terminal start a Puddle server
+3.  In another terminal start a Puddle server
 
-    nodejs main.js              # Ctrl-C to stop
+        nodejs main.js              # Ctrl-C to stop
 
-4. In a browser, navigate to http://localhost:34934
+4.  In a browser, navigate to http://localhost:34934
 
 ## License
 
