@@ -1,4 +1,4 @@
-# Puddle [![Build Status](https://travis-ci.org/fritzo/puddle.svg?branch=master)](http://travis-ci.org/fritzo/puddle)
+# Puddle [![Build Status](https://travis-ci.org/fritzo/puddle.svg?branch=master)](http://travis-ci.org/fritzo/puddle) [![NPM Version](https://badge.fury.io/js/puddle.svg)](https://badge.fury.io/js/puddle)
 
 Puddle is a reactive editor backed by the
 [Pomagma](https://github.com/fritzo/pomagma)
