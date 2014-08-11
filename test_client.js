@@ -11,12 +11,6 @@ var server;
 var serve = function () {
   process.env.PUDDLE_PORT = PORT;
   var server = require('child_process').fork('main.js');
-  //server.stdout.on('data', function (data) {
-  //  console.log('server: ' + data);
-  //});
-  //server.stderr.on('data', function (data) {
-  //  console.error('server: ' + data);
-  //});
   server.on('close', function (code) {
     if (code !== 0) {
       console.error('server exited with code ' + code);
@@ -27,18 +21,18 @@ var serve = function () {
 };
 
 before(function(){
-  //server = serve();
+  server = serve();
 });
 
 after(function(){
-  //server.on('close', function(code){
-  //  console.log('server exited with code ' + code);
-  //});
-  //server.kill('SIGINT');
+  server.on('close', function(code){
+    console.log('server exited with code ' + code);
+  });
+  server.kill('SIGINT');
 });
 
 test('browser tests', function(done){
-  this.timeout(10000);
+  this.timeout(0);
 
   var assert = require('assert');
   require('zombie').visit(ADDRESS, function(e, browser){
