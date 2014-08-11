@@ -2,11 +2,12 @@ var assert = require('assert');
 var path = require('path');
 var _ = require('underscore');
 var express = require('express');
+var bodyParser = require('body-parser')
 var corpus = require('./lib/corpus');
 var analyst = require('pomagma').analyst.connect();
 
 var app = express();
-app.use(express.bodyParser());
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/', express.static(path.join(__dirname, 'public'))); // HACK for index
 app.use('/static', express.static(path.join(__dirname, 'public')));
@@ -68,4 +69,6 @@ process.on('SIGINT', function() {
 });
 
 var FROM_LOCALHOST = '127.0.0.1';
-app.listen(process.env.PUDDLE_PORT || 34934, FROM_LOCALHOST);
+var PORT = process.env.PUDDLE_PORT || 34934;
+console.log('navigate to http://localhost:' + PORT);
+app.listen(PORT, FROM_LOCALHOST);

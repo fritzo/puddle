@@ -138,7 +138,7 @@ define(function(require){
         assert.equal(arguments.length, arity, errorMessage);
         return [name].concat(_.toArray(arguments));
       };
-      symbol.name = name;
+      //symbol.name = name;  // errors by setting a read only property
       symbol.arity = arity;
     }
     symbols[name] = symbol;

@@ -2,24 +2,33 @@
   "name": "puddle",
   "version": "0.1.2",
   "description": "A responsive editor built on Pomagma",
-  "main": "index.js",
+  "main": "main.js",
+  "dependencies": {
+    "amdefine": "=0.1.0",
+    "body-parser": "^1.6.1",
+    "express": "^4.8.3",
+    "pomagma": ">=0.1.5",
+    "socket.io": "^1.0.6",
+    "underscore": "^1.6.0"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "less": "^1.7.4",
+    "mocha": "^1.21.4",
+    "zombie": "^2.0.0"
+  },
   "scripts": {
     "test": "mocha --reporter spec test_main.js"
   },
-  "repository": {"type": "git", "url": "git://github.com/fritzo/puddle"},
-  "dependencies": {
-    "amdefine": ">=0.1.0",
-    "underscore": ">=1.6.0",
-    "express": ">=3.4.8",
-    "socket.io": ">=0.9.16",
-    "pomagma": ">=0.1.5"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fritzo/puddle"
   },
-  "devDependencies": {
-    "mocha": ">=1.17.1",
-    "chai": ">=1.9.0",
-    "zombie": ">=2.0.0-alpha29"
-  },
-  "keywords": ["editor", "ide", "pomagma"],
+  "keywords": [
+    "editor",
+    "ide",
+    "pomagma"
+  ],
   "author": "Fritz Obermeyer",
   "license": "MIT",
   "bugs": {
