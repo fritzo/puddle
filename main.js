@@ -1,3 +1,4 @@
+var debug = require('debug')('puddle:main');
 var assert = require('assert');
 var path = require('path');
 var _ = require('underscore');
@@ -13,16 +14,17 @@ app.use('/', express.static(path.join(__dirname, 'public'))); // HACK for index
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.get('/corpus/lines', function (req, res) {
+  debug('GET lines');
   res.send({'data': corpus.findAll()});
 });
 
 app.get('/corpus/line/:id', function (req, res) {
-  console.log('GET line ' + req.params.id);
+  debug('GET line ' + req.params.id);
   res.send({'data': corpus.findOne(id)});
 });
 
 app.post('/corpus/line', function (req, res) {
-  console.log('POST ' + JSON.stringify(req.body));
+  debug('POST ' + JSON.stringify(req.body));
   var line = req.body;
   var statement = {
     'name': line.name,
@@ -33,18 +35,19 @@ app.post('/corpus/line', function (req, res) {
 });
 
 app.put('/corpus/line/:id', function (req, res) {
-  console.log('PUT line ' + req.params.id + ': ' + JSON.stringify(req.body));
+  debug('PUT line ' + req.params.id + ': ' + JSON.stringify(req.body));
   corpus.update(req.params.id, req.body);
   res.send(200);
 });
 
 app.delete('/corpus/line/:id', function (req, res) {
-  console.log('DELETE line ' + req.params.id);
+  debug('DELETE line ' + req.params.id);
   corpus.remove(req.params.id);
   res.send(200);
 });
 
 app.get('/corpus/validities', function (req, res) {
+  debug('GET validities');
   var lines = corpus.findAll();
   var ids = _.pluck(lines, 'id');
   var rawLines = _.map(lines, function(line){
@@ -70,5 +73,5 @@ process.on('SIGINT', function() {
 
 var FROM_LOCALHOST = '127.0.0.1';
 var PORT = process.env.PUDDLE_PORT || 34934;
-console.log('navigate to http://localhost:' + PORT);
+console.log('serving puddle at http://localhost:' + PORT);
 app.listen(PORT, FROM_LOCALHOST);

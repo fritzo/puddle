@@ -1,7 +1,7 @@
 define(function(require){
   'use strict';
 
-  var $ = require('lib/jquery');
+  var $ = require('vendor/jquery');
   var log = require('log');
   var test = require('test');
   var corpus = require('corpus');

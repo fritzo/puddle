@@ -7,8 +7,8 @@
 define(function(require){
   'use strict';
 
-  var ajax = require('lib/jquery').ajax;
-  var _ = require('lib/underscore');
+  var ajax = require('vendor/jquery').ajax;
+  var _ = require('vendor/underscore');
   var assert = require('assert');
   var log = require('log');
   var test = require('test');
@@ -177,8 +177,10 @@ define(function(require){
         url: 'corpus/lines',
         cache: false
       }).fail(function(jqXHR, textStatus){
-        log('Request failed: ' + textStatus);
+        log('init GET failed: ' + textStatus);
       }).done(function(data){
+        // FIXME this is not reached in express+zombie unit tests
+        log('init GET succeeded');
         loadAll(data.data);
       });
     };
@@ -193,10 +195,10 @@ define(function(require){
         data: JSON.stringify(line),
         contentType: 'application/json',
       }).fail(function(jqXHR, textStatus){
-        log('Request failed: ' + textStatus);
+        log('insert POST failed: ' + textStatus);
         fail();
       }).done(function(data){
-        log('created line: ' + data.id);
+        log('insert POST succeded: ' + data.id);
         line.id = data.id;
         insertLine(line);
         done(line);

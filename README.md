@@ -24,6 +24,13 @@ Puddle is a reactive coding environment backed by the
 
 4.  In a browser, navigate to http://localhost:34934
 
+## Debugging Puddle
+
+Try running unit tests in various debug modes
+
+    DEBUG=* npm test
+    DEBUG=express:*,puddle:* npm test
+
 ## License
 
 Copyright 2005-2014 Fritz Obermeyer.<br/>

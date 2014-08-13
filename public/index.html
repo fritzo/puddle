@@ -8,23 +8,19 @@
 <script>
 var less = {async: true};  // required by zombie.js
 </script>
-<!-- license: Apache2 -->
-<script src='static/lib/less.js'></script>
-<!-- license: new BSD | MIT -->
-<script data-main='static/main.js' src='static/lib/require.js'></script>
+<script src='static/vendor/less.js'></script>
+<script data-main='static/main.js' src='static/vendor/require.js'></script>
 <script>
 require.config({
   shim: {
-    // license: MIT | GPL2
-    'lib/jquery': {
+    'vendor/jquery': {
       exports: '$'
     },
-    // license: MIT
-    'lib/underscore': {
+    'vendor/underscore': {
       exports: '_'
     }
-    //'lib/backbone': {
-    //  deps: ['lib/underscore', 'lib/jquery'],
+    //'vendor/backbone': {
+    //  deps: ['vendor/underscore', 'vendor/jquery'],
     //  exports: "Backbone"
     //}
   }
