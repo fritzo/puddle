@@ -17,7 +17,9 @@ console.log('loading page ' + ADDRESS);
 page.open(ADDRESS, function(status){
   assert(status === 'success', 'failed to load page: ' + status);
 
-  page.evaluate(function(){ window.test = require('test'); });
+  page.evaluate(function(){
+    require(['test'], function(test){ window.test = test; });
+  });
 
   var waitCount = 10;
   var validate = function () {
