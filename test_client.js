@@ -21,9 +21,11 @@ var server = (function(){
         process.exit(code);
       }
     });
-    server.stderr.on('data', console.error);
+    server.stderr.on('data', function(data){
+      console.error('server: ' + data);
+    });
     server.stdout.on('data', function(data){
-      console.log(data);
+      console.log('server: ' + data);
       if (queue !== undefined) {
         isReady = true;
         queue.forEach(function(cb){ cb(); });
@@ -104,5 +106,5 @@ test('in phantomjs browser', function(done){
       assert(code === 0, 'phantomjs exited with code: ' + code);
       done();
     });
-  }, 500);
+  });
 });

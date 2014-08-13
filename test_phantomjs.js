@@ -21,7 +21,6 @@ page.open(ADDRESS, function(status){
   var validate = function () {
     var testState = page.evaluate(function(){
       var test = require('test');
-      console.log('DEBUG ' + test);
       return {
         hasRun: test.hasRun(),
         failCount: test.failCount(),
