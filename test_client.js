@@ -32,7 +32,7 @@ test('browser tests', function(done){
   this.timeout(0);
 
   var assert = require('assert');
-  require('zombie').visit(ADDRESS, {debug: true}, function(e, browser){
+  require('zombie').visit(ADDRESS, function(e, browser){
     var waitCount = 10;
 
     var validate = function () {

@@ -33,5 +33,7 @@ Try running unit tests in various debug modes
 
 ## License
 
+Puddle was factored out of [Pomagma](https://github.com/fritzo/pomagma) in 2014.
+
 Copyright 2005-2014 Fritz Obermeyer.<br/>
 All code is licensed under the [MIT license](/LICENSE) unless otherwise noted.
