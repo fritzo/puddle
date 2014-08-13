@@ -23,7 +23,7 @@ page.open(ADDRESS, function(status){
   var validate = function () {
     console.log('checking...');
     var testState = page.evaluate(function(){
-      return {
+      return window.test && {
         hasRun: test.hasRun(),
         failCount: test.failCount(),
         testCount: test.testCount()
