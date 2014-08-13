@@ -42,9 +42,7 @@ page.open(ADDRESS, function(status){
       console.log('waiting...');
       // broken https://github.com/ariya/phantomjs/issues/10832 
       //setTimeout(validate, 1000);
-      setTimeout(function(){
-        setTimeout(validate, 1000);
-      }, 1);
+      setTimeout(function(){ setTimeout(validate, 1000); }, 0);
     } else {
       throw 'Browser timed out';
     }
