@@ -27,7 +27,7 @@ page.open(ADDRESS, function(status){
         hasRun: test.hasRun(),
         failCount: test.failCount(),
         testCount: test.testCount()
-      };
+      } || {};
     });
 
     if (testState.hasRun) {
