@@ -13,6 +13,7 @@ var server = (function(){
 
   var start = function () {
     assert(server === undefined, 'start server twice');
+    assert(queue !== undefined, 'start server twice');
     process.env.PUDDLE_PORT = PORT;
     server = fork('main.js', [], {silent: true});
     server.on('close', function (code) {
@@ -27,7 +28,6 @@ var server = (function(){
     server.stdout.on('data', function(data){
       console.log('server: ' + data);
       if (queue !== undefined) {
-        isReady = true;
         queue.forEach(function(cb){ cb(); });
         queue = undefined;
       }
@@ -39,6 +39,7 @@ var server = (function(){
       console.log('server exited with code ' + code);
     });
     server.kill('SIGINT');
+    server = undefined;
   };
 
   var ready = function(cb){
