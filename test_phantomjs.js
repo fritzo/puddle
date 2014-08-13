@@ -17,16 +17,12 @@ console.log('loading page ' + ADDRESS);
 page.open(ADDRESS, function(status){
   assert(status === 'success', 'failed to load page: ' + status);
 
-  var testState = page.evaluate(function(){
-    window.test = require('test');
-  });
+  page.evaluate(function(){ window.test = require('test'); });
 
   var waitCount = 10;
   var validate = function () {
     console.log('checking...');
     var testState = page.evaluate(function(){
-      //var test = require('test');  // finicky
-      var test = window.test;
       return {
         hasRun: test.hasRun(),
         failCount: test.failCount(),
