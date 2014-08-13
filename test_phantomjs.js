@@ -40,7 +40,11 @@ page.open(ADDRESS, function(status){
       phantom.exit();
     } else if (--waitCount) {
       console.log('waiting...');
-      setTimeout(validate, 1000);
+      // broken https://github.com/ariya/phantomjs/issues/10832 
+      //setTimeout(validate, 1000);
+      setTimeout(function(){
+        setTimeout(validate, 1000);
+      }, 1);
     } else {
       throw 'Browser timed out';
     }
