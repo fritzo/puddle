@@ -48,7 +48,7 @@ define(function(require){
   //--------------------------------------------------------------------------
   // client state
 
-  /*
+  /** Example.
   var exampleLine = {
     'id': 'asfgvg1tr457et46979yujkm',
     'name': 'div',      // or null for anonymous lines
@@ -60,8 +60,8 @@ define(function(require){
   var state = (function(){
     var state = {};
 
-    // These maps fail with names like 'constructor',
-    // so we require a '.' in all names in corpus.
+    // These maps fail with names like 'constructor';
+    // as a hack we require a '.' in all names in corpus.
     var lines = {};  // id -> line
     var definitions = {};  // name -> id
     var occurrences = {};  // name -> (set id)

@@ -1027,11 +1027,11 @@ define(function(require){
             return notFound;
           } else {
             // this hack will be obsoleted by simplifyLambda
-            if (ty === I) {                   // HACK
-              return app(J, match.x);             // HACK
-            } else {                          // HACK
+            if (ty === I) {                     // HACK
+              return app(J, match.x);           // HACK
+            } else {                            // HACK
               return comp(app(J, match.x), ty);
-            }                                 // HACK
+            }                                   // HACK
           }
         } else {
           if (ty === notFound) {

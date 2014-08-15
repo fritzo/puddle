@@ -71,6 +71,7 @@ process.on('SIGINT', function() {
   process.exit();
 });
 
+// TODO allow authentication via github
 var FROM_LOCALHOST = '127.0.0.1';
 var PORT = process.env.PUDDLE_PORT || 34934;
 console.log('serving puddle at http://localhost:' + PORT);

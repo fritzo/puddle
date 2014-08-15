@@ -26,10 +26,14 @@ Puddle is a reactive coding environment backed by the
 
 ## Debugging Puddle
 
-Try running unit tests in various debug modes
+Try running headless unit tests in various debug modes
 
+    npm test
     DEBUG=* npm test
     DEBUG=express:*,puddle:* npm test
+
+To run in-browser unit tests, start Pomagma+Puddle servers as above and
+navigate to http://localhost:34934#test
 
 ## License
 
