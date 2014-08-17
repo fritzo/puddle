@@ -286,9 +286,7 @@ define(function(require){
       http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.1.9435
     */
     lineArray = [];
-    for (var id in lineSet) {
-      lineArray.push(lineSet[id]);
-    }
+    _.each(lineSet, lineArray.push);
     return lineArray;
   };
 
@@ -409,9 +407,9 @@ define(function(require){
 
     var off = function () {
       navigate.off();
-      for (var i = 0; i < generic.length; ++i) {
-        navigate.on.apply(null, generic[i]);
-      }
+      _.each(generic, function (g) {
+        navigate.on.apply(null, g);
+      });
     };
 
     var on = function (name, term, subsForDash) {
@@ -438,7 +436,6 @@ define(function(require){
         }
       } else if (name === 'HOLE') {
         on('X', HOLE); // TODO define context-specific deletions
-        navigate.on('/', searchGlobals, render(VAR('global.variable')));
         on('T', TOP);
         on('_', BOT);
         on('\\', LAMBDA(fresh, CURSOR(HOLE)));
@@ -453,6 +450,8 @@ define(function(require){
         on('<', LESS(CURSOR(HOLE), HOLE));
         on('>', NLESS(CURSOR(HOLE), HOLE));
 
+        // TODO filter globals and locals by future validity
+        navigate.on('/', searchGlobals, render(VAR('global.variable')));
         var locals = ast.getBoundAbove(term);
         locals.forEach(function(varName){
           on(varName, VAR(varName));
