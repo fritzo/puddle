@@ -87,7 +87,10 @@ define(function(require){
     callbacks.push(callback);
     if (description !== undefined) {
       $('#navigate table').append(
-        $('<tr>').append(icons[name], $('<td>').html(description)));
+        $('<tr>')
+          .on('click', callback)
+          .append(icons[name], $('<td>')
+          .html(description)));
     }
   };
 

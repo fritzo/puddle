@@ -262,7 +262,13 @@ define(function(require){
     var lambda = ast.dump(root);
     var validity = validities[id];
     var html = renderValidity(validity) + compiler.render(lambda);
-    $lines[id].html(html);
+    $lines[id]
+      .on('click', function(){
+        var newPos = _.indexOf(ids, id);
+        var delta = newPos - cursorPos;
+        moveCursorLine(delta);
+      })
+      .html(html);
   };
 
   var renderAllLines = function () {
