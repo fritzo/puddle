@@ -3,10 +3,13 @@ define(function(require){
 
   var _ = require('vendor/underscore');
   var $ = require('vendor/jquery');
+  var io = require('socket.io');
   var assert = require('assert');
   var log = require('log');
   var test = require('test');
   var keycode = require('keycode');
+
+  var socket = io();
 
   //--------------------------------------------------------------------------
   // Events
@@ -84,11 +87,15 @@ define(function(require){
   var on = function (name, callback, description) {
     assert(_.has(cases, name));
     events.push(cases[name]);
-    callbacks.push(callback);
+    var loggedCallback = function () {
+      socket.emit('action', name);
+      callback();
+    };
+    callbacks.push(loggedCallback);
     if (description !== undefined) {
       $('#navigate table').append(
         $('<tr>')
-          .on('click', callback)
+          .on('click', loggedCallback)
           .append(icons[name], $('<td>')
           .html(description)));
     }

@@ -24,6 +24,11 @@ To run a Pomagma+Puddle system locally:
 
         nodejs main.js              # Ctrl-C to stop
 
+    or during development
+
+        sudo npm install -g nodemon
+        nodemon main.js
+
 4.  In a browser, navigate to http://localhost:34934
 
 ## Debugging Puddle
@@ -43,21 +48,27 @@ navigate to http://localhost:34934#test
 
 ## Roadmap
 
-- [x] Client talks to server
-- [x] Client supports text-based rendering
-- [x] Client supports keyboard-based editing
-- [x] Server persists corpus to a file
-- [x] Server talks to a Pomagma engine
-- [ ] Server synchronizes corpus across multiple clients
-- [ ] Client gathers user action logs
-- [ ] Server aggregates and stores user action logs
-- [ ] Server broadcasts user actions to other users
-- [ ] Clients track user action among multiple devices of single user
-- [ ] Server authenticates and distinguishes among clients
-- [ ] Server persists corpus to database, not a file (still dumped to git)
-- [ ] Client supports touch-based editing
-- [ ] Client supports svg-based rendering
-- [ ] Server talks to multiple Pomagma engines
+- Prototype
+    - [x] Client talks to server
+    - [x] Client supports text-based rendering
+    - [x] Client supports keyboard-based editing
+    - [x] Server persists corpus to a file
+    - [x] Server talks to a Pomagma engine
+- User Action Logging
+    - [x] Client logs user action to server
+    - [ ] Server aggregates and stores user action logs
+    - [ ] Server broadcasts user position to other users
+    - [ ] Server persists corpus to database, not a file (still dumped to git)
+    - [ ] Server can replay actions to a test client
+    - [ ] Client can generate random action stream for testing
+- Multi-User Support
+    - [ ] Server synchronizes corpus across multiple clients
+    - [ ] User actions are synchronized among multiple devices/views
+    - [ ] Server authenticates and distinguishes among clients
+- User Interface
+    - [ ] Client supports touch-based editing
+    - [ ] Client supports svg-based rendering
+    - [ ] Server talks to multiple Pomagma engines (to reduce latency)
 
 ## Authors
 

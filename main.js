@@ -3,13 +3,14 @@ var assert = require('assert');
 var path = require('path');
 var _ = require('underscore');
 var express = require('express');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var corpus = require('./lib/corpus');
-var analyst = require('pomagma').analyst.connect();
+var pomagma = require('pomagma');
+var socketio = require('socket.io');
 
+var analyst = pomagma.analyst.connect();
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
-
 app.use('/', express.static(path.join(__dirname, 'public'))); // HACK for index
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
@@ -63,8 +64,8 @@ app.get('/corpus/validities', function (req, res) {
     res.send({'data': validities});
   });
 });
-corpus.load();
 
+corpus.load();
 process.on('SIGINT', function() {
   analyst.close();
   corpus.dump();
@@ -75,4 +76,18 @@ process.on('SIGINT', function() {
 var FROM_LOCALHOST = '127.0.0.1';
 var PORT = process.env.PUDDLE_PORT || 34934;
 console.log('serving puddle at http://localhost:' + PORT);
-app.listen(PORT, FROM_LOCALHOST);
+var server = app.listen(PORT, FROM_LOCALHOST);
+var io = socketio(server);
+var userId = 0;
+
+io.on('connection', function(socket){
+  var id = userId++;
+  console.log('user ' + id + ' connected');
+  socket.on('disconnect', function(){
+    console.log('user ' + id + ' disconnected');
+  });
+  socket.on('action', function(message){
+    console.log('user ' + id + ' action: ' + message);
+    // TODO log to database
+  });
+});

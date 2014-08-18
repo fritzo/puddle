@@ -3,6 +3,7 @@ define(function(require){
 
   var _ = require('vendor/underscore');
   var $ = require('vendor/jquery');
+  var io = require('socket.io');
   var assert = require('assert');
   var log = require('log');
   var test = require('test');
@@ -18,6 +19,7 @@ define(function(require){
   var cursor = null;
   var cursorPos = 0;
   var lineChanged = false;
+  var socket = io();
 
   var UNKNOWN = {'is_top': null, 'is_bot': null, 'pending': true};
 
@@ -309,6 +311,7 @@ define(function(require){
     cursorPos = 0;
     lineChanged = false;
     var id = ids[cursorPos];
+    socket.emit('action', {'moveTo': id});
     ast.cursor.insertAbove(cursor, asts[id]);
     renderLine(id);
     scrollToCursor();
@@ -323,7 +326,7 @@ define(function(require){
       renderLine();
       cursorPos = (cursorPos + ids.length + delta) % ids.length;
       var id = ids[cursorPos];
-      //log('moving cursor to id ' + id);
+      socket.emit('action', {'moveTo': id});
       ast.cursor.insertAbove(cursor, asts[id]);
       renderLine(id);
       scrollToCursor();
