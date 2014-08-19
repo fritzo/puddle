@@ -3,6 +3,19 @@
 * [Server Admin](#server-admin)
 * [Server REST API](#server-rest)
 * [Server socket.io API](#server-socketio)
+* [Client `TODO.js`](#todojs)
+* [Client `assert.js`](#assertjs)
+* [Client `log.js`](#logjs)
+* [Client `keycode.js`](#keycodejs)
+* [Client `test.js`](#testjs)
+* [Client `language/pattern.js`](#patternjs)
+* [Client `language/compiler.js`](#compilerjs)
+* [Client `language/ast.js`](#astjs)
+* [Client `corpus.js`](#corpusjs)
+* [Client `navigate.js`](#navigatejs)
+* [Client `symbols.js`](#symbolsjs)
+* [Client `editor.js`](#editorjs)
+* [Client `main.js`](#mainjs)
 
 ## Server
 
@@ -102,14 +115,14 @@
 - Receive `action` - Format has not been settled.
 
 
-## Client
+## Client <a name="client"/>
 
-### `TODO.js`
+### `TODO.js` <a name="todojs"/>
 
     var TODO = require('TODO');
     TODO('throws a TodoException with this message');
 
-### `assert.js`
+### `assert.js` <a name="assertjs"/>
 
     var assert = require('assert');
     assert(condition, message);
@@ -118,12 +131,12 @@
     assert.backward(bwd, listOfPairs); // x === bwd(y) for each pair [x, y]
     assert.inverses(fwd, bwd, listOfPairs); // fwd(x) === y && x === bwd(y)
 
-### `log.js`
+### `log.js` <a name="logjs"/>
 
     var log = require('log');
     log('just like console.log, bug works in web workers');
 
-### `keycode.js`
+### `keycode.js` <a name="keycodejs"/>
 
     {
         'backspace': 8,
@@ -133,7 +146,7 @@
         ...
     }
 
-### `test.js`
+### `test.js` <a name="testjs"/>
 
 Unit testing library.
 
@@ -148,7 +161,7 @@ Unit testing library.
     console.log(test.testCount());      // prints cumulative test count
     console.log(test.failCount());      // prints cumulative failed test count
 
-### `language/pattern.js`
+### `language/pattern.js` <a name="patternjs"/>
 
 ML-style pattern matching with variable binding.
 This is used internally by compiler and ast.
@@ -162,7 +175,7 @@ This is used internally by compiler and ast.
         patt3, callback3
     );
 
-### `language/compiler.js`
+### `language/compiler.js` <a name="compilerjs"/>
 
     var compiler = require('compiler');
     compiler.symbols;
@@ -182,7 +195,7 @@ This is used internally by compiler and ast.
 
     compiler.substitute(name, def, body);  // replace name with def in body
 
-### `language/ast.js`
+### `language/ast.js` <a name="astjs"/>
 
 Abstract Syntax Trees.
 
@@ -207,7 +220,7 @@ Abstract Syntax Trees.
     var varSet = ast.getVars(term);         // -> {'a': null, 'b': null}
     var name = ast.getFresh(term);          // -> 'c'
 
-### `corpus.js`
+### `corpus.js` <a name="corpusjs"/>
 
 Editor's view of the server-side corpus.
 Each client stores an in-memory copy.
@@ -230,7 +243,7 @@ Each client stores an in-memory copy.
     corpus.update(newLine);
     corpus.remove(id);
 
-### `navigate.js`
+### `navigate.js` <a name="navigatejs"/>
 
     var navigate = require('navagate');
     navigate.on(name, callback, description);   // add callback
@@ -243,7 +256,7 @@ Each client stores an in-memory copy.
     // create new global variable name
     navigate.choose(isValidFilter, acceptName, cancel);
 
-### `symbols.js`
+### `symbols.js` <a name="symbolsjs"/>
 
     var symbols = require('symbols');
     assert(symbols.isToken('a'));
@@ -251,12 +264,12 @@ Each client stores an in-memory copy.
     assert(symbols.isLocal('a'));
     assert(symbols.isGlobal('util.pair'));
 
-### `editor.js`
+### `editor.js` <a name="editorjs"/>
 
     var editor = require('editor');
     editor.main();                      // start puddle editor
 
-### `main.js`
+### `main.js` <a name="mainjs"/>
 
 Main entry point, either starts unit tests or starts editor,
 depending on whether `location.hash === '#test'`.
