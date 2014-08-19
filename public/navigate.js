@@ -215,8 +215,8 @@ define(function(require){
   return {
     on: on,
     off: off,
-    search: search,
-    choose: choose,
     trigger: trigger,
+    search: search,
+    choose: choose
   };
 });
