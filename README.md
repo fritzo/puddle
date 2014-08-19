@@ -33,7 +33,7 @@ To run a Pomagma+Puddle system locally:
 
 ## Debugging Puddle
 
-Try running headless unit tests in various debug modes
+To running headless unit tests in various debug modes,
 
     npm test
     DEBUG=* npm test
@@ -41,6 +41,10 @@ Try running headless unit tests in various debug modes
 
 To run in-browser unit tests, start Pomagma+Puddle servers as above and
 navigate to http://localhost:34934#test
+
+## Documentation
+
+[API Reference](/doc/reference.md)
 
 ## Planned Architecture
 

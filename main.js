@@ -21,7 +21,7 @@ app.get('/corpus/lines', function (req, res) {
 
 app.get('/corpus/line/:id', function (req, res) {
   debug('GET line ' + req.params.id);
-  res.send({'data': corpus.findOne(id)});
+  res.send({'data': corpus.findOne(req.params.id)});
 });
 
 app.post('/corpus/line', function (req, res) {
@@ -38,13 +38,13 @@ app.post('/corpus/line', function (req, res) {
 app.put('/corpus/line/:id', function (req, res) {
   debug('PUT line ' + req.params.id + ': ' + JSON.stringify(req.body));
   corpus.update(req.params.id, req.body);
-  res.send(200);
+  res.status(200).end();
 });
 
 app.delete('/corpus/line/:id', function (req, res) {
   debug('DELETE line ' + req.params.id);
   corpus.remove(req.params.id);
-  res.send(200);
+  res.status(200).end();
 });
 
 app.get('/corpus/validities', function (req, res) {
