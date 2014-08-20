@@ -33,7 +33,7 @@ To run a Pomagma+Puddle system locally:
 
 ## Debugging Puddle
 
-To running headless unit tests in various debug modes,
+To run headless unit tests in various debug modes,
 
     npm test
     DEBUG=* npm test
@@ -45,34 +45,7 @@ navigate to http://localhost:34934#test
 ## Documentation
 
 [API Reference](/doc/reference.md)
-
-## Planned Architecture
-
-[![Architecture](/doc/architecture.png)](/doc/architecture.pdf)
-
-## Roadmap
-
-- Prototype
-    - [x] Client talks to server
-    - [x] Client supports text-based rendering
-    - [x] Client supports keyboard-based editing
-    - [x] Server persists corpus to a file
-    - [x] Server talks to a Pomagma engine
-- User Action Logging
-    - [x] Client logs user action to server
-    - [ ] Server aggregates and stores user action logs
-    - [ ] Server broadcasts user position to other users
-    - [ ] Server persists corpus to database, not a file (still dumped to git)
-    - [ ] Server can replay actions to a test client
-    - [ ] Client can generate random action stream for testing
-- Multi-User Support
-    - [ ] Server synchronizes corpus across multiple clients
-    - [ ] User actions are synchronized among multiple devices/views
-    - [ ] Server authenticates and distinguishes among clients
-- User Interface
-    - [ ] Client supports touch-based editing
-    - [ ] Client supports svg-based rendering
-    - [ ] Server talks to multiple Pomagma engines (to reduce latency)
+[Contributing](/doc/contributing.md)
 
 ## Authors
 
