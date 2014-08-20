@@ -70,16 +70,17 @@ define(function (require) {
             ')': 'shift+0',
             '?': 'shift+slash'
         };
-        _.each(aliases, function (actual, alias) {
+        _.each(aliases, function (alias, actual) {
             cases[actual] = cases[alias];
         });
 
         return cases;
     })();
 
-    var icons = _.map(cases, function (unused, name) {
-        name = name.replace(/\b\+\b/g, '</span>+<span>');
-        return $('<th>').html('<span>' + name + '</span>');
+    var icons = {};
+    _.each(cases, function (unused, name) {
+        var escaped = name.replace(/\b\+\b/g, '</span>+<span>');
+        icons[name] = $('<th>').html('<span>' + escaped + '</span>');
     });
 
     //--------------------------------------------------------------------------
