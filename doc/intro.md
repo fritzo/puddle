@@ -32,15 +32,16 @@ Sometimes the engine cannot decide;
 sometimes it can decide that a term is not overdefined but may be underdefined;
 sometimes it can decide that a term may be overdefined but is not underdefined.
 Puddle conveys this partial validity state via validity icons:
+colored triangles and squares to the left of each line.
 
-| Symbol  | Color  | Overdefined?  | Underdefined? | Valid?        |
-|---------|--------|---------------|---------------|---------------|
-| (none)  |        | no            | no            | yes           |
-| &x2B52; | gray   | no            | yet undecided | yet undecided |
-| &x2B5C; | gray   | yet undecided | no            | yet undecided |
-| &x25a0; | gray   | yet undecided | yet undecided | yet undecided |
-| &x2B52; | yellow | no            | cannot decide | cannot decide |
-| &x2B5C; | yellow | cannot decide | cannot decide | cannot decide |
-| &x25a0; | yellow | cannot decide | cannot decide | cannot decide |
-| &x2B52; | red    | no            | yes           | no            |
-| &x2B5C; | red    | yes           | no            | no            |
+| Symbol | Color  | Overdefined?  | Underdefined? | Valid?        |
+|--------|--------|---------------|---------------|---------------|
+| (none) |        | no            | no            | yes           |
+| /\     | gray   | no            | yet undecided | yet undecided |
+| \/     | gray   | yet undecided | no            | yet undecided |
+| []     | gray   | yet undecided | yet undecided | yet undecided |
+| /\     | yellow | no            | cannot decide | cannot decide |
+| \/     | yellow | cannot decide | cannot decide | cannot decide |
+| []     | yellow | cannot decide | cannot decide | cannot decide |
+| /\     | red    | no            | yes           | no            |
+| \/     | red    | yes           | no            | no            |
