@@ -26,25 +26,10 @@ To run a Pomagam+Puddle system locally:
 
 4.  In a browser, navigate to http://localhost:34934
 
-## Debugging Puddle
-
-During development, run the server through nodemon:
-
-    sudo npm install -g nodemon
-    nodemon main.js
-
-To run headless unit tests in various debug modes:
-
-    npm test
-    DEBUG=* npm test
-    DEBUG=express:*,puddle:* npm test
-
-To run in-browser unit tests, start Pomagam+Puddle servers as above and
-navigate to http://localhost:34934#test
-
 ## Documentation
 
 - [Introduction](/doc/intro.md)
+- [Using Puddle](/doc/using.md)
 - [API Reference](/doc/reference.md)
 - [Contributing](/doc/contributing.md)
 
@@ -65,6 +50,5 @@ Puddle is distributed with the following third-party libraries:
 -   [jQuery](http://jquery.com/) - MIT
 -   [less.js](https://github.com/less/less.js) - Apache 2
 -   [require.js](https://github.com/jrburke/requirejs) - new BSD | MIT
--   [Signika](http://www.google.com/fonts/specimen/Signika)
-    (a Google font) -
+-   [Signika](http://www.google.com/fonts/specimen/Signika) font -
     [OFL](http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)

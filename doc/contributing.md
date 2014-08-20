@@ -34,7 +34,7 @@ See the [Introduction](/doc/intro.md) for vocabulary.
     -   (Yan) Support multiple users via github authentication
     -   (Fritz) Support zero/multiple pomagma servers
 
-## Roadmap
+## Roadmap (unprioritized)
 
 - Prototype
     - [x] Client talks to server
@@ -50,8 +50,10 @@ See the [Introduction](/doc/intro.md) for vocabulary.
     - [ ] Server can replay actions to a test client
     - [ ] Client can generate random action stream for testing
 - Single-User Multi-Device support
+    - [ ] Cursor is persisted in corpus
     - [ ] Server synchronizes corpus across multiple clients
 - Multi-User Support
+    - [ ] Cursor stores user id attribute
     - [ ] Server authenticates and distinguishes among clients
     - [ ] User actions are synchronized among multiple devices/views
 - User Interface

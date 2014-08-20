@@ -33,14 +33,14 @@ sometimes it can decide that a term is not overdefined but may be underdefined;
 sometimes it can decide that a term may be overdefined but is not underdefined.
 Puddle conveys this partial validity state via validity icons:
 
-| Symbol   | Color  | Overdefined?  | Underdefined? | Valid?        |
-|----------|--------|---------------|---------------|---------------|
-| (none)   |        | no            | no            | yes           |
-| &#x2B52; | gray   | no            | yet undecided | yet undecided |
-| &#x2B5C; | gray   | yet undecided | no            | yet undecided |
-| &#x25a0; | gray   | yet undecided | yet undecided | yet undecided |
-| &#x2B52; | yellow | no            | cannot decide | cannot decide |
-| &#x2B5C; | yellow | cannot decide | cannot decide | cannot decide |
-| &#x25a0; | yellow | cannot decide | cannot decide | cannot decide |
-| &#x2B52; | red    | no            | yes           | no            |
-| &#x2B5C; | red    | yes           | no            | no            |
+| Symbol  | Color  | Overdefined?  | Underdefined? | Valid?        |
+|---------|--------|---------------|---------------|---------------|
+| (none)  |        | no            | no            | yes           |
+| &x2B52; | gray   | no            | yet undecided | yet undecided |
+| &x2B5C; | gray   | yet undecided | no            | yet undecided |
+| &x25a0; | gray   | yet undecided | yet undecided | yet undecided |
+| &x2B52; | yellow | no            | cannot decide | cannot decide |
+| &x2B5C; | yellow | cannot decide | cannot decide | cannot decide |
+| &x25a0; | yellow | cannot decide | cannot decide | cannot decide |
+| &x2B52; | red    | no            | yes           | no            |
+| &x2B5C; | red    | yes           | no            | no            |
