@@ -44,16 +44,26 @@ navigate to http://localhost:34934#test
 
 ## Documentation
 
-[API Reference](/doc/reference.md)
-[Contributing](/doc/contributing.md)
+- [API Reference](/doc/reference.md)
+- [Contributing](/doc/contributing.md)
 
 ## Authors
 
-* Fritz Obermeyer <https://github.com/fritzo>
+- Fritz Obermeyer <https://github.com/fritzo>
 
 Puddle was factored out of [Pomagma](https://github.com/fritzo/pomagma) in 2014.
 
 ## License
 
 Copyright 2005-2014 Fritz Obermeyer.<br/>
-All code is licensed under the [MIT license](/LICENSE) unless otherwise noted.
+Puddle is licensed under the [MIT license](/LICENSE).
+
+Puddle is distributed with the following third-party libraries:
+
+-   [Underscore.js](http://underscorejs.org) - MIT
+-   [jQuery](http://jquery.com/) - MIT
+-   [less.js](https://github.com/less/less.js) - Apache 2
+-   [require.js](https://github.com/jrburke/requirejs) - new BSD | MIT
+-   [Signika](http://www.google.com/fonts/specimen/Signika)
+    (a Google font) -
+    [OFL](http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
