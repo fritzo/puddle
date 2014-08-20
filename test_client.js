@@ -62,39 +62,6 @@ var server = (function () {
 mocha.before(server.start);
 mocha.after(server.stop);
 
-// FIXME zombie 1.4.x + jquery.ajax is broken: the browser receives 200,
-// but none of .fail, .done, or .always are called. This is observed
-// in the first GET lines when the corpus is loaded.
-if (process.env.PUDDLE_TEST_ZOMBIE !== undefined) {
-    test('in zombie browser', function (done) {
-        this.timeout(0);
-
-        require('zombie').visit(ADDRESS, function (e, browser) {
-            var waitCount = 10;
-
-            var validate = function () {
-                if (browser.evaluate("require('test').hasRun()")) {
-                    var failCount = browser.evaluate("require('test').failCount()");
-                    var testCount = browser.evaluate("require('test').testCount()");
-                    assert(failCount == 0, failCount + ' tests failed');
-                    assert(testCount == TEST_COUNT,
-                        'ERROR expected ' + TEST_COUNT + ' tests, actual ' + testCount);
-                    console.log('----------------');
-                    console.log('PASSED ALL TESTS');
-                    done();
-                } else if (--waitCount) {
-                    console.log('waiting...');
-                    setTimeout(validate, 1000);
-                } else {
-                    throw 'Browser timed out';
-                }
-            };
-
-            browser.wait(validate);
-        });
-    });
-}
-
 test('in phantomjs browser', function (done) {
     this.timeout(10000);
     server.ready(function () {

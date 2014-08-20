@@ -16,8 +16,7 @@
     "chai": "^1.9.1",
     "less": "^1.7.4",
     "mocha": "^1.21.4",
-    "phantomjs": "^1.9.7-15",
-    "zombie": "^1.4.0"
+    "phantomjs": "^1.9.7-15"
   },
   "scripts": {
     "test": "mocha -R spec test_main.js"
