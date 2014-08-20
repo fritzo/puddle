@@ -12,7 +12,7 @@ Puddle is a reactive coding environment backed by the
 
 ## Quick Start
 
-To run a Pomagma+Puddle system locally:
+To run a Pomagam+Puddle system locally:
 
 1.  Install [Pomagma](https://github.com/fritzo/pomagma) and Puddle
 
@@ -24,22 +24,22 @@ To run a Pomagma+Puddle system locally:
 
         nodejs main.js              # Ctrl-C to stop
 
-    or during development
-
-        sudo npm install -g nodemon
-        nodemon main.js
-
 4.  In a browser, navigate to http://localhost:34934
 
 ## Debugging Puddle
 
-To run headless unit tests in various debug modes,
+During development, run the server through nodemon:
+
+    sudo npm install -g nodemon
+    nodemon main.js
+
+To run headless unit tests in various debug modes:
 
     npm test
     DEBUG=* npm test
     DEBUG=express:*,puddle:* npm test
 
-To run in-browser unit tests, start Pomagma+Puddle servers as above and
+To run in-browser unit tests, start Pomagam+Puddle servers as above and
 navigate to http://localhost:34934#test
 
 ## Documentation
