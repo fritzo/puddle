@@ -59,7 +59,7 @@ app.get('/corpus/validities', function (req, res) {
     analyst.validateCorpus(rawLines, function (validities) {
         assert.equal(validities.length, ids.length);
         validities = _.map(_.zip(validities, ids), function (pair) {
-            validity = pair[0];
+            var validity = pair[0];
             validity.id = pair[1];
             return validity;
         });
