@@ -77,7 +77,7 @@ define(function (require) {
     });
 
     // special case: VAR
-    loadSymbol['VAR'] = function (flat) {
+    loadSymbol.VAR = function (flat) {
         return {
             name: 'VAR',
             varName: flat[1],
@@ -85,7 +85,7 @@ define(function (require) {
             above: null
         };
     };
-    dumpSymbol['VAR'] = function (indexed) {
+    dumpSymbol.VAR = function (indexed) {
         return ['VAR', indexed.varName];
     };
 

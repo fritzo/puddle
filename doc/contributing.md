@@ -5,19 +5,19 @@ See the [Introduction](/doc/intro.md) for vocabulary.
 ## Planned Tasks
 
 1.  Improve code quality
-    - Clean up to pass jshint linting
-    - Add test coverage report (coveralls + istanbul?)
-    - Use build + minification system (gulp/grunt/...?)
-    - Use automated documentation system (jsdoc?)
-    - Refactor into smaller modules
-    - Separate testing code from production code
+    - [x] Clean up to pass jshint linting
+    - [ ] Add test coverage report (coveralls + istanbul?)
+    - [ ] Use build + minification system (gulp/grunt/...?)
+    - [ ] Use automated documentation system (jsdoc?)
+    - [ ] Refactor into smaller modules
+    - [ ] Separate testing code from production code
 
 2.  Refactor to support new features
-    - Factor `neighborhood` object out of `navagate.js`
-    - Support operations on `neighborhoods`
-    - Support custom corpus.dump for testing
-    - Factor rendering code out of compiler
-    - Settle on user action data format
+    - [ ] Factor `neighborhood` object out of `navagate.js`
+    - [ ] Support operations on `neighborhoods`
+    - [ ] Support custom corpus.dump for testing
+    - [ ] Factor rendering code out of compiler
+    - [ ] Settle on user action data format
 
 4.  Implement new features (ordered by priority)
     -   (Fritz) Support action filtering.

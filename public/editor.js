@@ -95,11 +95,15 @@ define(function (require) {
                 $lines[id] = $('<pre>').attr('id', 'line' + id).insertAfter($prev);
                 renderLine(id);
                 scrollToCursor();
-                done && done();
+                if (done !== undefined) {
+                    done();
+                }
             },
             function () {
                 log('failed to insert line');
-                fail && fail();
+                if (fail !== undefined) {
+                    fail();
+                }
             }
         );
     };

@@ -37,13 +37,12 @@ define(function (require) {
                 state[2] === event.ctrlKey &&
                 state[3] === event.altKey &&
                 state[4] === event.metaKey
-            )
+            );
         }
     };
 
-    var cases = {};
-    var icons = {};
-    (function () {
+    var cases = (function () {
+        var cases = {};
         for (var name in keycode) {
             var which = keycode[name];
             cases[name] = new KeyEvent(which);
@@ -55,28 +54,33 @@ define(function (require) {
             cases[name] = cases['shift+' + name.toLowerCase()];
         });
 
-        cases[' '] = cases['space'];
-        cases['{'] = cases['shift+openbracket'];
-        cases['\\'] = cases['backslash'];
-        cases['/'] = cases['slash'];
-        cases['|'] = cases['shift+backslash'];
-        cases['='] = cases['equal'];
-        cases['+'] = cases['shift+equal'];
-        cases['<'] = cases['shift+comma'];
-        cases['>'] = cases['shift+period'];
-        cases['_'] = cases['shift+dash'];
-        cases['.'] = cases['period'];
-        cases['('] = cases['shift+9'];
-        cases[')'] = cases['shift+0'];
-        cases['?'] = cases['shift+slash'];
-        cases['.'] = cases['period'];
-
-        for (var name in cases) {
-            icons[name] = $('<th>').html(
-                '<span>' + name.replace(/\b\+\b/g, '</span>+<span>') + '</span>'
-            );
+        var aliases = {
+            ' ': 'space',
+            '{': 'shift+openbracket',
+            '\\': 'backslash',
+            '/': 'slash',
+            '|': 'shift+backslash',
+            '=': 'equal',
+            '+': 'shift+equal',
+            '<': 'shift+comma',
+            '>': 'shift+period',
+            '_': 'shift+dash',
+            '.': 'period',
+            '(': 'shift+9',
+            ')': 'shift+0',
+            '?': 'shift+slash'
         };
+        _.each(aliases, function (actual, alias) {
+            cases[actual] = cases[alias];
+        });
+
+        return cases;
     })();
+
+    var icons = _.map(cases, function (unused, name) {
+        name = name.replace(/\b\+\b/g, '</span>+<span>');
+        return $('<th>').html('<span>' + name + '</span>');
+    });
 
     //--------------------------------------------------------------------------
     // Event Handling
@@ -124,9 +128,9 @@ define(function (require) {
 
     var search = (function () {
         var strings = [];
-        var $input = undefined;
+        var $input;
         var matches = [];
-        var $matches = undefined;
+        var $matches;
         var render = _.identity;
 
         var update = function () {
@@ -172,10 +176,10 @@ define(function (require) {
     })();
 
     var choose = (function () {
-        var $input = undefined;
-        var input = undefined;
-        var isValid = undefined;
-        var valid = undefined;
+        var $input;
+        var input;
+        var isValid;
+        var valid;
 
         var update = function () {
             input = $input.val();

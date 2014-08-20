@@ -206,16 +206,17 @@ define(function (require) {
         };
 
         state.update = function (newline) {
+            var name;
             var id = newline.id;
             assert(id !== undefined, 'expected .id field in updated line');
             var line = lines[id];
             assert(line !== undefined, 'bad id: ' + id);
-            for (var name in line.free) {
+            for (name in line.free) {
                 removeOccurrence(name, id);
             }
             line.code = newline.code;
             line.free = getFreeVariables(line.code);
-            for (var name in line.free) {
+            for (name in line.free) {
                 insertOccurrence(name, id);
             }
             sync.update(line);
@@ -241,7 +242,7 @@ define(function (require) {
                 }
                 var free = getFreeVariables(line.code);
                 assert.equal(line.free, free, 'wrong free variables:');
-                for (var name in free) {
+                for (name in free) {
                     assert(symbols.isGlobal(name), 'name is not global: ' + name);
                     var occurrencesName = occurrences[name];
                     assert(
@@ -362,9 +363,9 @@ define(function (require) {
                         return;
 
                     default:
-                        log('ERROR unknown change type: ' + change.type)
+                        log('ERROR unknown change type: ' + change.type);
                 }
-            })
+            });
             setTimeout(pushChanges, delay);
         };
 

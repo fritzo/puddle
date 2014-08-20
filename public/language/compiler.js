@@ -20,7 +20,7 @@ define(function (require) {
         var parseSymbol = {};
 
         var symbolParser = function (name, arity) {
-            if (arity == 0) {
+            if (arity === 0) {
                 return function (parser) {
                     return name;
                 };
@@ -126,11 +126,11 @@ define(function (require) {
     // Symbols
 
     var symbols = {};
-    var Symbol = function (name, arity, parser) {
+    var newSymbol = function (name, arity, parser) {
         arity = arity || 0;
         parse.declareSymbol(name, arity, parser);
         var symbol;
-        if (arity == 0) {
+        if (arity === 0) {
             symbol = name;
         } else {
             var errorMessage = name + '(...) called with wrong number of arguments';
@@ -145,45 +145,45 @@ define(function (require) {
         return symbol;
     };
 
-    var TOP = Symbol('TOP');
-    var BOT = Symbol('BOT');
-    var I = Symbol('I');
-    var K = Symbol('K');
-    var B = Symbol('B');
-    var C = Symbol('C');
-    var CI = Symbol('CI');
-    var CB = Symbol('CB');
-    var W = Symbol('W');
-    var S = Symbol('S');
-    var Y = Symbol('Y');
-    var U = Symbol('U');
-    var V = Symbol('V');
-    var P = Symbol('P');
-    var A = Symbol('A');
-    var J = Symbol('J');
-    var R = Symbol('R');
-    var QLESS = Symbol('QLESS');
-    var QNLESS = Symbol('QNLESS');
-    var QEQUAL = Symbol('QEQUAL');
-    var HOLE = Symbol('HOLE');
-    var QUOTE = Symbol('QUOTE', 1);
-    var CURSOR = Symbol('CURSOR', 1);
-    var ASSERT = Symbol('ASSERT', 1);
-    var VAR = Symbol('VAR', 1, function (tokens) {
+    var TOP = newSymbol('TOP');
+    var BOT = newSymbol('BOT');
+    var I = newSymbol('I');
+    var K = newSymbol('K');
+    var B = newSymbol('B');
+    var C = newSymbol('C');
+    var CI = newSymbol('CI');
+    var CB = newSymbol('CB');
+    var W = newSymbol('W');
+    var S = newSymbol('S');
+    var Y = newSymbol('Y');
+    var U = newSymbol('U');
+    var V = newSymbol('V');
+    var P = newSymbol('P');
+    var A = newSymbol('A');
+    var J = newSymbol('J');
+    var R = newSymbol('R');
+    var QLESS = newSymbol('QLESS');
+    var QNLESS = newSymbol('QNLESS');
+    var QEQUAL = newSymbol('QEQUAL');
+    var HOLE = newSymbol('HOLE');
+    var QUOTE = newSymbol('QUOTE', 1);
+    var CURSOR = newSymbol('CURSOR', 1);
+    var ASSERT = newSymbol('ASSERT', 1);
+    var VAR = newSymbol('VAR', 1, function (tokens) {
         var name = tokens.pop();
         return ['VAR', name];
     });
-    var APP = Symbol('APP', 2);
-    var COMP = Symbol('COMP', 2);
-    var JOIN = Symbol('JOIN', 2);
-    var RAND = Symbol('RAND', 2);
-    var LAMBDA = Symbol('LAMBDA', 2);
-    var DEFINE = Symbol('DEFINE', 2);
-    var STACK = Symbol('STACK', 2);
-    var LETREC = Symbol('LETREC', 3);
-    var LESS = Symbol('LESS', 2);
-    var NLESS = Symbol('NLESS', 2);
-    var EQUAL = Symbol('EQUAL', 2);
+    var APP = newSymbol('APP', 2);
+    var COMP = newSymbol('COMP', 2);
+    var JOIN = newSymbol('JOIN', 2);
+    var RAND = newSymbol('RAND', 2);
+    var LAMBDA = newSymbol('LAMBDA', 2);
+    var DEFINE = newSymbol('DEFINE', 2);
+    var STACK = newSymbol('STACK', 2);
+    var LETREC = newSymbol('LETREC', 3);
+    var LESS = newSymbol('LESS', 2);
+    var NLESS = newSymbol('NLESS', 2);
+    var EQUAL = newSymbol('EQUAL', 2);
 
     var app = function (term) {
         for (var i = 1; i < arguments.length; ++i) {
@@ -250,7 +250,7 @@ define(function (require) {
                 return t(match.x, stack(match.y, tail));
             },
             x, function (match, tail) {
-                return stack(match.x, tail)
+                return stack(match.x, tail);
             }
         );
         var pop = Array.prototype.pop;
@@ -708,7 +708,7 @@ define(function (require) {
                 var head = handler(match);
                 var tail = decompileTail(match.tail);
                 return fromStack(stack(head, tail));
-            }
+            };
         };
 
         var decompileStack = pattern.match(
@@ -945,7 +945,7 @@ define(function (require) {
             var term = decompile(code);
             term = simplify(term);
             return term;
-        }
+        };
     })();
 
     //--------------------------------------------------------------------------

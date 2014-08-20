@@ -106,7 +106,7 @@ define(function (require) {
 
     var match = function () {
         // check statically
-        assert(arguments.length % 2 == 0, 'bad pattern,handler list');
+        assert(arguments.length % 2 === 0, 'bad pattern,handler list');
         var lineCount = arguments.length / 2;
         var patts = [];
         var handlers = [];

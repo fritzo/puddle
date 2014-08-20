@@ -21,7 +21,7 @@
   },
   "scripts": {
     "lint": "jshint main.js test* lib public --exclude public/vendor",
-    "test": "mocha -R spec test_main.js"
+    "test": "npm run lint && mocha --reporter spec test_main.js"
   },
   "repository": {
     "type": "git",
