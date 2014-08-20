@@ -5,7 +5,7 @@ See the [Introduction](/doc/intro.md) for vocabulary.
 ## Planned Tasks
 
 1.  Improve code quality
-    - Use linter (jslint/closure/...?)
+    - Clean up to pass jshint linting
     - Use build + minification system (gulp/grunt/...?)
     - Use automated documentation system (jsdoc?)
     - Refactor into smaller modules

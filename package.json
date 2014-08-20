@@ -14,11 +14,13 @@
   },
   "devDependencies": {
     "chai": "^1.9.1",
+    "jshint": "^2.5.4",
     "less": "^1.7.4",
     "mocha": "^1.21.4",
     "phantomjs": "^1.9.7-15"
   },
   "scripts": {
+    "lint": "jshint main.js test* lib public --exclude public/vendor",
     "test": "mocha -R spec test_main.js"
   },
   "repository": {

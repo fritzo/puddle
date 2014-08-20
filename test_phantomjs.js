@@ -1,3 +1,4 @@
+/* jshint phantom:true */
 'use strict';
 
 var TEST_COUNT = 28;  // this must be updated every time tests are added
@@ -27,7 +28,8 @@ page.open(ADDRESS, function (status) {
     var validate = function () {
         console.log('checking...');
         var testState = page.evaluate(function () {
-            return window.test && {
+            var test = window.test;
+            return test && {
                 hasRun: test.hasRun(),
                 failCount: test.failCount(),
                 testCount: test.testCount()
@@ -37,8 +39,8 @@ page.open(ADDRESS, function (status) {
         if (testState.hasRun) {
             var failCount = testState.failCount;
             var testCount = testState.testCount;
-            assert(failCount == 0, failCount + ' tests failed');
-            assert(testCount == TEST_COUNT,
+            assert(failCount === 0, failCount + ' tests failed');
+            assert(testCount === TEST_COUNT,
                 'ERROR expected ' + TEST_COUNT + ' tests, actual ' + testCount);
             console.log('Passed');
             phantom.exit();

@@ -1,3 +1,4 @@
+/* jshint node:true */
 'use strict';
 
 var TEST_COUNT = 28;  // this must be updated every time tests are added

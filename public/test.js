@@ -29,10 +29,12 @@ define(function (require) {
     var waitingTests = {};
     var failedTests = [];
 
-    test.testing = function () { return testing; }
-    test.hasRun = function () { return hasRun; }
-    test.testCount = function () { return syncTests.length + asyncTests.length; }
-    test.failCount = function () { return failedTests.length; }
+    test.testing = function () { return testing; };
+    test.hasRun = function () { return hasRun; };
+    test.testCount = function () {
+        return syncTests.length + asyncTests.length;
+    };
+    test.failCount = function () { return failedTests.length; };
 
     var startWaiting = function (callback) {
         var title = callback.title;
