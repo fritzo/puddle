@@ -1,4 +1,4 @@
-define(function(require){
+define(function (require) {
     'use strict';
 
     var _ = require('vendor/underscore');
@@ -6,15 +6,15 @@ define(function(require){
     var test = require('test');
 
     /**
-      * @constructor
-      * @param {string}
-      * @param {(function(?): boolean)=}
-      */
+     * @constructor
+     * @param {string}
+     * @param {(function (?): boolean)=}
+     */
     var Variable = function Variable (name, constraint) {
         this.name = name;
         this.constraint = (constraint !== undefined) ? constraint : null;
     };
-    
+
     Variable.prototype.toString = function () {
         return 'Variable(' + this.name + ')';
     };
@@ -27,7 +27,7 @@ define(function(require){
         return !!(thing && thing.constructor === Variable);
     };
 
-    test('pattern.isVariable', function(){
+    test('pattern.isVariable', function () {
         var examples = [
             [variable('a'), true],
             ['asdf', false],
@@ -35,13 +35,13 @@ define(function(require){
             [[], false],
             [undefined, false]
         ];
-        examples.forEach(function(pair){
+        examples.forEach(function (pair) {
             var thing = pair[0];
             assert(isVariable(thing) === pair[1], 'isVariable failed on ' + thing);
         });
     });
 
-    var isPattern = (function(){
+    var isPattern = (function () {
         var isPattern = function (patt, avoid) {
             if (isVariable(patt)) {
                 if (_.has(avoid, patt.name)) {
@@ -68,7 +68,7 @@ define(function(require){
         };
     })();
 
-    test('pattern.isPattern', function(){
+    test('pattern.isPattern', function () {
         var examples = [
             [variable('a'), true],
             ['asdf', true],
@@ -80,10 +80,12 @@ define(function(require){
         assert.forward(isPattern, examples);
     });
 
-    var unify = function (patt, struct, matched) {
+    var unify = function (patt, struct, matched, allow_backtracking) {
         if (isVariable(patt)) {
             if (patt.constraint === null || patt.constraint(struct)) {
-                //matched = _.extend({}, matched);  // copy to allow backtracking
+                if (allow_backtracking) {
+                    matched = _.extend({}, matched);
+                }
                 matched[patt.name] = struct;
                 return matched;
             }
@@ -111,7 +113,9 @@ define(function(require){
         for (var line = 0; line < lineCount; ++line) {
             var patt = arguments[2 * line];
             var handler = arguments[2 * line + 1];
-            assert(isPattern(patt), 'bad pattern at line ' + line + ':\n  ' + patt);
+            assert(
+                isPattern(patt),
+                'bad pattern at line ' + line + ':\n  ' + patt);
             assert(_.isFunction(handler), 'bad handler at line ' + line);
             patts.push(patt);
             handlers.push(handler);
@@ -134,7 +138,7 @@ define(function(require){
         };
     };
 
-    test('pattern.match', function(){
+    test('pattern.match', function () {
         var x = variable('x');
         var y = variable('y');
         var z = variable('z');

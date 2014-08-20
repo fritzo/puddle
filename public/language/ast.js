@@ -10,7 +10,7 @@
   *   };
   */
 
-define(function(require){
+define(function (require) {
     'use strict';
 
     var _ = require('vendor/underscore');
@@ -36,7 +36,7 @@ define(function(require){
         return dumpSymbol[indexed.name](indexed);
     };
 
-    _.each(compiler.symbols, function(symbol, name){
+    _.each(compiler.symbols, function (symbol, name) {
         if (_.isString(symbol)) {
             loadSymbol[name] = function () {
                 return {
@@ -89,7 +89,7 @@ define(function(require){
         return ['VAR', indexed.varName];
     };
 
-    test('ast.load, ast.dmup', function(){
+    test('ast.load, ast.dmup', function () {
         var examples = [
             'VAR x',
             'QUOTE APP LAMBDA CURSOR VAR x VAR x HOLE',
@@ -149,7 +149,7 @@ define(function(require){
         }
     };
 
-    ast.cursor.replaceBelow = (function(){
+    ast.cursor.replaceBelow = (function () {
         var findCursor = function (term) {
             if (term.name === 'CURSOR') {
                 return term;
@@ -178,7 +178,7 @@ define(function(require){
         };
     })();
 
-    ast.cursor.tryMove = (function(){
+    ast.cursor.tryMove = (function () {
 
         var traverseDownLeft = function (node) {
             while (node.below.length) {
@@ -312,7 +312,7 @@ define(function(require){
         return result;
     };
 
-    ast.getVars = (function(){
+    ast.getVars = (function () {
         var getVarsBelow = function (node, vars) {
             if (node.name === 'VAR') {
                 vars[node.varName] = null;

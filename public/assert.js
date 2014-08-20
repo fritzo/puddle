@@ -1,4 +1,4 @@
-define(function(require){
+define(function (require) {
     'use strict';
 
     var _ = require('vendor/underscore');
@@ -28,7 +28,7 @@ define(function(require){
     };
 
     assert.forward = function (fwd, pairs) {
-        pairs.forEach(function(pair, lineno){
+        pairs.forEach(function (pair, lineno) {
             try {
                 assert.equal(fwd(pair[0]), pair[1]);
             } catch (e) {
@@ -39,7 +39,7 @@ define(function(require){
     };
 
     assert.backward = function (bwd, pairs) {
-        pairs.forEach(function(pair, lineno){
+        pairs.forEach(function (pair, lineno) {
             try {
                 assert.equal(bwd(pair[1]), pair[0]);
             } catch (e) {
@@ -50,7 +50,7 @@ define(function(require){
     };
 
     assert.inverses = function (fwd, bwd, items) {
-        items.forEach(function(item, lineno){
+        items.forEach(function (item, lineno) {
             try {
                 assert.equal(bwd(fwd(item)), item);
             } catch (e) {

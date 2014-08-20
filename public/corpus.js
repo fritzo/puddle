@@ -4,7 +4,7 @@
   * FIXME this is all concurrency-unsafe; client assumes it is the only writer.
   */
 
-define(function(require){
+define(function (require) {
     'use strict';
 
     var ajax = require('vendor/jquery').ajax;
@@ -17,7 +17,7 @@ define(function(require){
     var getFreeVariables = function (code) {
         var free = {};
         var prevToken = null;
-        code.split(/\s+/).forEach(function(token){
+        code.split(/\s+/).forEach(function (token) {
             assert(symbols.isToken(token), 'invalid token: ' + token);
             if (!symbols.isKeyword(token)) {
                 assert(symbols.isGlobal(token), 'invalid global: ' + token);
@@ -27,19 +27,19 @@ define(function(require){
         return free;
     };
 
-    test('no-free-variables', function(){
+    test('no-free-variables', function () {
         var code = 'APP J I';
         var free = {};
         assert.equal(getFreeVariables(code), free);
     });
 
-    test('one-free-variables', function(){
+    test('one-free-variables', function () {
         var code = 'APP CI types.div';
         var free = {'types.div': null};
         assert.equal(getFreeVariables(code), free);
     });
 
-    test('many-free-variables', function(){
+    test('many-free-variables', function () {
         var code = 'APP APP P COMP types.div types.semi types.div';
         var free = {'types.div': null, 'types.semi': null};
         assert.equal(getFreeVariables(code), free);
@@ -57,7 +57,7 @@ define(function(require){
     };
     */
 
-    var state = (function(){
+    var state = (function () {
         var state = {};
 
         // These maps fail with names like 'constructor';
@@ -130,7 +130,7 @@ define(function(require){
             }
         };
 
-        state.ready = (function(){
+        state.ready = (function () {
             var isReady = false;
             var readyQueue = [];
             var ready = function (cb) {
@@ -154,14 +154,14 @@ define(function(require){
             lines = {};
             definitions = {};
             occurrences = {};
-            linesToLoad.forEach(function(line){
+            linesToLoad.forEach(function (line) {
                 var id = line.id;
                 lines[id] = line;
                 if (line.name !== null) {
                     insertDefinition(line.name, id);
                 }
             });
-            linesToLoad.forEach(function(line){
+            linesToLoad.forEach(function (line) {
                 var id = line.id;
                 line.free = getFreeVariables(line.code);
                 for (var name in line.free) {
@@ -176,9 +176,9 @@ define(function(require){
                 type: 'GET',
                 url: 'corpus/lines',
                 cache: false
-            }).fail(function(jqXHR, textStatus){
+            }).fail(function (jqXHR, textStatus) {
                 log('init GET failed: ' + textStatus);
-            }).done(function(data){
+            }).done(function (data) {
                 // FIXME this is not reached in express+zombie unit tests
                 log('init GET succeeded');
                 loadAll(data.data);
@@ -194,10 +194,10 @@ define(function(require){
                 url: 'corpus/line',
                 data: JSON.stringify(line),
                 contentType: 'application/json',
-            }).fail(function(jqXHR, textStatus){
+            }).fail(function (jqXHR, textStatus) {
                 log('insert POST failed: ' + textStatus);
                 fail();
-            }).done(function(data){
+            }).done(function (data) {
                 log('insert POST succeded: ' + data.id);
                 line.id = data.id;
                 insertLine(line);
@@ -253,8 +253,8 @@ define(function(require){
             log('corpus is valid');
         };
 
-        test.async('corpus.validate', function(done){
-            state.ready(function(){
+        test.async('corpus.validate', function (done) {
+            state.ready(function () {
                 state.validate();
                 done();
             });
@@ -312,7 +312,7 @@ define(function(require){
     //--------------------------------------------------------------------------
     // change propagation
 
-    var sync = (function(){
+    var sync = (function () {
         var sync = {};
 
         var changes = {};
@@ -329,7 +329,7 @@ define(function(require){
         var delayFail = 30000;
 
         var pushChanges = function () {
-            _.map(changes, function(change, id) {
+            _.map(changes, function (change, id) {
                 delete changes[id];
                 switch (change.type) {
                     case 'update':
@@ -339,10 +339,10 @@ define(function(require){
                             url: 'corpus/line/' + id,
                             data: JSON.stringify(change.line),
                             contentType: 'application/json',
-                        }).fail(function(jqXHR, textStatus){
+                        }).fail(function (jqXHR, textStatus) {
                             log('putChanges PUT failed: ' + textStatus);
                             setTimeout(pushChanges, delayFail);
-                        }).done(function(){
+                        }).done(function () {
                             log('putChanges PUT succeeded: ' + id);
                             setTimeout(pushChanges, 0);
                         });
@@ -352,10 +352,10 @@ define(function(require){
                         ajax({
                             type: 'DELETE',
                             url: 'corpus/line/' + id,
-                        }).fail(function(jqXHR, textStatus){
+                        }).fail(function (jqXHR, textStatus) {
                             log('putChanges DELETE failed: ' + textStatus);
                             setTimeout(pushChanges, delayFail);
-                        }).done(function(){
+                        }).done(function () {
                             log('putChanges DELETE succeeded: ' + id);
                             setTimeout(pushChanges, 0);
                         });

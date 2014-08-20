@@ -1,3 +1,5 @@
+'use strict';
+
 var debug = require('debug')('puddle:main');
 var assert = require('assert');
 var path = require('path');
@@ -51,12 +53,12 @@ app.get('/corpus/validities', function (req, res) {
     debug('GET validities');
     var lines = corpus.findAll();
     var ids = _.pluck(lines, 'id');
-    var rawLines = _.map(lines, function(line){
+    var rawLines = _.map(lines, function (line) {
         return {'name': line.name, 'code': line.code};
     });
-    analyst.validateCorpus(rawLines, function(validities){
+    analyst.validateCorpus(rawLines, function (validities) {
         assert.equal(validities.length, ids.length);
-        validities = _.map(_.zip(validities, ids), function(pair){
+        validities = _.map(_.zip(validities, ids), function (pair) {
             validity = pair[0];
             validity.id = pair[1];
             return validity;
@@ -66,7 +68,7 @@ app.get('/corpus/validities', function (req, res) {
 });
 
 corpus.load();
-process.on('SIGINT', function() {
+process.on('SIGINT', function () {
     analyst.close();
     corpus.dump();
     process.exit();
@@ -80,13 +82,13 @@ var server = app.listen(PORT, FROM_LOCALHOST);
 var io = socketio(server);
 var userId = 0;
 
-io.on('connection', function(socket){
+io.on('connection', function (socket) {
     var id = userId++;
     console.log('user ' + id + ' connected');
-    socket.on('disconnect', function(){
+    socket.on('disconnect', function () {
         console.log('user ' + id + ' disconnected');
     });
-    socket.on('action', function(message){
+    socket.on('action', function (message) {
         console.log('user ' + id + ' action: ' + message);
         // TODO log to database
     });

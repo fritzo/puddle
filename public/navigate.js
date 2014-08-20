@@ -1,4 +1,4 @@
-define(function(require){
+define(function (require) {
     'use strict';
 
     var _ = require('vendor/underscore');
@@ -43,7 +43,7 @@ define(function(require){
 
     var cases = {};
     var icons = {};
-    (function(){
+    (function () {
         for (var name in keycode) {
             var which = keycode[name];
             cases[name] = new KeyEvent(which);
@@ -122,7 +122,7 @@ define(function(require){
     //--------------------------------------------------------------------------
     // Selection via search
 
-    var search = (function(){
+    var search = (function () {
         var strings = [];
         var $input = undefined;
         var matches = [];
@@ -171,7 +171,7 @@ define(function(require){
         };
     })();
 
-    var choose = (function(){
+    var choose = (function () {
         var $input = undefined;
         var input = undefined;
         var isValid = undefined;

@@ -1,4 +1,4 @@
-define(function(require){
+define(function (require) {
     'use strict';
 
     var $ = require('vendor/jquery');
@@ -8,7 +8,7 @@ define(function(require){
     var editor = require('editor');
 
     var ready = function (cb) {
-        $(function(){
+        $(function () {
             corpus.ready(cb);
         });
     };
@@ -16,7 +16,7 @@ define(function(require){
     var testMain = function () {
         var oldTitle = document.title;
         document.title = 'Test - ' + oldTitle;
-        test.runAll(function(){
+        test.runAll(function () {
             document.title = oldTitle;
             window.location.hash = '';
             editor.main();

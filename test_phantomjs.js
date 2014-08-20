@@ -1,3 +1,5 @@
+'use strict';
+
 var TEST_COUNT = 28;  // this must be updated every time tests are added
 var PORT = 34935;
 var ADDRESS = 'http://localhost:' + PORT + '/#test';
@@ -14,17 +16,17 @@ var assert = function (condition, message) {
 };
 
 console.log('loading page ' + ADDRESS);
-page.open(ADDRESS, function(status){
+page.open(ADDRESS, function (status) {
     assert(status === 'success', 'failed to load page: ' + status);
 
-    page.evaluate(function(){
-        require(['test'], function(test){ window.test = test; });
+    page.evaluate(function () {
+        require(['test'], function (test) { window.test = test; });
     });
 
     var waitCount = 10;
     var validate = function () {
         console.log('checking...');
-        var testState = page.evaluate(function(){
+        var testState = page.evaluate(function () {
             return window.test && {
                 hasRun: test.hasRun(),
                 failCount: test.failCount(),
@@ -44,7 +46,7 @@ page.open(ADDRESS, function(status){
             console.log('waiting...');
             // broken https://github.com/ariya/phantomjs/issues/10832 
             //setTimeout(validate, 1000);
-            setTimeout(function(){ setTimeout(validate, 1000); }, 0);
+            setTimeout(function () { setTimeout(validate, 1000); }, 0);
         } else {
             throw 'Browser timed out';
         }

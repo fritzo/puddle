@@ -2,7 +2,7 @@
   * Syntactic Transforms.
   */
 
-define(function(require){
+define(function (require) {
     'use strict';
 
     var _ = require('vendor/underscore');
@@ -15,7 +15,7 @@ define(function(require){
     //--------------------------------------------------------------------------
     // Parse
 
-    var parse = (function(){
+    var parse = (function () {
 
         var parseSymbol = {};
 
@@ -80,7 +80,7 @@ define(function(require){
     //--------------------------------------------------------------------------
     // Serialize
 
-    var print = (function(){
+    var print = (function () {
         var pushTokens = function (tokens, expr) {
             if (_.isString(expr)) {
                 tokens.push(expr);
@@ -98,7 +98,7 @@ define(function(require){
         };
     })();
 
-    test('ast.parse', function(){
+    test('ast.parse', function () {
         var examples = [
             'VAR x',
             'QUOTE APP LAMBDA CURSOR VAR x VAR x HOLE',
@@ -169,7 +169,7 @@ define(function(require){
     var QUOTE = Symbol('QUOTE', 1);
     var CURSOR = Symbol('CURSOR', 1);
     var ASSERT = Symbol('ASSERT', 1);
-    var VAR = Symbol('VAR', 1, function(tokens){
+    var VAR = Symbol('VAR', 1, function (tokens) {
         var name = tokens.pop();
         return ['VAR', name];
     });
@@ -192,7 +192,7 @@ define(function(require){
         return term;
     };
 
-    test('compiler.app', function(){
+    test('compiler.app', function () {
         assert.equal(
             app('w', 'x', 'y', 'z'),
             APP(APP(APP('w', 'x'), 'y'), 'z'));
@@ -205,12 +205,12 @@ define(function(require){
         return term;
     };
 
-    test('compiler.comp', function(){
+    test('compiler.comp', function () {
         assert.equal(comp('x', 'y'), COMP('x', 'y'));
         assert.equal(comp('x', 'y', 'z'), COMP(COMP('x', 'y'), 'z'));
     });
 
-    var stack = (function(){
+    var stack = (function () {
         var pop = Array.prototype.pop;
         return function () {
             var tail = pop.call(arguments);
@@ -221,7 +221,7 @@ define(function(require){
         };
     })();
 
-    test('compiler.stack', function(){
+    test('compiler.stack', function () {
         assert.equal(
             stack('x', 'y', 'z', []),
             STACK('x', STACK('y', STACK('z', []))));
@@ -241,7 +241,7 @@ define(function(require){
     //--------------------------------------------------------------------------
     // Convert : appTree <-> stack
 
-    var toStack = (function(){
+    var toStack = (function () {
         var x = pattern.variable('x');
         var y = pattern.variable('y');
         var tail = pattern.variable('tail');
@@ -269,7 +269,7 @@ define(function(require){
         };
     })();
 
-    var fromStack = (function(){
+    var fromStack = (function () {
         var x = pattern.variable('x');
         var y = pattern.variable('y');
         var tail = pattern.variable('tail');
@@ -284,7 +284,7 @@ define(function(require){
         return t;
     })();
 
-    test('compiler.toStack, compiler.fromStack', function(){
+    test('compiler.toStack, compiler.fromStack', function () {
         var x = VAR('x');
         var y = VAR('y');
         var z = VAR('z');
@@ -303,7 +303,7 @@ define(function(require){
     //
     // Implements affine-beta-eta-alpha reduction for lambda-letrec terms.
 
-    var fresh = (function(){
+    var fresh = (function () {
         var alphabet = 'abcdefghijklmnopqrstuvwxyz';
         var count = 0;
         var enumerate = function (i) {
@@ -326,7 +326,7 @@ define(function(require){
         return fresh;
     })();
 
-    var normalizeAlpha = (function(){
+    var normalizeAlpha = (function () {
         var x = pattern.variable('x');
         var y = pattern.variable('y');
         var z = pattern.variable('z');
@@ -384,7 +384,7 @@ define(function(require){
         };
     })();
 
-    test('compiler.normalizeAlpha', function(){
+    test('compiler.normalizeAlpha', function () {
         var a = VAR('a');
         var b = VAR('b');
         var c = VAR('c');
@@ -402,7 +402,7 @@ define(function(require){
         assert.forward(normalizeAlpha, examples);
     });
 
-    var substitute = (function(){
+    var substitute = (function () {
         var string = pattern.variable('string');
         var array = pattern.variable('array', _.isArray);
 
@@ -428,7 +428,7 @@ define(function(require){
         };
     })();
 
-    test('compiler.substitute', function(){
+    test('compiler.substitute', function () {
         var x = VAR('x');
         var y = VAR('y');
         var z = VAR('z');
@@ -444,7 +444,7 @@ define(function(require){
         assert.forward(fun, examples);
     });
 
-    var simplifyLetrec = (function(){
+    var simplifyLetrec = (function () {
         var x = pattern.variable('x');
         var y = pattern.variable('y');
         var name = pattern.variable('name');
@@ -492,7 +492,7 @@ define(function(require){
         };
     })();
 
-    var countOccurrences = (function(){
+    var countOccurrences = (function () {
         var string = pattern.variable('string');
         var array = pattern.variable('array', _.isArray);
 
@@ -518,7 +518,7 @@ define(function(require){
         };
     })();
 
-    test('compiler.countOccurrences', function(){
+    test('compiler.countOccurrences', function () {
         var x = VAR('x');
         var y = VAR('y');
         var fun = function (args) {
@@ -535,7 +535,7 @@ define(function(require){
         assert.forward(fun, examples);
     });
 
-    var normalizeAffineBetaEta = (function(){
+    var normalizeAffineBetaEta = (function () {
         var x = pattern.variable('x');
         var y = pattern.variable('y');
         var z = pattern.variable('z');
@@ -618,7 +618,7 @@ define(function(require){
         return normalize;
     })();
 
-    test('compiler.normalizeAffineBetaEta', function(){
+    test('compiler.normalizeAffineBetaEta', function () {
         var x = VAR('x');
         var y = VAR('y');
         var z = VAR('z');
@@ -654,7 +654,7 @@ define(function(require){
     //--------------------------------------------------------------------------
     // Convert : simple appTree -> lambda
 
-    var lambdaSymbols = (function(){
+    var lambdaSymbols = (function () {
         var subset = [
             'HOLE', 'TOP', 'BOT',
             'I', //'K', 'B', 'C', 'W', 'S', 'Y', 'U', 'V', 'P', 'A', 'J', 'R',
@@ -663,13 +663,13 @@ define(function(require){
             'ASSERT', 'DEFINE', 'CURSOR',
         ];
         var lambdaSymbols = {};
-        subset.forEach(function(name){
+        subset.forEach(function (name) {
             lambdaSymbols[name] = symbols[name];
         });
         return lambdaSymbols;
     })();
 
-    var decompile = (function(){
+    var decompile = (function () {
 
         var x = pattern.variable('x');
         var y = pattern.variable('y');
@@ -951,7 +951,7 @@ define(function(require){
     //--------------------------------------------------------------------------
     // Abstract : varName -> simple appTree -> simple appTree
 
-    var tryAbstract = (function(){
+    var tryAbstract = (function () {
         var x = pattern.variable('x');
         var y = pattern.variable('y');
         var name = pattern.variable('name');
@@ -1161,7 +1161,7 @@ define(function(require){
         assert.forward(letrecA, examples);
     });
 
-    var compile = (function(){
+    var compile = (function () {
         var x = pattern.variable('x');
         var y = pattern.variable('y');
         var z = pattern.variable('z');
@@ -1195,7 +1195,7 @@ define(function(require){
         return t;
     })();
 
-    test('compiler.decompile, compiler.compile', function(){
+    test('compiler.decompile, compiler.compile', function () {
         var a = VAR('a');
         var b = VAR('b');
         var c = VAR('c');
@@ -1246,7 +1246,7 @@ define(function(require){
         assert.backward(compile, examples);
     });
 
-    test('compiler.decompile', function(){
+    test('compiler.decompile', function () {
         // compile would fail these because they involve pattern matching
         var a = VAR('a');
         var b = VAR('b');
@@ -1294,17 +1294,17 @@ define(function(require){
     //
     // see http://www.fileformat.info/info/unicode/category/Sm/list.htm
 
-    var render = (function(){
+    var render = (function () {
 
         var template = function (string) {
             return function () {
                 var args = arguments;
-                return string.replace(/{(\d+)}/g, function(match, pos) { 
+                return string.replace(/{(\d+)}/g, function (match, pos) { 
                     return args[pos];
                 });
             };
         };
-        test('compiler.render.template', function(){
+        test('compiler.render.template', function () {
             var t = template('test {0} test {1} test {0} test');
             assert.equal(t('a', 'b'), 'test a test b test a test');
         });

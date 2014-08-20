@@ -1,4 +1,4 @@
-define(function(require){
+define(function (require) {
     'use strict';
 
     var _ = require('vendor/underscore');
@@ -18,7 +18,7 @@ define(function(require){
     symbols.isLocal = matcher(/^[a-z][a-z0-9]*$/);
     symbols.isGlobal = matcher(/^[^\d\W]\w*(\.[^\d\W]\w*)+$/);
 
-    test('symbols.isToken', function(){
+    test('symbols.isToken', function () {
         var examples = [
             ['()', false],
             ['', false],
@@ -32,7 +32,7 @@ define(function(require){
         assert.forward(symbols.isToken, examples);
     });
 
-    test('symbols.isKeyword', function(){
+    test('symbols.isKeyword', function () {
         var examples = [
             ['asdf', false],
             ['ASDF', true],
@@ -42,13 +42,13 @@ define(function(require){
         ];
         assert.forward(symbols.isKeyword, examples);
 
-        examples.forEach(function(pair){
+        examples.forEach(function (pair) {
             pair[1] = true;
         });
         assert.forward(symbols.isToken, examples);
     });
 
-    test('symbols.isLocal', function(){
+    test('symbols.isLocal', function () {
         var examples = [
             ['asdf', true],
             ['ASDF', false],
@@ -58,13 +58,13 @@ define(function(require){
         ];
         assert.forward(symbols.isLocal, examples);
 
-        examples.forEach(function(pair){
+        examples.forEach(function (pair) {
             pair[1] = true;
         });
         assert.forward(symbols.isToken, examples);
     });
 
-    test('symbols.isGlobal', function(){
+    test('symbols.isGlobal', function () {
         var examples = [
             ['asdf', false],
             ['ASDF', false],
@@ -75,7 +75,7 @@ define(function(require){
         ];
         assert.forward(symbols.isGlobal, examples);
 
-        examples.forEach(function(pair){
+        examples.forEach(function (pair) {
             pair[1] = true;
         });
         assert.forward(symbols.isToken, examples);

@@ -1,3 +1,5 @@
+'use strict';
+
 var TEST_COUNT = 28;  // this must be updated every time tests are added
 var PORT = 34935;
 var ADDRESS = 'http://localhost:' + PORT + '/#test';
@@ -7,7 +9,7 @@ var mocha = require('mocha');
 var fork = require('child_process').fork;
 var spawn = require('child_process').spawn;
 
-var server = (function(){
+var server = (function () {
     var server;
     var queue = [];
 
@@ -22,27 +24,27 @@ var server = (function(){
                 process.exit(code);
             }
         });
-        server.stderr.on('data', function(data){
+        server.stderr.on('data', function (data) {
             console.error('server: ' + data);
         });
-        server.stdout.on('data', function(data){
+        server.stdout.on('data', function (data) {
             console.log('server: ' + data);
             if (queue !== undefined) {
-                queue.forEach(function(cb){ cb(); });
+                queue.forEach(function (cb) { cb(); });
                 queue = undefined;
             }
         });
     };
 
     var stop = function () {
-        server.on('close', function(code){
+        server.on('close', function (code) {
             console.log('server exited with code ' + code);
         });
         server.kill('SIGINT');
         server = undefined;
     };
 
-    var ready = function(cb){
+    var ready = function (cb) {
         if (queue === undefined) {
             cb();
         } else {
@@ -64,10 +66,10 @@ mocha.after(server.stop);
 // but none of .fail, .done, or .always are called. This is observed
 // in the first GET lines when the corpus is loaded.
 if (process.env.PUDDLE_TEST_ZOMBIE !== undefined) {
-    test('in zombie browser', function(done){
+    test('in zombie browser', function (done) {
         this.timeout(0);
 
-        require('zombie').visit(ADDRESS, function(e, browser){
+        require('zombie').visit(ADDRESS, function (e, browser) {
             var waitCount = 10;
 
             var validate = function () {
@@ -93,17 +95,17 @@ if (process.env.PUDDLE_TEST_ZOMBIE !== undefined) {
     });
 }
 
-test('in phantomjs browser', function(done){
+test('in phantomjs browser', function (done) {
     this.timeout(10000);
-    server.ready(function(){
+    server.ready(function () {
         var phantomjs = require('phantomjs');
         var args = ['--debug=true', 'test_phantomjs.js'];
         console.log('spawning ' + phantomjs.path + ' ' + args.join(' '));
         var child = spawn(phantomjs.path, args);
-        child.stdout.on('data', function(data){
+        child.stdout.on('data', function (data) {
             console.log('phantomjs: ' + data);
         });
-        child.stderr.on('data', function(data){
+        child.stderr.on('data', function (data) {
             console.error('phantomjs: ' + data);
         });
         child.on('close', function (code) {

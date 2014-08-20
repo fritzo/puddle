@@ -2,7 +2,7 @@
   * Unit testing.
   */
 
-define(function(require){
+define(function (require) {
     'use strict';
 
     var _ = require('vendor/underscore');
@@ -51,7 +51,7 @@ define(function(require){
     };
 
     var doneAll = function () {
-        doneAll = function(){};
+        doneAll = function () {};
 
         for (var title in waitingTests) {
             log('Failed ' + title);
@@ -69,7 +69,7 @@ define(function(require){
         log.popListener();
 
         // call all failed tests to get stack traces
-        failedTests.forEach(function(failedTest){
+        failedTests.forEach(function (failedTest) {
             setTimeout(failedTest, 0);
         });
     };
@@ -85,7 +85,7 @@ define(function(require){
         syncTests.forEach(startWaiting);
         asyncTests.forEach(startWaiting);
 
-        syncTests.forEach(function(callback){
+        syncTests.forEach(function (callback) {
             try {
                 callback();
                 done(callback);
@@ -97,10 +97,10 @@ define(function(require){
 
         log('[ Starting ' + asyncTests.length + ' async tests ]');
         var delay = 0;
-        asyncTests.forEach(function(callback){
+        asyncTests.forEach(function (callback) {
             delay += callback.delay;
             try {
-                callback(function(){
+                callback(function () {
                     done(callback);
                 });
             }
@@ -108,7 +108,7 @@ define(function(require){
                 log('FAILED ' + callback.title + '\n  ' + err);
             }
         });
-        setTimeout(function(){ doneAll(); }, delay);
+        setTimeout(function () { doneAll(); }, delay);
     };
 
     var $log;
@@ -155,7 +155,7 @@ define(function(require){
                     'z-index': '98'
                 })
                 .attr({title:'click to exit test results'})
-                .click(function(){
+                .click(function () {
                     $log.remove();
                     $shadow.remove();
                     testing = false;

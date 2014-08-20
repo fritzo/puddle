@@ -1,4 +1,4 @@
-define(function(require){
+define(function (require) {
     'use strict';
 
     var _ = require('vendor/underscore');
@@ -30,7 +30,7 @@ define(function(require){
         ids = [];
         asts = {};
         validities = {};
-        corpus.findAllLines().forEach(function(id){
+        corpus.findAllLines().forEach(function (id) {
             ids.push(id);
             var line = corpus.findLine(id);
             var lambda = compiler.loadLine(line);
@@ -137,7 +137,7 @@ define(function(require){
         asts[id] = root;
         var lineIsDefinition = (line.name !== null);
         if (lineIsDefinition) {
-              ids.forEach(function(id){
+              ids.forEach(function (id) {
                   validities[id] = _.clone(UNKNOWN);
               });
         } else {
@@ -160,7 +160,7 @@ define(function(require){
         lineChanged = false;
     };
 
-    var pollValidities = (function(){
+    var pollValidities = (function () {
 
         var delay = 500;
         var delayFail = 15000;
@@ -173,13 +173,13 @@ define(function(require){
                 type: 'GET',
                 url: 'corpus/validities',
                 cache: false
-            }).fail(function(jqXHR, textStatus){
+            }).fail(function (jqXHR, textStatus) {
                 log('pollValidities GET failed: ' + textStatus);
                 polling = true;
                 setTimeout(poll, delayFail);
-            }).done(function(data){
+            }).done(function (data) {
                 log('pollValidities GET succeeded');
-                data.data.forEach(function(validity){
+                data.data.forEach(function (validity) {
                     var id = validity.id;
                     delete validity.id;
                     var oldValidity = validities[id];
@@ -228,7 +228,7 @@ define(function(require){
     //--------------------------------------------------------------------------
     // Rendering
 
-    var renderValidity = (function(){
+    var renderValidity = (function () {
         var shapes = {
             'square': '0,12 12,12 12,0 0,0',
             'nabla': '0,0 12,0 6,12',
@@ -265,7 +265,7 @@ define(function(require){
         var validity = validities[id];
         var html = renderValidity(validity) + compiler.render(lambda);
         $lines[id]
-            .on('click', function(){
+            .on('click', function () {
                 var newPos = _.indexOf(ids, id);
                 var delta = newPos - cursorPos;
                 moveCursorLine(delta);
@@ -276,7 +276,7 @@ define(function(require){
     var renderAllLines = function () {
         $lines = {};
         var div = $('#code').empty()[0];
-        corpus.findAllLines().forEach(function(id){
+        corpus.findAllLines().forEach(function (id) {
             $lines[id] = $('<pre>').attr('id', 'line' + id).appendTo(div);
             renderLine(id);
         });
@@ -342,7 +342,7 @@ define(function(require){
     //--------------------------------------------------------------------------
     // Navigation
 
-    var takeBearings = (function(){
+    var takeBearings = (function () {
 
         var HOLE = compiler.symbols.HOLE;
         var TOP = compiler.symbols.TOP;
@@ -462,7 +462,7 @@ define(function(require){
                 // TODO filter globals and locals by future validity
                 navigate.on('/', searchGlobals, render(VAR('global.variable')));
                 var locals = ast.getBoundAbove(term);
-                locals.forEach(function(varName){
+                locals.forEach(function (varName) {
                     on(varName, VAR(varName));
                     // TODO deal with >26 variables
                 });

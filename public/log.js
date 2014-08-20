@@ -1,4 +1,4 @@
-define(function(){
+define(function () {
 
     var log;
 
@@ -6,19 +6,19 @@ define(function(){
 
         if (window.console && window.console.log) {
             log = function (message) {
-                listeners.forEach(function(cb){ cb(message); });
+                listeners.forEach(function (cb) { cb(message); });
                 console.log(message);
             };
         } else {
             log = function (message) {
-                listeners.forEach(function(cb){ cb(message); });
+                listeners.forEach(function (cb) { cb(message); });
             }; // ignore
         }
 
     } else { // in a web worker
 
         log = function (message) {
-            listeners.forEach(function(cb){ cb(message); });
+            listeners.forEach(function (cb) { cb(message); });
             self.postMessage({'type':'log', 'data':message});
         };
     }
