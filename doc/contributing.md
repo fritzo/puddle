@@ -6,6 +6,7 @@ See the [Introduction](/doc/intro.md) for vocabulary.
 
 1.  Improve code quality
     - Clean up to pass jshint linting
+    - Add test coverage report (coveralls + istanbul?)
     - Use build + minification system (gulp/grunt/...?)
     - Use automated documentation system (jsdoc?)
     - Refactor into smaller modules
@@ -16,12 +17,17 @@ See the [Introduction](/doc/intro.md) for vocabulary.
     - Support operations on `neighborhoods`
     - Support custom corpus.dump for testing
     - Factor rendering code out of compiler
+    - Settle on user action data format
 
 4.  Implement new features (ordered by priority)
     -   (Fritz) Support action filtering.
         Actions that would result in invalid corpus states are removed from
         the neighborhood.
     -   (?) Add automated browser tests by generating random action sequences
+    -   (Yan) Log user actions to database.
+    -   (Yan) Get gulp to push code updates to browser if possible.
+        Currently `nodemon main.js` still requires a manual page refresh.
+        Development would be easier if browser auto-reloaded.
     -   (Yan) Support switching between views:
         - text corpus (as currently exists)
         - text navigator (as currently exists)
