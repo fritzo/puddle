@@ -1,5 +1,7 @@
 # Contributing to Pomagma
 
+See the [Introduction](/doc/intro.md) for vocabulary.
+
 ## Planned Tasks
 
 1.  Improve code quality
@@ -15,7 +17,7 @@
     - Support custom corpus.dump for testing
     - Factor rendering code out of compiler
 
-4.  Implement new features
+4.  Implement new features (ordered by priority)
     -   (Fritz) Support action filtering.
         Actions that would result in invalid corpus states are removed from
         the neighborhood.
@@ -24,7 +26,10 @@
         - text corpus (as currently exists)
         - text navigator (as currently exists)
         - d3 corpus
-    -   (Yan) Support mouse/touch - based input
+    -   (Yan) Support mouse/touch - based input.
+        The navigator is currently clickable, but this is a hack.
+        -   Support mouse-based subterm selection.
+    -   (Yan) Implement d3/graphical view of corpus
     -   (Yan) Support multiple clients per user (single user)
     -   (Yan) Support multiple users via github authentication
     -   (Fritz) Support zero/multiple pomagma servers

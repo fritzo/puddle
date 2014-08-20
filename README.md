@@ -44,6 +44,7 @@ navigate to http://localhost:34934#test
 
 ## Documentation
 
+- [Introduction](/doc/intro.md)
 - [API Reference](/doc/reference.md)
 - [Contributing](/doc/contributing.md)
 
