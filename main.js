@@ -80,6 +80,18 @@ process.on('SIGINT', function () {
 // TODO allow authentication via github
 var FROM_LOCALHOST = '127.0.0.1';
 var PORT = process.env.PUDDLE_PORT || 34934;
+process.on('uncaughtException', function (err) {
+    if (err.errno === 'EADDRINUSE') {
+        console.log(
+            'ERROR port ' + PORT + ' is already in use.\n' +
+            '    Stop existing puddle server or try another port, e.g.\n' +
+            '    PUDDLE_PORT=' + (PORT + 10) + ' nodejs main.js'
+        );
+    } else {
+        console.log('Uncaught exception: ' + err);
+    }
+    process.exit(1);
+});
 console.log('serving puddle at http://localhost:' + PORT);
 var server = app.listen(PORT, FROM_LOCALHOST);
 var io = socketio(server);
