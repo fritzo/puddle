@@ -1,11 +1,5 @@
 # Using puddle
 
-## Connecting to a Remove Pomagma Server
-
-Set the `POMAGMA_ADDRESS` environment variable to, e,g., the public server
-
-    POMAGMA_ADDRESS=tcp://pomagma.dyndns.org:34936 nodemon main.js
-
 ## Debugging Puddle
 
 During development, run the server through nodemon:

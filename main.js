@@ -10,7 +10,10 @@ var corpus = require('./lib/corpus');
 var pomagma = require('pomagma');
 var socketio = require('socket.io');
 
-var analyst = pomagma.analyst.connect();
+var analyst = pomagma.analyst.connect(
+    process.env.POMAGMA_ANALYST_ADDRESS ||
+    'tcp://pomagma.org:34936');
+
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/', express.static(path.join(__dirname, 'public'))); // HACK for index

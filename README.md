@@ -5,6 +5,8 @@ Puddle is a reactive coding environment backed by the
 
 ## Installing
 
+Install node.js and npm. Then
+
     git clone https://github.com/fritzo/puddle
     cd puddle
     npm update
@@ -12,19 +14,27 @@ Puddle is a reactive coding environment backed by the
 
 ## Quick Start
 
-To run a Pomagam+Puddle system locally:
+To run a local Puddle server using the public Pomagma server:
 
-1.  Install [Pomagma](https://github.com/fritzo/pomagma) and Puddle
+1.  Install Puddle
 
-2.  Start a Pomagma server
-
-        python -m pomagma analyze   # Ctrl-C to stop
-
-3.  In another terminal start a Puddle server
+3.  Start a Puddle server
 
         nodejs main.js              # Ctrl-C to stop
 
 4.  In a browser, navigate to http://localhost:34934
+
+To optionally run a local Pomagma server
+
+5.  Install [Pomagma](https://github.com/fritzo/pomagma)
+
+6.  Start a Pomagma analyst server
+
+        python -m pomagma analyze   # Ctrl-C to stop
+
+7.  Restart puddle pointing to the local server
+
+        POMAGMA_ANALYST_ADDRESS=tcp://localhost:34936 nodejs main.js
 
 ## Documentation
 
