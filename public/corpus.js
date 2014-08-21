@@ -16,7 +16,6 @@ define(function (require) {
 
     var getFreeVariables = function (code) {
         var free = {};
-        var prevToken = null;
         code.split(/\s+/).forEach(function (token) {
             assert(symbols.isToken(token), 'invalid token: ' + token);
             if (!symbols.isKeyword(token)) {
@@ -53,7 +52,7 @@ define(function (require) {
         'id': 'asfgvg1tr457et46979yujkm',
         'name': 'div',      // or null for anonymous lines
         'code': 'APP V K',  // compiled code
-        'free': {}          // set of free variables in this line : string -> null
+        'free': {}          // set of free variables in line : string -> null
     };
     */
 
@@ -76,11 +75,6 @@ define(function (require) {
             assert(occurrences[name] === undefined);
             definitions[name] = id;
             occurrences[name] = {};
-        };
-
-        var updateDefinition = function (name, id) {
-            assert(definitions[name] !== undefined);
-            definitions[name] = id;
         };
 
         var insertOccurrence = function (name, id) {
@@ -176,9 +170,11 @@ define(function (require) {
                 type: 'GET',
                 url: 'corpus/lines',
                 cache: false
-            }).fail(function (jqXHR, textStatus) {
+            })
+            .fail(function (jqXHR, textStatus) {
                 log('init GET failed: ' + textStatus);
-            }).done(function (data) {
+            })
+            .done(function (data) {
                 // FIXME this is not reached in express+zombie unit tests
                 log('init GET succeeded');
                 loadAll(data.data);
@@ -194,10 +190,12 @@ define(function (require) {
                 url: 'corpus/line',
                 data: JSON.stringify(line),
                 contentType: 'application/json',
-            }).fail(function (jqXHR, textStatus) {
+            })
+            .fail(function (jqXHR, textStatus) {
                 log('insert POST failed: ' + textStatus);
                 fail();
-            }).done(function (data) {
+            })
+            .done(function (data) {
                 log('insert POST succeded: ' + data.id);
                 line.id = data.id;
                 insertLine(line);
@@ -236,19 +234,29 @@ define(function (require) {
                 var line = lines[id];
                 var name = line.name;
                 if (name !== null) {
-                    assert(symbols.isGlobal(name), 'name is not global: ' + name);
-                    assert(!symbols.isKeyword(name), 'name is keyword: ' + name);
-                    assert(definitions[name] === line.id, 'missing definition: ' + name);
+                    assert(
+                        symbols.isGlobal(name),
+                        'name is not global: ' + name);
+                    assert(
+                        !symbols.isKeyword(name),
+                        'name is keyword: ' + name);
+                    assert(
+                        definitions[name] === line.id,
+                        'missing definition: ' + name);
                 }
                 var free = getFreeVariables(line.code);
                 assert.equal(line.free, free, 'wrong free variables:');
                 for (name in free) {
-                    assert(symbols.isGlobal(name), 'name is not global: ' + name);
+                    assert(
+                        symbols.isGlobal(name),
+                        'name is not global: ' + name);
                     var occurrencesName = occurrences[name];
                     assert(
                         occurrencesName !== undefined,
                         'missing occurrences: ' + name);
-                    assert(occurrencesName[id] === null, 'missing occurrence: ' + name);
+                    assert(
+                        occurrencesName[id] === null,
+                        'missing occurrence: ' + name);
                 }
             }
             log('corpus is valid');
@@ -304,7 +312,7 @@ define(function (require) {
             return !_.isEmpty(occurrences[name]);
         };
 
-        state.DEBUG_lines = lines;
+        state.DEBUG_LINES = lines;
 
         init();
         return state;
@@ -340,10 +348,12 @@ define(function (require) {
                             url: 'corpus/line/' + id,
                             data: JSON.stringify(change.line),
                             contentType: 'application/json',
-                        }).fail(function (jqXHR, textStatus) {
+                        })
+                        .fail(function (jqXHR, textStatus) {
                             log('putChanges PUT failed: ' + textStatus);
                             setTimeout(pushChanges, delayFail);
-                        }).done(function () {
+                        })
+                        .done(function () {
                             log('putChanges PUT succeeded: ' + id);
                             setTimeout(pushChanges, 0);
                         });
@@ -353,10 +363,12 @@ define(function (require) {
                         ajax({
                             type: 'DELETE',
                             url: 'corpus/line/' + id,
-                        }).fail(function (jqXHR, textStatus) {
+                        })
+                        .fail(function (jqXHR, textStatus) {
                             log('putChanges DELETE failed: ' + textStatus);
                             setTimeout(pushChanges, delayFail);
-                        }).done(function () {
+                        })
+                        .done(function () {
                             log('putChanges DELETE succeeded: ' + id);
                             setTimeout(pushChanges, 0);
                         });

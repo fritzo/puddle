@@ -128,7 +128,8 @@ define(function (require) {
                 'background-color': 'white',
                 'border': 'solid 8px white',
                 'font-size': '10pt',
-                'font-family': '"Courier New",Courier,"Nimbus Mono L",fixed,monospace',
+                'font-family':
+                    '"Courier New",Courier,"Nimbus Mono L",fixed,monospace',
                 'z-index': '99'
             })
             .appendTo(document.body);

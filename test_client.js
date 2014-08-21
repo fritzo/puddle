@@ -1,9 +1,7 @@
 /* jshint node:true */
 'use strict';
 
-var TEST_COUNT = 28;  // this must be updated every time tests are added
 var PORT = 34935;
-var ADDRESS = 'http://localhost:' + PORT + '/#test';
 var test = require('./lib/test').suite('client');
 var assert = require('assert');
 var mocha = require('mocha');

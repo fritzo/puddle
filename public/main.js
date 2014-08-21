@@ -2,7 +2,6 @@ define(function (require) {
     'use strict';
 
     var $ = require('vendor/jquery');
-    var log = require('log');
     var test = require('test');
     var corpus = require('corpus');
     var editor = require('editor');

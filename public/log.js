@@ -1,4 +1,6 @@
+/* jshint strict: false */
 define(function () {
+    //'use strict';
 
     var log;
 

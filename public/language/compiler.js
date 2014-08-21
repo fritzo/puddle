@@ -1,6 +1,4 @@
-/**
-  * Syntactic Transforms.
-  */
+/* jshint unused: false */
 
 define(function (require) {
     'use strict';
@@ -60,7 +58,9 @@ define(function (require) {
         };
 
         parse.declareSymbol = function (name, arity, parser) {
-            assert(parseSymbol[name] === undefined, 'duplicate symbol: ' + name);
+            assert(
+                parseSymbol[name] === undefined,
+                'duplicate symbol: ' + name);
             parseSymbol[name] = parser || symbolParser(name, arity);
         };
 
@@ -133,7 +133,8 @@ define(function (require) {
         if (arity === 0) {
             symbol = name;
         } else {
-            var errorMessage = name + '(...) called with wrong number of arguments';
+            var errorMessage = name +
+                '(...) called with wrong number of arguments';
             symbol = function () {
                 assert.equal(arguments.length, arity, errorMessage);
                 return [name].concat(_.toArray(arguments));
@@ -410,7 +411,8 @@ define(function (require) {
             VAR(string), function (match, varName, def) {
                 return match.string === varName ? def : VAR(match.string);
             },
-            // TODO take care with binders, or ensure variables are globally unique
+            // TODO take care with binders,
+            // or ensure variables are globally unique
             array, function (match, varName, def) {
                 var array = [].concat(match.array);
                 for (var i = 1; i < array.length; ++i) {
@@ -691,7 +693,8 @@ define(function (require) {
                     match[name] = v;
                     return LAMBDA(v, handler(match));
                 } else {
-                    match[name] = decompile(tail[1]);  // FIXME incorrect decompile call
+                    match[name] = decompile(tail[1]);  // FIXME,
+                    // incorrect decompile call
                     match.tail = tail[2];
                     return handler(match);
                 }
@@ -775,7 +778,8 @@ define(function (require) {
                 return LAMBDA(z, xyz);
             },
             stack(B, x, y, z, tail), function (match) {
-                return decompileStack(toStack(match.x, app(match.y, match.z), match.tail));
+                return decompileStack(
+                    toStack(match.x, app(match.y, match.z), match.tail));
             },
             stack(C, []), function () {
                 var x = fresh();
@@ -795,7 +799,8 @@ define(function (require) {
                 return LAMBDA(z, xzy);
             },
             stack(C, x, y, z, tail), function (match) {
-                return decompileStack(toStack(match.x, match.z, match.y, match.tail));
+                return decompileStack(
+                    toStack(match.x, match.z, match.y, match.tail));
             },
             stack(W, []), function () {
                 var x = fresh();
@@ -1332,7 +1337,8 @@ define(function (require) {
             ASSERT: template('<span class=keyword>Assert</span> {0}.'),
             CURSOR: template('<span class=cursor>{0}</span>'),
             atom: template('({0})'),
-            error: template('<span class=error>compiler.render error: {0}</span>'),
+            error: template(
+                    '<span class=error>compiler.render error: {0}</span>'),
             dot: '<b>.</b>'
         };
 

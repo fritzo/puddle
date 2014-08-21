@@ -15,7 +15,6 @@ define(function (require) {
 
     var _ = require('vendor/underscore');
     var assert = require('assert');
-    var log = require('log');
     var test = require('test');
     var compiler = require('language/compiler');
 
@@ -220,12 +219,6 @@ define(function (require) {
                 above = node.above;
             }
             return traverseDownLeft(node);
-        };
-
-        var insertBelowLeft = function (cursor, start) {
-            while (start.above !== null) {
-                start = start.above;
-            }
         };
 
         var tryMoveLeft = function (cursor) {

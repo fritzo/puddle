@@ -1,3 +1,4 @@
+/* jshint camelcase: false */
 define(function (require) {
     'use strict';
 
@@ -51,12 +52,6 @@ define(function (require) {
         cursor = ast.cursor.replaceBelow(cursor, newTerm);
         lineChanged = true;
         renderLine();
-    };
-
-    var replaceAbove = function (newLambda, subsForDash) {
-        var notRoot = ast.cursor.tryMove('U');
-        assert(notRoot, 'cannot replace above root');
-        replaceBelow(newLambda, subsForDash);
     };
 
     var insertAssert = function (done, fail) {
@@ -187,9 +182,11 @@ define(function (require) {
                     var id = validity.id;
                     delete validity.id;
                     var oldValidity = validities[id];
-                    if (oldValidity !== undefined && !_.isEqual(oldValidity, validity)) {
-                        validities[id] = validity;
-                        renderLine(id);
+                    if (oldValidity !== undefined) {
+                        if (!_.isEqual(oldValidity, validity)) {
+                            validities[id] = validity;
+                            renderLine(id);
+                        }
                     }
                 });
                 for (var id in validities) {
@@ -239,8 +236,10 @@ define(function (require) {
             'delta': '0,12 12,12 6,0'
         };
         var svg = function (color, shape) {
-            return '<span class=validity><svg width=12 height=12><polygon points="' +
-                shapes[shape] + '" fill="' + color + '" /></svg></span>';
+            return '<span class=validity><svg width=12 height=12>' +
+                '<polygon points="' +
+                shapes[shape] + '" fill="' + color + '" />' +
+                '</svg></span>';
         };
         var table = {
             'false-false-false': svg('black', 'square'),
@@ -280,13 +279,15 @@ define(function (require) {
     var renderAllLines = function () {
         $lines = {};
         var div = $('#code').empty()[0];
-        corpus.findAllLines().forEach(function (id) {
+        var lines = corpus.findAllLines();
+        lines = sortLines(lines);
+        lines.forEach(function (id) {
             $lines[id] = $('<pre>').attr('id', 'line' + id).appendTo(div);
             renderLine(id);
         });
     };
 
-    var sortLines = function (lineSet) {
+    var sortLines = function (lines) {
         /*
         Return a heuristically sorted list of definitions.
 
@@ -297,9 +298,7 @@ define(function (require) {
             -Demetrescu and Finocchi
             http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.1.9435
         */
-        lineArray = [];
-        _.each(lineSet, lineArray.push);
-        return lineArray;
+        return lines;
     };
 
     //--------------------------------------------------------------------------

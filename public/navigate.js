@@ -1,3 +1,4 @@
+/* jshint unused: false */
 define(function (require) {
     'use strict';
 
@@ -6,7 +7,6 @@ define(function (require) {
     var io = require('socket.io');
     var assert = require('assert');
     var log = require('log');
-    var test = require('test');
     var keycode = require('keycode');
 
     var socket = io();

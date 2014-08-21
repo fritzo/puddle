@@ -1,3 +1,4 @@
+/* jshint unused: false */
 define(function (require) {
     'use strict';
 
@@ -80,10 +81,10 @@ define(function (require) {
         assert.forward(isPattern, examples);
     });
 
-    var unify = function (patt, struct, matched, allow_backtracking) {
+    var unify = function (patt, struct, matched, allowBacktracking) {
         if (isVariable(patt)) {
             if (patt.constraint === null || patt.constraint(struct)) {
-                if (allow_backtracking) {
+                if (allowBacktracking) {
                     matched = _.extend({}, matched);
                 }
                 matched[patt.name] = struct;
