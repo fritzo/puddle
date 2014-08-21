@@ -4,6 +4,8 @@ See the [Introduction](/doc/intro.md) for vocabulary.
 
 ## Planned Tasks
 
+0. Switch to [asana](https://app.asana.com/0/15654386884203) for task planning.
+
 1. Improve code quality
     - [x] (Fritz) Clean up to pass jshint linting
     - [ ] (?) Add test coverage report (coveralls + istanbul?)
