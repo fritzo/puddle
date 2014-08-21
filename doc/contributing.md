@@ -4,7 +4,7 @@ See the [Introduction](/doc/intro.md) for vocabulary.
 
 ## Planned Tasks
 
-1.  Improve code quality
+- Improve code quality
     - [x] (Fritz) Clean up to pass jshint linting
     - [ ] (?) Add test coverage report (coveralls + istanbul?)
     - [ ] (Yan) Use build + minification system (gulp/grunt/...?)
@@ -14,7 +14,7 @@ See the [Introduction](/doc/intro.md) for vocabulary.
     - [ ] (Fritz) Refactor into smaller modules
     - [ ] (Fritz) Separate testing code from production code
 
-2.  Refactor to support new features
+- Refactor to support new features
     - [ ] (Fritz) Factor `neighborhood` object out of `navagate.js`
     - [ ] (Fritz) Support operations on `neighborhoods`
     - [ ] (Yan) Support custom/temporary corpus.dump for testing
@@ -23,7 +23,7 @@ See the [Introduction](/doc/intro.md) for vocabulary.
     - [ ] (Fritz) Factor rendering code out of compiler
     - [ ] (Fritz) Settle on user action data format
 
-4.  Implement new features (ordered by priority)
+- Implement new features (ordered by priority)
     - [ ] (Fritz) Support action filtering.
         Actions that would result in invalid corpus states are removed from
         the neighborhood.
