@@ -88,7 +88,7 @@ define(function (require) {
         return ['VAR', indexed.varName];
     };
 
-    test('ast.load, ast.dmup', function () {
+    test('ast.load, ast.dump', function () {
         var examples = [
             'VAR x',
             'QUOTE APP LAMBDA CURSOR VAR x VAR x HOLE',
@@ -103,71 +103,6 @@ define(function (require) {
             assert.equal(flat2, flat, 'Example ' + lineno);
         }
     });
-
-    //--------------------------------------------------------------------------
-    // Transformations
-
-    ast.getRoot = function (indexed) {
-        while (indexed.above !== null) {
-            indexed = indexed.above;
-        }
-        return indexed;
-    };
-
-    var pushPatternVars = function (patt, vars) {
-        switch (patt.name) {
-            case 'VAR':
-                vars.push(patt.varName);
-                break;
-
-            case 'QUOTE':
-                pushPatternVars(patt.below[0], vars);
-                break;
-
-            default:
-                break;
-        }
-    };
-
-    ast.getBoundAbove = function (term) {
-        var result = [];
-        for (var above = term; above !== null; above = above.above) {
-            if (above.name === 'LAMBDA' || above.name === 'LETREC') {
-                var patt = above.below[0];
-                pushPatternVars(patt, result);
-            }
-        }
-        return result;
-    };
-
-    ast.getVars = (function () {
-        var getVarsBelow = function (node, vars) {
-            if (node.name === 'VAR') {
-                vars[node.varName] = null;
-            } else {
-                var below = node.below;
-                for (var i = 0; i < below.length; ++i) {
-                    getVarsBelow(below[i], vars);
-                }
-            }
-        };
-        return function (node) {
-            var vars = {};
-            var root = ast.getRoot(node);
-            getVarsBelow(root, vars);
-            return vars;
-        };
-    })();
-
-    ast.getFresh = function (node) {
-        var avoid = ast.getVars(node);
-        for (var i = 0; true; ++i) {
-            var name = compiler.enumerateFresh(i);
-            if (!_.has(avoid, name)) {
-                return name;
-            }
-        }
-    };
 
     return ast;
 });

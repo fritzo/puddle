@@ -11,6 +11,7 @@ define(function (require) {
     var compiler = require('language/compiler');
     var ast = require('language/ast');
     var cursors = require('language/cursors');
+    var arborist = require('language/arborist');
     var corpus = require('corpus');
     var navigate = require('navigate');
 
@@ -126,7 +127,7 @@ define(function (require) {
         var id = ids[cursorPos];
         var below = cursor.below[0];
         cursors.remove(cursor);
-        var root = ast.getRoot(below);
+        var root = arborist.getRoot(below);
         var lambda = ast.dump(root);
         var line = compiler.dumpLine(lambda);
         line.id = id;
@@ -264,7 +265,7 @@ define(function (require) {
         if (id === undefined) {
             id = ids[cursorPos];
         }
-        var root = ast.getRoot(asts[id]);
+        var root = arborist.getRoot(asts[id]);
         var lambda = ast.dump(root);
         var validity = validities[id];
         var html = renderValidity(validity) + compiler.render(lambda);
@@ -414,7 +415,8 @@ define(function (require) {
             ['right', action(moveCursor, 'R'), 'move right'],
             ['shift+left', action(moveCursor, 'U'), 'select'],
             ['shift+right', action(moveCursor, 'U'), 'select'],
-            ['A', _.bind(insertAssert, takeBearings), render(ASSERT(CURSOR(HOLE)))],
+            ['A', _.bind(insertAssert, takeBearings),
+                render(ASSERT(CURSOR(HOLE)))],
             ['D', chooseDefine, render(DEFINE(CURSOR(VAR('...')), HOLE))]
         ];
 
@@ -437,7 +439,7 @@ define(function (require) {
         return function () {
             var term = cursor.below[0];
             var name = term.name;
-            var varName = ast.getFresh(term);
+            var varName = arborist.getFresh(term);
             var fresh = VAR(varName);
 
             off();
@@ -465,7 +467,7 @@ define(function (require) {
 
                 // TODO filter globals and locals by future validity
                 navigate.on('/', searchGlobals, render(VAR('global.variable')));
-                var locals = ast.getBoundAbove(term);
+                var locals = arborist.getBoundAbove(term);
                 locals.forEach(function (varName) {
                     on(varName, VAR(varName));
                     // TODO deal with >26 variables
