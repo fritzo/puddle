@@ -9,14 +9,14 @@ define(function (require) {
     var log = require('log');
     var test = require('test');
     var compiler = require('language/compiler');
-    var ast = require('language/ast');
+    var tree = require('language/tree');
     var cursors = require('language/cursors');
     var arborist = require('language/arborist');
     var corpus = require('corpus');
     var navigate = require('navigate');
 
     var ids = [];
-    var asts = {};  // id -> ast
+    var trees = {};  // id -> tree
     var validities = {}; // id -> {'is_top': _, 'is_bot': _, 'pending': _}
     var $lines = {};  // id -> dom node
     var cursor = null;
@@ -31,13 +31,13 @@ define(function (require) {
 
     var loadAllLines = function () {
         ids = [];
-        asts = {};
+        trees = {};
         validities = {};
         corpus.findAllLines().forEach(function (id) {
             ids.push(id);
             var line = corpus.findLine(id);
             var lambda = compiler.loadLine(line);
-            asts[id] = ast.load(lambda);
+            trees[id] = tree.load(lambda);
             validities[id] = _.clone(UNKNOWN);
         });
         pollValidities();
@@ -50,7 +50,7 @@ define(function (require) {
         }
         //log('replacing ' + compiler.print(cursor.below[0]) +
         //    'with: ' + compiler.print(newLambda));
-        var newTerm = ast.load(newLambda);
+        var newTerm = tree.load(newLambda);
         cursor = cursors.replaceBelow(cursor, newTerm);
         lineChanged = true;
         renderLine();
@@ -83,9 +83,9 @@ define(function (require) {
                 var id = line.id;
                 ids = ids.slice(0, cursorPos).concat([id], ids.slice(cursorPos));
                 var lambda = compiler.loadLine(line);
-                var root = ast.load(lambda);
+                var root = tree.load(lambda);
                 cursors.insertAbove(cursor, _.last(root.below));  // HACK
-                asts[id] = root;
+                trees[id] = root;
                 validities[id] = _.clone(UNKNOWN);
                 pollValidities();
                 var $prev = $lines[ids[cursorPos - 1]];
@@ -110,7 +110,7 @@ define(function (require) {
         corpus.remove(id);
         cursors.remove(cursor);
         ids = ids.slice(0, cursorPos).concat(ids.slice(cursorPos + 1));
-        delete asts[id];
+        delete trees[id];
         delete validities[id];
         $lines[id].remove();
         delete $lines[id];
@@ -118,7 +118,7 @@ define(function (require) {
             cursorPos -= 1;
         }
         id = ids[cursorPos];
-        cursors.insertAbove(cursor, asts[id]);
+        cursors.insertAbove(cursor, trees[id]);
         renderLine(id);
         scrollToCursor();
     };
@@ -128,14 +128,14 @@ define(function (require) {
         var below = cursor.below[0];
         cursors.remove(cursor);
         var root = arborist.getRoot(below);
-        var lambda = ast.dump(root);
+        var lambda = tree.dump(root);
         var line = compiler.dumpLine(lambda);
         line.id = id;
         line = corpus.update(line);
         lambda = compiler.loadLine(line);
-        root = ast.load(lambda);
+        root = tree.load(lambda);
         cursors.insertAbove(cursor, root);
-        asts[id] = root;
+        trees[id] = root;
         var lineIsDefinition = (line.name !== null);
         if (lineIsDefinition) {
               ids.forEach(function (id) {
@@ -153,10 +153,10 @@ define(function (require) {
         var id = ids[cursorPos];
         var line = corpus.findLine(id);
         var lambda = compiler.loadLine(line);
-        var root = ast.load(lambda);
+        var root = tree.load(lambda);
         cursors.remove(cursor);
         cursors.insertAbove(cursor, root);
-        asts[id] = root;
+        trees[id] = root;
         renderLine(id);
         lineChanged = false;
     };
@@ -265,8 +265,8 @@ define(function (require) {
         if (id === undefined) {
             id = ids[cursorPos];
         }
-        var root = arborist.getRoot(asts[id]);
-        var lambda = ast.dump(root);
+        var root = arborist.getRoot(trees[id]);
+        var lambda = tree.dump(root);
         var validity = validities[id];
         var html = renderValidity(validity) + compiler.render(lambda);
         $lines[id]
@@ -317,7 +317,7 @@ define(function (require) {
         lineChanged = false;
         var id = ids[cursorPos];
         socket.emit('action', {'moveTo': id});
-        cursors.insertAbove(cursor, asts[id]);
+        cursors.insertAbove(cursor, trees[id]);
         renderLine(id);
         scrollToCursor();
     };
@@ -332,7 +332,7 @@ define(function (require) {
             cursorPos = (cursorPos + ids.length + delta) % ids.length;
             var id = ids[cursorPos];
             socket.emit('action', {'moveTo': id});
-            cursors.insertAbove(cursor, asts[id]);
+            cursors.insertAbove(cursor, trees[id]);
             renderLine(id);
             scrollToCursor();
         }
@@ -474,7 +474,7 @@ define(function (require) {
                 });
 
             } else {
-                var dumped = ast.dump(term);
+                var dumped = tree.dump(term);
 
                 // TODO define context-specific deletions
                 on('X', HOLE);

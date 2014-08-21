@@ -98,7 +98,7 @@ define(function (require) {
         };
     })();
 
-    test('ast.parse', function () {
+    test('compiler.parse', function () {
         var examples = [
             'VAR x',
             'QUOTE APP LAMBDA CURSOR VAR x VAR x HOLE',

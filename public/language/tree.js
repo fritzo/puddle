@@ -1,7 +1,7 @@
 /**
  * Mutable abstract syntax trees with crosslinks for constant time traversal.
  *
- * example ast node:
+ * example tree node:
  *   {
  *     name: 'VAR',
  *     varName: flat[1],  // optional, only VAR nodes have this field
@@ -18,12 +18,12 @@ define(function (require) {
     var test = require('test');
     var compiler = require('language/compiler');
 
-    var ast = {};
+    var tree = {};
 
     var loadSymbol = {};
     var dumpSymbol = {};
 
-    var load = ast.load = function (flat) {
+    var load = tree.load = function (flat) {
         if (_.isString(flat)) {
             return loadSymbol[flat]();
         } else {
@@ -31,7 +31,7 @@ define(function (require) {
         }
     };
 
-    var dump = ast.dump = function (indexed) {
+    var dump = tree.dump = function (indexed) {
         return dumpSymbol[indexed.name](indexed);
     };
 
@@ -88,7 +88,7 @@ define(function (require) {
         return ['VAR', indexed.varName];
     };
 
-    test('ast.load, ast.dump', function () {
+    test('tree.load, tree.dump', function () {
         var examples = [
             'VAR x',
             'QUOTE APP LAMBDA CURSOR VAR x VAR x HOLE',
@@ -104,5 +104,5 @@ define(function (require) {
         }
     });
 
-    return ast;
+    return tree;
 });

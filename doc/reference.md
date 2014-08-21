@@ -10,7 +10,9 @@
 * [Client `test.js`](#testjs)
 * [Client `language/pattern.js`](#patternjs)
 * [Client `language/compiler.js`](#compilerjs)
-* [Client `language/ast.js`](#astjs)
+* [Client `language/tree.js`](#treejs)
+* [Client `language/arborist.js`](#arboristjs)
+* [Client `language/cursors.js`](#cursorsjs)
 * [Client `corpus.js`](#corpusjs)
 * [Client `navigate.js`](#navigatejs)
 * [Client `symbols.js`](#symbolsjs)
@@ -138,6 +140,8 @@
 
 ### `keycode.js` <a name="keycodejs"/>
 
+Just a static dictionary of ascii key codes.
+
     {
         'backspace': 8,
         'tab': 9,
@@ -164,7 +168,7 @@ Unit testing library.
 ### `language/pattern.js` <a name="patternjs"/>
 
 ML-style pattern matching with variable binding.
-This is used internally by compiler and ast.
+This is used internally only by compiler.js.
 
     var pattern = require('language/pattern');
     var x = pattern.variable('x');
@@ -195,7 +199,7 @@ This is used internally by compiler and ast.
 
     compiler.substitute(name, def, body);  // replace name with def in body
 
-### `language/ast.js` <a name="astjs"/>
+### `language/trees.js` <a name="treesjs"/>
 
 Abstract Syntax Trees.
 
@@ -205,20 +209,28 @@ Abstract Syntax Trees.
     var indexed = ast.load(flat);
     var flat = ast.dump(indexed);
 
+### `language/cursors.js`
+
+A cursor is a special tree node denoting a user's location.
+
     var cursor;
-    cursor = ast.cursor.create();
-    ast.cursor.remove(cursor);
-    ast.cursor.insertBelow(cursor, above, pos);
-    ast.cursor.insertAbove(cursor, below);
-    cursor = ast.cursor.replaceBelow(oldCursor, newTerm);
+    cursor = cursors.create();
+    cursors.remove(cursor);
+    cursors.insertBelow(cursor, above, pos);
+    cursors.insertAbove(cursor, below);
+    cursor = cursors.replaceBelow(oldCursor, newTerm);
 
     var direction = 'U';  // or 'D', 'L', 'R'
-    var success = ast.cursor.tryMove(cursor, direction);
+    var success = cursors.tryMove(cursor, direction);
 
-    var root = ast.getRoot(indexed);
-    var varList = ast.getBoundAbove(term);  // -> ['a', 'b']
-    var varSet = ast.getVars(term);         // -> {'a': null, 'b': null}
-    var name = ast.getFresh(term);          // -> 'c'
+### `language/arborist.js` <a name="arboristjs"/>
+
+Utilities for performing functions on trees.
+
+    var root = arborist.getRoot(indexed);
+    var varList = arborist.getBoundAbove(term);  // -> ['a', 'b']
+    var varSet = arborist.getVars(term);         // -> {'a': null, 'b': null}
+    var name = arborist.getFresh(term);          // -> 'c'
 
 ### `corpus.js` <a name="corpusjs"/>
 
