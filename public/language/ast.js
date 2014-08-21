@@ -1,14 +1,14 @@
 /**
-  * Mutable abstract syntax trees with crosslinks for constant time traversal.
-  *
-  * example ast node:
-  *   {
-  *     name: 'VAR',
-  *     varName: flat[1],  // optional, only VAR nodes have this field
-  *     below: [],
-  *     above: null
-  *   };
-  */
+ * Mutable abstract syntax trees with crosslinks for constant time traversal.
+ *
+ * example ast node:
+ *   {
+ *     name: 'VAR',
+ *     varName: flat[1],  // optional, only VAR nodes have this field
+ *     below: [],
+ *     above: null
+ *   };
+ */
 
 define(function (require) {
     'use strict';
@@ -103,171 +103,6 @@ define(function (require) {
             assert.equal(flat2, flat, 'Example ' + lineno);
         }
     });
-
-    //--------------------------------------------------------------------------
-    // CURSOR movement
-
-    ast.cursor = {};
-
-    ast.cursor.create = function () {
-        return {
-            name: 'CURSOR',
-            below: [undefined],
-            above: null
-        };
-    };
-
-    ast.cursor.remove = function (cursor) {
-        var above = cursor.above;
-        cursor.below[0].above = above;
-        if (above) {
-            var pos = above.below.indexOf(cursor);
-            above.below[pos] = cursor.below[0];
-            return pos;
-        }
-        cursor.below[0] = undefined;
-        cursor.above = null;
-    };
-
-    ast.cursor.insertBelow = function (cursor, above, pos) {
-        var below = above.below[pos];
-        above.below[pos] = cursor;
-        cursor.above = above;
-        below.above = cursor;
-        cursor.below[0] = below;
-    };
-
-    ast.cursor.insertAbove = function (cursor, below) {
-        cursor.below[0] = below;
-        var above = below.above;
-        below.above = cursor;
-        cursor.above = above;
-        if (above !== null) {
-            var pos = above.below.indexOf(below);
-            above.below[pos] = cursor;
-        }
-    };
-
-    ast.cursor.replaceBelow = (function () {
-        var findCursor = function (term) {
-            if (term.name === 'CURSOR') {
-                return term;
-            } else {
-                for (var i = 0; i < term.below.length; ++i) {
-                    var cursor = findCursor(term.below[i]);
-                    if (cursor !== undefined) {
-                        return cursor;
-                    }
-                }
-            }
-        };
-        return function (oldCursor, newTerm) {
-            var newCursor = findCursor(newTerm);
-            if (newCursor === undefined) {
-                newCursor = ast.cursor.create();
-                ast.cursor.insertAbove(newCursor, newTerm);
-                newTerm = newCursor;
-            }
-            var above = oldCursor.above;
-            assert(above !== null, 'tried to replace with cursor at root');
-            var pos = ast.cursor.remove(oldCursor);
-            above.below[pos] = newTerm;
-            newTerm.above = above;
-            return newCursor;
-        };
-    })();
-
-    ast.cursor.tryMove = (function () {
-
-        var traverseDownLeft = function (node) {
-            while (node.below.length) {
-                node = _.first(node.below);
-            }
-            return node;
-        };
-
-        var traverseDownRight = function (node) {
-            while (node.below.length) {
-                node = _.last(node.below);
-            }
-            return node;
-        };
-
-        var traverseLeftDown = function (node) {
-            var above = node.above;
-            while (above !== null) {
-                var pos = _.indexOf(above.below, node);
-                assert(pos >= 0, 'node not found in node.above.below');
-                if (pos > 0) {
-                    return traverseDownRight(above.below[pos - 1]);
-                }
-                node = above;
-                above = node.above;
-            }
-            return traverseDownRight(node);
-        };
-
-        var traverseRightDown = function (node) {
-            var above = node.above;
-            while (above !== null) {
-                var pos = _.indexOf(above.below, node);
-                assert(pos >= 0, 'node not found in node.above.below');
-                if (pos < above.below.length - 1) {
-                    return traverseDownLeft(above.below[pos + 1]);
-                }
-                node = above;
-                above = node.above;
-            }
-            return traverseDownLeft(node);
-        };
-
-        var tryMoveLeft = function (cursor) {
-            var node = cursor.below[0];
-            ast.cursor.remove(cursor);
-            var next = traverseLeftDown(node);
-            ast.cursor.insertAbove(cursor, next);
-            return true;
-        };
-
-        var tryMoveRight = function (cursor) {
-            var node = cursor.below[0];
-            ast.cursor.remove(cursor);
-            var next = traverseRightDown(node);
-            ast.cursor.insertAbove(cursor, next);
-            return true;
-        };
-
-        var tryMoveUp = function (cursor) {
-            if (cursor.above !== null) {
-                var pivot = cursor.above;
-                ast.cursor.remove(cursor);
-                ast.cursor.insertAbove(cursor, pivot);
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        var tryMoveDown = function (cursor) {
-            var pivot = cursor.below[0];
-            if (pivot.below.length > 0) {
-                ast.cursor.remove(cursor);
-                ast.cursor.insertBelow(cursor, pivot, 0);
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-        return function (cursor, direction) {
-            switch (direction) {
-                case 'U': return tryMoveUp(cursor);
-                case 'L': return tryMoveLeft(cursor);
-                case 'D': return tryMoveDown(cursor);
-                case 'R': return tryMoveRight(cursor);
-            }
-        };
-    })();
 
     //--------------------------------------------------------------------------
     // Transformations

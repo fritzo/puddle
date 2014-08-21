@@ -10,6 +10,7 @@ define(function (require) {
     var test = require('test');
     var compiler = require('language/compiler');
     var ast = require('language/ast');
+    var cursors = require('language/cursors');
     var corpus = require('corpus');
     var navigate = require('navigate');
 
@@ -49,7 +50,7 @@ define(function (require) {
         //log('replacing ' + compiler.print(cursor.below[0]) +
         //    'with: ' + compiler.print(newLambda));
         var newTerm = ast.load(newLambda);
-        cursor = ast.cursor.replaceBelow(cursor, newTerm);
+        cursor = cursors.replaceBelow(cursor, newTerm);
         lineChanged = true;
         renderLine();
     };
@@ -75,14 +76,14 @@ define(function (require) {
         corpus.insert(
             line,
             function (line) {
-                ast.cursor.remove(cursor);
+                cursors.remove(cursor);
                 renderLine();
                 cursorPos += 1;
                 var id = line.id;
                 ids = ids.slice(0, cursorPos).concat([id], ids.slice(cursorPos));
                 var lambda = compiler.loadLine(line);
                 var root = ast.load(lambda);
-                ast.cursor.insertAbove(cursor, _.last(root.below));  // HACK
+                cursors.insertAbove(cursor, _.last(root.below));  // HACK
                 asts[id] = root;
                 validities[id] = _.clone(UNKNOWN);
                 pollValidities();
@@ -106,7 +107,7 @@ define(function (require) {
     var removeLine = function () {
         var id = ids[cursorPos];
         corpus.remove(id);
-        ast.cursor.remove(cursor);
+        cursors.remove(cursor);
         ids = ids.slice(0, cursorPos).concat(ids.slice(cursorPos + 1));
         delete asts[id];
         delete validities[id];
@@ -116,7 +117,7 @@ define(function (require) {
             cursorPos -= 1;
         }
         id = ids[cursorPos];
-        ast.cursor.insertAbove(cursor, asts[id]);
+        cursors.insertAbove(cursor, asts[id]);
         renderLine(id);
         scrollToCursor();
     };
@@ -124,7 +125,7 @@ define(function (require) {
     var commitLine = function () {
         var id = ids[cursorPos];
         var below = cursor.below[0];
-        ast.cursor.remove(cursor);
+        cursors.remove(cursor);
         var root = ast.getRoot(below);
         var lambda = ast.dump(root);
         var line = compiler.dumpLine(lambda);
@@ -132,7 +133,7 @@ define(function (require) {
         line = corpus.update(line);
         lambda = compiler.loadLine(line);
         root = ast.load(lambda);
-        ast.cursor.insertAbove(cursor, root);
+        cursors.insertAbove(cursor, root);
         asts[id] = root;
         var lineIsDefinition = (line.name !== null);
         if (lineIsDefinition) {
@@ -152,8 +153,8 @@ define(function (require) {
         var line = corpus.findLine(id);
         var lambda = compiler.loadLine(line);
         var root = ast.load(lambda);
-        ast.cursor.remove(cursor);
-        ast.cursor.insertAbove(cursor, root);
+        cursors.remove(cursor);
+        cursors.insertAbove(cursor, root);
         asts[id] = root;
         renderLine(id);
         lineChanged = false;
@@ -310,12 +311,12 @@ define(function (require) {
     };
 
     var initCursor = function () {
-        cursor = ast.cursor.create();
+        cursor = cursors.create();
         cursorPos = 0;
         lineChanged = false;
         var id = ids[cursorPos];
         socket.emit('action', {'moveTo': id});
-        ast.cursor.insertAbove(cursor, asts[id]);
+        cursors.insertAbove(cursor, asts[id]);
         renderLine(id);
         scrollToCursor();
     };
@@ -325,19 +326,19 @@ define(function (require) {
             commitLine();
         }
         if (0 <= cursorPos + delta && cursorPos + delta < ids.length) {
-            ast.cursor.remove(cursor);
+            cursors.remove(cursor);
             renderLine();
             cursorPos = (cursorPos + ids.length + delta) % ids.length;
             var id = ids[cursorPos];
             socket.emit('action', {'moveTo': id});
-            ast.cursor.insertAbove(cursor, asts[id]);
+            cursors.insertAbove(cursor, asts[id]);
             renderLine(id);
             scrollToCursor();
         }
     };
 
     var moveCursor = function (direction) {
-        if (ast.cursor.tryMove(cursor, direction)) {
+        if (cursors.tryMove(cursor, direction)) {
             renderLine();
         }
     };
