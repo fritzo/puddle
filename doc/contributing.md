@@ -4,26 +4,25 @@ See the [Introduction](/doc/intro.md) for vocabulary.
 
 ## Planned Tasks
 
-- Improve code quality
+1. Improve code quality
     - [x] (Fritz) Clean up to pass jshint linting
     - [ ] (?) Add test coverage report (coveralls + istanbul?)
     - [ ] (Yan) Use build + minification system (gulp/grunt/...?)
     - [ ] (Yan) Use automated documentation system (jsdoc?)
         Current `reference.md` is very fragile.
-        - [ ] (Fritz) refactor `reference.md` to be automatically generated.
+    - [ ] (Fritz) refactor `reference.md` to be automatically generated.
     - [ ] (Fritz) Refactor into smaller modules
     - [ ] (Fritz) Separate testing code from production code
 
-- Refactor to support new features
+2. Refactor to support new features
     - [ ] (Fritz) Factor `neighborhood` object out of `navagate.js`
     - [ ] (Fritz) Support operations on `neighborhoods`
     - [ ] (Yan) Support custom/temporary corpus.dump for testing
     - [ ] (?) Add tests for corpus CRUD operations
-        - (Yan) Suggest a test pattern / fixture
     - [ ] (Fritz) Factor rendering code out of compiler
     - [ ] (Fritz) Settle on user action data format
 
-- Implement new features (ordered by priority)
+3. Implement new features (ordered by priority)
     - [ ] (Fritz) Support action filtering.
         Actions that would result in invalid corpus states are removed from
         the neighborhood.
