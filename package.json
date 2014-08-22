@@ -25,12 +25,14 @@
     "less": "^1.7.4",
     "mocha": "^1.21.4",
     "phantomjs": "^1.9.7-15",
+    "socket.io-client": "^1.0.6",
     "yargs": "^1.3.1"
   },
   "scripts": {
-    "lint": "jshint main.js test* lib clientSrc --exclude public/",
+    "lint": "jshint main.js test* lib clientSrc",
     "gulp": "gulp",
-    "test": "npm run lint && npm run gulp && mocha --reporter spec test_main.js"
+    "mocha": "mocha --reporter spec test_main.js",
+    "test": "npm run lint && npm run gulp && npm run mocha"
   },
   "repository": {
     "type": "git",

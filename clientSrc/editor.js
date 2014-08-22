@@ -4,7 +4,7 @@ module.exports = (function () {
 
     var _ = require('underscore');
     var $ = require('jquery');
-//    var io = require('socket.io');
+    var io = require('socket.io-client');
     var assert = require('./assert');
     var log = require('./log');
     var test = require('./test');
@@ -22,7 +22,7 @@ module.exports = (function () {
     var cursor = null;
     var cursorPos = 0;
     var lineChanged = false;
-//    var socket = io();
+    var socket = io();
 
     var UNKNOWN = {'is_top': null, 'is_bot': null, 'pending': true};
 
@@ -238,7 +238,7 @@ module.exports = (function () {
         cursorPos = 0;
         lineChanged = false;
         var id = ids[cursorPos];
-//        socket.emit('action', {'moveTo': id});
+        socket.emit('action', {'moveTo': id});
         cursors.insertAbove(cursor, trees[id]);
         view.update(id);
         scrollToCursor();
@@ -253,7 +253,7 @@ module.exports = (function () {
             view.update(ids[cursorPos]);
             cursorPos = (cursorPos + ids.length + delta) % ids.length;
             var id = ids[cursorPos];
-//            socket.emit('action', {'moveTo': id});
+            socket.emit('action', {'moveTo': id});
             cursors.insertAbove(cursor, trees[id]);
             view.update(id);
             scrollToCursor();

@@ -5,12 +5,12 @@ module.exports = (function () {
 
     var _ = require('underscore');
     var $ = require('jquery');
-//    var io = require('socket.io');
+    var io = require('socket.io-client');
     var assert = require('./assert');
     var log = require('./log');
     var keycode = require('./keycode');
 
-//    var socket = io();
+    var socket = io();
 
     //--------------------------------------------------------------------------
     // Events
@@ -94,7 +94,7 @@ module.exports = (function () {
         assert(_.has(cases, name));
         events.push(cases[name]);
         var loggedCallback = function () {
-//            socket.emit('action', name);
+            socket.emit('action', name);
             callback();
         };
         callbacks.push(loggedCallback);
