@@ -1,30 +1,31 @@
+/*jslint node: true */
+'use strict';
 
-    'use strict';
 
-    var $ = require('jquery');
-    var test = require('./test');
-    var corpus = require('./corpus');
-    var editor = require('./editor');
+var $ = require('jquery');
+var test = require('./test');
+var corpus = require('./corpus');
+var editor = require('./editor');
 
-    var ready = function (cb) {
-        $(function () {
-            corpus.ready(cb);
-        });
-    };
+var ready = function (cb) {
+    $(function () {
+        corpus.ready(cb);
+    });
+};
 
-    var testMain = function () {
-        var oldTitle = document.title;
-        document.title = 'Test - ' + oldTitle;
-        test.runAll(function () {
-            document.title = oldTitle;
-            window.location.hash = '';
-            editor.main();
-        });
-    };
+var testMain = function () {
+    var oldTitle = document.title;
+    document.title = 'Test - ' + oldTitle;
+    test.runAll(function () {
+        document.title = oldTitle;
+        window.location.hash = '';
+        editor.main();
+    });
+};
 
-    if (window.location.hash && window.location.hash.substr(1) === 'test') {
-        ready(testMain);
-    } else {
-        ready(editor.main);
-    }
+if (window.location.hash && window.location.hash.substr(1) === 'test') {
+    ready(testMain);
+} else {
+    ready(editor.main);
+}
 

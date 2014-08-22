@@ -1,4 +1,5 @@
 /* jshint strict: false */
+/*jslint node: true */
 /* global self */
 module.exports = (function () {
     //'use strict';

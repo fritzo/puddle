@@ -3,7 +3,7 @@
   *
   * FIXME this is all concurrency-unsafe; client assumes it is the only writer.
   */
-
+/*jslint node: true */
 module.exports = (function () {
     'use strict';
 

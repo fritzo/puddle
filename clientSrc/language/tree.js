@@ -9,7 +9,7 @@
  *     above: null
  *   };
  */
-
+/*jslint node: true */
 module.exports = (function () {
     'use strict';
 

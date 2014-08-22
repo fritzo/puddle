@@ -1,3 +1,4 @@
+/*jslint node: true */
 module.exports = {
     'backspace': 8,
     'tab': 9,

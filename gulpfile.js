@@ -1,6 +1,7 @@
 var gulp = require('gulp'),
     gulpif = require('gulp-if'),
     uglify = require('gulp-uglify'),
+    jshint = require('gulp-jshint'),
     argv = require('yargs').argv,
     browserify = require('gulp-browserify'),
     less = require('gulp-less-sourcemap');
@@ -23,8 +24,14 @@ gulp.task('default', function () {
         }))
         .pipe(gulpif(!argv.dev, uglify()))
         .pipe(gulp.dest('./public'))
+
 });
 
+gulp.task('lint', function() {
+    return gulp.src('./clientSrc/**/*.js')
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
+});
 
 gulp.task('watch', ['default'], function () {
     var watcher = gulp.watch('./clientSrc/**/*', ['default']);

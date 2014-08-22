@@ -1,7 +1,7 @@
 /**
   * Unit testing.
   */
-
+/*jslint node: true */
 module.exports = (function () {
     'use strict';
 
