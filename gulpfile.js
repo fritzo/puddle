@@ -1,4 +1,6 @@
 var gulp = require('gulp'),
+    gulpif = require('gulp-if'),
+    uglify = require('gulp-uglify'),
     argv = require('yargs').argv,
     browserify = require('gulp-browserify'),
     less = require('gulp-less-sourcemap');
@@ -19,6 +21,7 @@ gulp.task('default', function () {
             insertGlobals: true,
             debug:argv.production
         }))
+        .pipe(gulpif(!argv.production, uglify()))
         .pipe(gulp.dest('./public'))
 });
 
