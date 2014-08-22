@@ -4,8 +4,8 @@ define(function (require) {
     var compiler = require('language/compiler');
 
     var template = compiler.renderer.template;
-    
-    return {
+
+    var templates = {
         HOLE: '<span class=hole>?</span>',
         TOP: '<span class=atom>&#x22a4;</span>',
         BOT: '<span class=atom>&#x22a5;</span>',
@@ -34,4 +34,6 @@ define(function (require) {
             return template('<span class=variable>{0}</span>')(name);
         }
     };
+
+    return compiler.renderer(templates);
 });
