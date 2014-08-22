@@ -8,6 +8,7 @@
     "body-parser": "^1.6.1",
     "debug": "^1.0.4",
     "express": "^4.8.3",
+    "jquery": "^2.1.1",
     "pomagma": ">=0.1.8",
     "socket.io": "^1.0.6",
     "underscore": "^1.6.0"

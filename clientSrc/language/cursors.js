@@ -1,8 +1,8 @@
-define(function (require) {
+module.exports = function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var assert = require('assert');
+    var _ = require('underscore');
+    var assert = require('../assert');
 
     var cursors = {};
 
@@ -167,4 +167,4 @@ define(function (require) {
     })();
 
     return cursors;
-});
+};

@@ -10,13 +10,13 @@
  *   };
  */
 
-define(function (require) {
+module.exports = function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var assert = require('assert');
-    var test = require('test');
-    var compiler = require('language/compiler');
+    var _ = require('underscore');
+    var assert = require('../assert');
+    var test = require('../test');
+    var compiler = require('./compiler');
 
     var tree = {};
 
@@ -105,4 +105,4 @@ define(function (require) {
     });
 
     return tree;
-});
+};

@@ -1,14 +1,14 @@
 /* jshint unused: false */
 
-define(function (require) {
+module.exports = function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var assert = require('assert');
-    var log = require('log');
-    var test = require('test');
-    var TODO = require('TODO');
-    var pattern = require('language/pattern');
+    var _ = require('underscore');
+    var assert = require('../assert');
+    var log = require('../log');
+    var test = require('../test');
+    var TODO = require('../TODO');
+    var pattern = require('./pattern');
 
     //--------------------------------------------------------------------------
     // Parse
@@ -1508,4 +1508,4 @@ define(function (require) {
         enumerateFresh: fresh.enumerate,
         substitute: substitute,
     };
-});
+};

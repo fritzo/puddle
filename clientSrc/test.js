@@ -2,13 +2,13 @@
   * Unit testing.
   */
 
-define(function (require) {
+module.exports = function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var $ = require('vendor/jquery');
-    var assert = require('assert');
-    var log = require('log');
+    var _ = require('underscore');
+    var $ = require('jquery');
+    var assert = require('./assert');
+    var log = require('./log');
 
     var test = function (title, callback) {
         callback.title = title;
@@ -172,4 +172,4 @@ define(function (require) {
     };
 
     return test;
-});
+};

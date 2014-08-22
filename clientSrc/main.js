@@ -1,10 +1,10 @@
-define(function (require) {
+
     'use strict';
 
-    var $ = require('vendor/jquery');
-    var test = require('test');
-    var corpus = require('corpus');
-    var editor = require('editor');
+    var $ = require('jquery');
+    var test = require('./test');
+    var corpus = require('./corpus');
+    var editor = require('./editor');
 
     var ready = function (cb) {
         $(function () {
@@ -27,4 +27,4 @@ define(function (require) {
     } else {
         ready(editor.main);
     }
-});
+

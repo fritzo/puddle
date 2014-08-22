@@ -1,10 +1,10 @@
-define(function (require) {
+module.exports = function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var $ = require('vendor/jquery');
-    var renderTerm = require('render-term.js');
-    var renderValidity = require('render-validity.js');
+    var _ = require('underscore');
+    var $ = require('jquery');
+    var renderTerm = require('./render-term.js');
+    var renderValidity = require('./render-validity.js');
 
     var $lines = {};  // id -> dom node
     var getLine;
@@ -65,4 +65,4 @@ define(function (require) {
         update: update,
         remove: remove
     };
-});
+};

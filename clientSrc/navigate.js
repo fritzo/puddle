@@ -1,15 +1,15 @@
 /* jshint unused: false */
-define(function (require) {
+module.exports = function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var $ = require('vendor/jquery');
-    var io = require('socket.io');
-    var assert = require('assert');
-    var log = require('log');
-    var keycode = require('keycode');
+    var _ = require('underscore');
+    var $ = require('jquery');
+//    var io = require('socket.io');
+    var assert = require('./assert');
+    var log = require('./log');
+    var keycode = require('./keycode');
 
-    var socket = io();
+//    var socket = io();
 
     //--------------------------------------------------------------------------
     // Events
@@ -93,7 +93,7 @@ define(function (require) {
         assert(_.has(cases, name));
         events.push(cases[name]);
         var loggedCallback = function () {
-            socket.emit('action', name);
+//            socket.emit('action', name);
             callback();
         };
         callbacks.push(loggedCallback);
@@ -224,4 +224,4 @@ define(function (require) {
         search: search,
         choose: choose
     };
-});
+};

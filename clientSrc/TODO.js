@@ -1,4 +1,4 @@
-define(function () {
+module.exports = function () {
     'use strict';
 
     /** @constructor */
@@ -16,4 +16,4 @@ define(function () {
 
     /** @exports TODO */
     return TODO;
-});
+};

@@ -1,7 +1,7 @@
-define(function (require) {
+module.exports = function () {
     'use strict';
 
-    var compiler = require('language/compiler');
+    var compiler = require('./language/compiler');
 
     var template = compiler.renderer.template;
 
@@ -36,4 +36,4 @@ define(function (require) {
     };
 
     return compiler.renderer(templates);
-});
+};
