@@ -12,6 +12,7 @@ define(function (require) {
     var tree = require('language/tree');
     var cursors = require('language/cursors');
     var arborist = require('language/arborist');
+    var renderTemplates = require('render-templates.js');
     var corpus = require('corpus');
     var navigate = require('navigate');
 
@@ -261,6 +262,8 @@ define(function (require) {
         };
     })();
 
+    var renderTerm = compiler.renderer(renderTemplates);
+
     var renderLine = function (id) {
         if (id === undefined) {
             id = ids[cursorPos];
@@ -268,7 +271,7 @@ define(function (require) {
         var root = arborist.getRoot(trees[id]);
         var lambda = tree.dump(root);
         var validity = validities[id];
-        var html = renderValidity(validity) + compiler.render(lambda);
+        var html = renderValidity(validity) + renderTerm(lambda);
         $lines[id]
             .on('click', function () {
                 var newPos = _.indexOf(ids, id);
@@ -368,7 +371,7 @@ define(function (require) {
         var DASH = VAR('&mdash;');
 
         var render = function (term) {
-            return $('<pre>').html(compiler.render(term));
+            return $('<pre>').html(renderTerm(term));
         };
 
         var action = function (cb) {
@@ -392,7 +395,7 @@ define(function (require) {
             };
             var cancel = takeBearings;
             var render = function (name) {
-                return compiler.render(VAR(name));
+                return renderTerm(VAR(name));
             };
             navigate.search(names, accept, cancel, render);
         };
