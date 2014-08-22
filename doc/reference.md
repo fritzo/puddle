@@ -276,6 +276,18 @@ Each client stores an in-memory copy.
     assert(symbols.isLocal('a'));
     assert(symbols.isGlobal('util.pair'));
 
+### `menu.js` <a name="menujs"/>
+
+The menu object is the pane on the right.
+It rebuilds itself at every action.
+The menu is the sole form of input to puddle, by design.
+
+    var menu = require('menu');
+    menu.init({
+        actions = {...},                // callbacks bound to actions
+        getCursor = function () {...}   // returns cursor
+    });
+
 ### `editor.js` <a name="editorjs"/>
 
     var editor = require('editor');

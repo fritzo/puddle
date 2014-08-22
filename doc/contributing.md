@@ -1,4 +1,4 @@
-# Contributing to Pomagma
+# Contributing to Puddle
 
 See the [Introduction](/doc/intro.md) for vocabulary.
 
