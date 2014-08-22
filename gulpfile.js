@@ -19,9 +19,9 @@ gulp.task('default', function () {
     gulp.src('./clientSrc/main.js')
         .pipe(browserify({
             insertGlobals: true,
-            debug:argv.production
+            debug:argv.dev
         }))
-        .pipe(gulpif(!argv.production, uglify()))
+        .pipe(gulpif(!argv.dev, uglify()))
         .pipe(gulp.dest('./public'))
 });
 
