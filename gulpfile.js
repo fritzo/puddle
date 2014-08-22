@@ -1,23 +1,25 @@
 var gulp = require('gulp'),
+    argv = require('yargs').argv,
     browserify = require('gulp-browserify'),
     less = require('gulp-less-sourcemap');
 
 gulp.task('default', function () {
+    //copy index.html
     gulp.src('./clientSrc/index.html')
         .pipe(gulp.dest('./public/'));
 
+    //process LESS -> CSS
     gulp.src('./clientSrc/main.less')
         .pipe(less())
         .pipe(gulp.dest('./public'));
 
+    //Browserify
     gulp.src('./clientSrc/main.js')
         .pipe(browserify({
             insertGlobals: true,
-            debug: !gulp.env.production
+            debug:argv.production
         }))
         .pipe(gulp.dest('./public'))
-
-
 });
 
 
