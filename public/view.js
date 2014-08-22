@@ -1,6 +1,7 @@
 define(function (require) {
     'use strict';
 
+    var _ = require('vendor/underscore');
     var $ = require('vendor/jquery');
     var renderTerm = require('render-term.js');
     var renderValidity = require('render-validity.js');
@@ -47,7 +48,7 @@ define(function (require) {
         return lines;
     };
 
-    var insertAfter = function (prevId) {
+    var insertAfter = function (prevId, id) {
         var $prev = $lines[prevId];
         $lines[id] = $('<pre>').attr('id', 'line' + id).insertAfter($prev);
         update(id);

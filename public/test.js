@@ -6,6 +6,7 @@ define(function (require) {
     'use strict';
 
     var _ = require('vendor/underscore');
+    var $ = require('vendor/jquery');
     var assert = require('assert');
     var log = require('log');
 

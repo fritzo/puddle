@@ -1,8 +1,10 @@
 /* jshint strict: false */
+/* global self */
 define(function () {
     //'use strict';
 
     var log;
+    var listeners = [];
 
     if (this.document) { // in main window
 
@@ -24,8 +26,6 @@ define(function () {
             self.postMessage({'type':'log', 'data':message});
         };
     }
-
-    listeners = [];
 
     log.pushListener = function (cb) {
         listeners.push(cb);

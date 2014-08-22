@@ -11,10 +11,9 @@ define(function (require) {
     var tree = require('language/tree');
     var cursors = require('language/cursors');
     var arborist = require('language/arborist');
-    var renderTerm = require('render-term.js');
     var view = require('view');
+    var menu = require('menu');
     var corpus = require('corpus');
-    var navigate = require('navigate');
 
     var ids = [];
     var trees = {};  // id -> tree
@@ -88,7 +87,7 @@ define(function (require) {
                 trees[id] = root;
                 validities[id] = _.clone(UNKNOWN);
                 pollValidities();
-                view.insertAfter(ids[cursorPos - 1]);
+                view.insertAfter(ids[cursorPos - 1], id);
                 scrollToCursor();
                 if (done !== undefined) {
                     done();
@@ -272,155 +271,22 @@ define(function (require) {
         moveCursorLine(delta);
     };
 
-    //--------------------------------------------------------------------------
-    // Navigation
+    //------------------------------------------------------------------------
+    // All Actions
 
-    var takeBearings = (function () {
-
-        var HOLE = compiler.symbols.HOLE;
-        var TOP = compiler.symbols.TOP;
-        var BOT = compiler.symbols.BOT;
-        var VAR = compiler.symbols.VAR;
-        var LAMBDA = compiler.symbols.LAMBDA;
-        var LETREC = compiler.symbols.LETREC;
-        var APP = compiler.symbols.APP;
-        var JOIN = compiler.symbols.JOIN;
-        var RAND = compiler.symbols.RAND;
-        var QUOTE = compiler.symbols.QUOTE;
-        var EQUAL = compiler.symbols.EQUAL;
-        var LESS = compiler.symbols.LESS;
-        var NLESS = compiler.symbols.NLESS;
-        var ASSERT = compiler.symbols.ASSERT;
-        var DEFINE = compiler.symbols.DEFINE;
-        var CURSOR = compiler.symbols.CURSOR;
-        var DASH = VAR('&mdash;');
-
-        var render = function (term) {
-            return $('<pre>').html(renderTerm(term));
-        };
-
-        var action = function (cb) {
-            var args = Array.prototype.slice.call(arguments, 1);
-            return function () {
-                cb.apply(null, args);
-                takeBearings();
-            };
-        };
-
-        var toggleHelp = function () {
-            $('#navigate').toggle();
-        };
-
-        var searchGlobals = function () {
-            var names = corpus.findAllNames();
-            var accept = function (name) {
-                assert(name !== undefined);
-                replaceBelow(VAR(name));
-                takeBearings();
-            };
-            var cancel = takeBearings;
-            var render = function (name) {
-                return renderTerm(VAR(name));
-            };
-            navigate.search(names, accept, cancel, render);
-        };
-
-        var chooseDefine = function () {
-            var accept = function (name) {
-                insertDefine(name, takeBearings);
-            };
-            var cancel = takeBearings;
-            navigate.choose(corpus.canDefine, accept, cancel);
-        };
-
-        var generic = [
-            ['?', toggleHelp, 'toggle help'],
-            ['enter', action(commitLine), 'commit line'],
-            ['tab', action(revertLine), 'revert line'],
-            ['up', action(moveCursorLine, -1), 'move up'],
-            ['down', action(moveCursorLine, 1), 'move down'],
-            ['left', action(moveCursor, 'L'), 'move left'],
-            ['right', action(moveCursor, 'R'), 'move right'],
-            ['shift+left', action(moveCursor, 'U'), 'select'],
-            ['shift+right', action(moveCursor, 'U'), 'select'],
-            ['A', _.bind(insertAssert, takeBearings),
-                render(ASSERT(CURSOR(HOLE)))],
-            ['D', chooseDefine, render(DEFINE(CURSOR(VAR('...')), HOLE))]
-        ];
-
-        var off = function () {
-            navigate.off();
-            _.each(generic, function (g) {
-                navigate.on.apply(null, g);
-            });
-        };
-
-        var on = function (name, term, subsForDash) {
-            var callback = function () {
-                replaceBelow(term, subsForDash);
-                takeBearings();
-            };
-            var description = render(term);
-            navigate.on(name, callback, description);
-        };
-
-        return function () {
-            var term = cursor.below[0];
-            var name = term.name;
-            var varName = arborist.getFresh(term);
-            var fresh = VAR(varName);
-
-            off();
-            if (name === 'ASSERT') {
-                navigate.on('X', removeLine, 'delete line');
-            } else if (name === 'DEFINE') {
-                if (!corpus.hasOccurrences(term.below[0].varName)) {
-                    navigate.on('X', removeLine, 'delete line');
-                }
-            } else if (name === 'HOLE') {
-                on('X', HOLE); // TODO define context-specific deletions
-                on('T', TOP);
-                on('_', BOT);
-                on('\\', LAMBDA(fresh, CURSOR(HOLE)));
-                on('W', LETREC(fresh, CURSOR(HOLE), HOLE));
-                on('L', LETREC(fresh, HOLE, CURSOR(HOLE)));
-                on('space', APP(HOLE, CURSOR(HOLE)));
-                on('(', APP(CURSOR(HOLE), HOLE));
-                on('|', JOIN(CURSOR(HOLE), HOLE));
-                on('+', RAND(CURSOR(HOLE), HOLE));
-                on('{', QUOTE(CURSOR(HOLE)));
-                on('=', EQUAL(CURSOR(HOLE), HOLE));
-                on('<', LESS(CURSOR(HOLE), HOLE));
-                on('>', NLESS(CURSOR(HOLE), HOLE));
-
-                // TODO filter globals and locals by future validity
-                navigate.on('/', searchGlobals, render(VAR('global.variable')));
-                var locals = arborist.getBoundAbove(term);
-                locals.forEach(function (varName) {
-                    on(varName, VAR(varName));
-                    // TODO deal with >26 variables
-                });
-
-            } else {
-                var dumped = tree.dump(term);
-
-                // TODO define context-specific deletions
-                on('X', HOLE);
-
-                on('\\', LAMBDA(fresh, CURSOR(DASH)), dumped);
-                on('W', LETREC(fresh, CURSOR(HOLE), DASH), dumped);
-                on('L', LETREC(fresh, DASH, CURSOR(HOLE)), dumped);
-                on('space', APP(DASH, CURSOR(HOLE)), dumped);
-                on('(', APP(CURSOR(HOLE), DASH), dumped);
-                on('|', JOIN(DASH, CURSOR(HOLE)), dumped);
-                on('+', RAND(DASH, CURSOR(HOLE)), dumped);
-                on('{', QUOTE(CURSOR(DASH)), dumped);
-                on('=', EQUAL(DASH, CURSOR(HOLE)), dumped);
-                on('<', LESS(DASH, CURSOR(HOLE)), dumped);
-                on('>', NLESS(DASH, CURSOR(HOLE)), dumped);
-            }
-        };
-    })();
+    var actions = {
+        commitLine: commitLine,
+        revertLine: revertLine,
+        removeLine: removeLine,
+        insertAssert: insertAssert,
+        insertDefine: insertDefine,
+        replaceBelow: replaceBelow,
+        moveUp: function () { moveCursorLine(-1); },
+        moveDown: function () { moveCursorLine(1); },
+        moveLeft: function () { moveCursor('L'); },
+        moveRight: function () { moveCursor('R'); },
+        widenSelection: function () { moveCursor('U'); },
+    };
 
     //--------------------------------------------------------------------------
     // Interface
@@ -439,8 +305,10 @@ define(function (require) {
                 }
             });
             initCursor();
-            takeBearings();
-            $(window).off('keydown').on('keydown', navigate.trigger);
+            menu.init({
+                actions: actions,
+                getCursor: function () { return cursor; }
+            });
         },
     };
 });
