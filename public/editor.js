@@ -12,14 +12,13 @@ define(function (require) {
     var cursors = require('language/cursors');
     var arborist = require('language/arborist');
     var renderTerm = require('render-term.js');
-    var renderValidity = require('render-validity.js');
+    var view = require('view');
     var corpus = require('corpus');
     var navigate = require('navigate');
 
     var ids = [];
     var trees = {};  // id -> tree
     var validities = {}; // id -> {'is_top': _, 'is_bot': _, 'pending': _}
-    var $lines = {};  // id -> dom node
     var cursor = null;
     var cursorPos = 0;
     var lineChanged = false;
@@ -54,7 +53,7 @@ define(function (require) {
         var newTerm = tree.load(newLambda);
         cursor = cursors.replaceBelow(cursor, newTerm);
         lineChanged = true;
-        renderLine();
+        view.update(ids[cursorPos]);
     };
 
     var insertAssert = function (done, fail) {
@@ -79,7 +78,7 @@ define(function (require) {
             line,
             function (line) {
                 cursors.remove(cursor);
-                renderLine();
+                view.update(ids[cursorPos]);
                 cursorPos += 1;
                 var id = line.id;
                 ids = ids.slice(0, cursorPos).concat([id], ids.slice(cursorPos));
@@ -89,9 +88,7 @@ define(function (require) {
                 trees[id] = root;
                 validities[id] = _.clone(UNKNOWN);
                 pollValidities();
-                var $prev = $lines[ids[cursorPos - 1]];
-                $lines[id] = $('<pre>').attr('id', 'line' + id).insertAfter($prev);
-                renderLine(id);
+                view.insertAfter(ids[cursorPos - 1]);
                 scrollToCursor();
                 if (done !== undefined) {
                     done();
@@ -113,14 +110,13 @@ define(function (require) {
         ids = ids.slice(0, cursorPos).concat(ids.slice(cursorPos + 1));
         delete trees[id];
         delete validities[id];
-        $lines[id].remove();
-        delete $lines[id];
+        view.remove(id);
         if (cursorPos === ids.length) {
             cursorPos -= 1;
         }
         id = ids[cursorPos];
         cursors.insertAbove(cursor, trees[id]);
-        renderLine(id);
+        view.update(id);
         scrollToCursor();
     };
 
@@ -146,7 +142,7 @@ define(function (require) {
             validities[id] = _.clone(UNKNOWN);
         }
         pollValidities();
-        renderLine(id);
+        view.update(id);
         lineChanged = false;
     };
 
@@ -158,7 +154,7 @@ define(function (require) {
         cursors.remove(cursor);
         cursors.insertAbove(cursor, root);
         trees[id] = root;
-        renderLine(id);
+        view.update(id);
         lineChanged = false;
     };
 
@@ -188,7 +184,7 @@ define(function (require) {
                     if (oldValidity !== undefined) {
                         if (!_.isEqual(oldValidity, validity)) {
                             validities[id] = validity;
-                            renderLine(id);
+                            view.update(id);
                         }
                     }
                 });
@@ -230,51 +226,6 @@ define(function (require) {
     })();
 
     //--------------------------------------------------------------------------
-    // Rendering
-
-    var renderLine = function (id) {
-        if (id === undefined) {
-            id = ids[cursorPos];
-        }
-        var root = arborist.getRoot(trees[id]);
-        var lambda = tree.dump(root);
-        var validity = validities[id];
-        var html = renderValidity(validity) + renderTerm(lambda);
-        $lines[id]
-            .on('click', function () {
-                var newPos = _.indexOf(ids, id);
-                var delta = newPos - cursorPos;
-                moveCursorLine(delta);
-            })
-            .html(html);
-    };
-
-    var renderAllLines = function () {
-        $lines = {};
-        var div = $('#code').empty()[0];
-        var lines = corpus.findAllLines();
-        lines = sortLines(lines);
-        lines.forEach(function (id) {
-            $lines[id] = $('<pre>').attr('id', 'line' + id).appendTo(div);
-            renderLine(id);
-        });
-    };
-
-    var sortLines = function (lines) {
-        /*
-        Return a heuristically sorted list of definitions.
-
-        TODO use approximately topologically-sorted order.
-        (R1) "A Technique for Drawing Directed Graphs" -Gansner et al
-            http://www.graphviz.org/Documentation/TSE93.pdf
-        (R2) "Combinatorial Algorithms for Feedback Problems in Directed Graphs"
-            -Demetrescu and Finocchi
-            http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.1.9435
-        */
-        return lines;
-    };
-
-    //--------------------------------------------------------------------------
     // Cursor Movement
 
     var scrollToCursor = function () {
@@ -289,7 +240,7 @@ define(function (require) {
         var id = ids[cursorPos];
         socket.emit('action', {'moveTo': id});
         cursors.insertAbove(cursor, trees[id]);
-        renderLine(id);
+        view.update(id);
         scrollToCursor();
     };
 
@@ -299,20 +250,26 @@ define(function (require) {
         }
         if (0 <= cursorPos + delta && cursorPos + delta < ids.length) {
             cursors.remove(cursor);
-            renderLine();
+            view.update(ids[cursorPos]);
             cursorPos = (cursorPos + ids.length + delta) % ids.length;
             var id = ids[cursorPos];
             socket.emit('action', {'moveTo': id});
             cursors.insertAbove(cursor, trees[id]);
-            renderLine(id);
+            view.update(id);
             scrollToCursor();
         }
     };
 
     var moveCursor = function (direction) {
         if (cursors.tryMove(cursor, direction)) {
-            renderLine();
+            view.update(ids[cursorPos]);
         }
+    };
+
+    var moveCursorTo = function (id) {
+        var newPos = _.indexOf(ids, id);
+        var delta = newPos - cursorPos;
+        moveCursorLine(delta);
     };
 
     //--------------------------------------------------------------------------
@@ -471,7 +428,16 @@ define(function (require) {
     return {
         main: function () {
             loadAllLines();
-            renderAllLines();
+            view.init({
+                lines: corpus.findAllLines(),
+                events: {'click': moveCursorTo},
+                getLine: function (id) {
+                    return tree.dump(arborist.getRoot(trees[id]));
+                },
+                getValidity: function (id) {
+                    return validities[id];
+                }
+            });
             initCursor();
             takeBearings();
             $(window).off('keydown').on('keydown', navigate.trigger);
