@@ -4,33 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title>Pomagma Editor</title>
 <link rel="icon" type="image/x-icon" href="static/favicon.ico" />
-<link rel="stylesheet/less" type="text/css" href="static/main.less" />
-<script src='static/vendor/less.js'></script>
-<script data-main='static/main.js' src='static/vendor/require.js'></script>
-<script>
-require.config({
-  shim: {
-    'vendor/jquery': {
-      exports: '$'
-    },
-    'vendor/underscore': {
-      exports: '_'
-    },
-    'socket.io': {
-      exports: 'io'
-    },
-    //'vendor/backbone': {
-    //  deps: ['vendor/underscore', 'vendor/jquery'],
-    //  exports: "Backbone"
-    //}
-  },
-  paths: {
-    jquery: 'jquery.min',
-    underscore: 'underscore.min',
-    'socket.io': '../socket.io/socket.io',
-  }
-});
-</script>
+<link rel="stylesheet/css" type="text/css" href="static/main.css" />
+<script src='static/script.js'></script>
 </head>
 <body>
 <div class=code id=code></div>
