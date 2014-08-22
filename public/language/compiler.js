@@ -1377,7 +1377,7 @@ define(function (require) {
                 return templates.I;
             },
             VAR(name), function (match) {
-                return templates.VAR(match.name.replace(/\./g, templates.dot));
+                return templates.VAR(match.name);
             },
             RAND(x, y), function (match) {
                 return templates.RAND(renderInline(match.x), renderInline(match.y));
