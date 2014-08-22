@@ -1,4 +1,4 @@
-module.exports = function () {
+module.exports = (function () {
     'use strict';
 
     var compiler = require('./language/compiler');
@@ -36,4 +36,4 @@ module.exports = function () {
     };
 
     return compiler.renderer(templates);
-};
+})();

@@ -1,5 +1,5 @@
 /* jshint camelcase: false */
-module.exports = function () {
+module.exports = (function () {
     'use strict';
 
     var shapes = {
@@ -32,4 +32,4 @@ module.exports = function () {
             validity.is_top + '-' + validity.is_bot + '-' + validity.pending
         ];
     };
-};
+})();

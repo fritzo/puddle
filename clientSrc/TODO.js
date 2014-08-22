@@ -1,4 +1,4 @@
-module.exports = function () {
+module.exports = (function () {
     'use strict';
 
     /** @constructor */
@@ -16,4 +16,4 @@ module.exports = function () {
 
     /** @exports TODO */
     return TODO;
-};
+})();

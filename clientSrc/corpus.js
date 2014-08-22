@@ -4,7 +4,7 @@
   * FIXME this is all concurrency-unsafe; client assumes it is the only writer.
   */
 
-module.exports = function () {
+module.exports = (function () {
     'use strict';
 
     var ajax = require('jquery').ajax;
@@ -406,4 +406,4 @@ module.exports = function () {
         update: state.update,
         remove: state.remove,
     };
-};
+})();

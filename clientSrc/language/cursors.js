@@ -1,4 +1,4 @@
-module.exports = function () {
+module.exports = (function () {
     'use strict';
 
     var _ = require('underscore');
@@ -167,4 +167,4 @@ module.exports = function () {
     })();
 
     return cursors;
-};
+})();
