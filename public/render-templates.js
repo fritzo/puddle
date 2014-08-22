@@ -11,7 +11,6 @@ define(function (require) {
         BOT: '<span class=atom>&#x22a5;</span>',
         //I: '<span class=atom>&#x1D540;</span>',
         I: '<span class=atom>1</span>',
-        VAR: template('<span class=variable>{0}</span>'),
         APP: template('{0} {1}'),
         COMP: template('{0}<span class=operator>&#8728;</span>{1}'),
         JOIN: template('{0}<span class=operator>|</span>{1}'),
@@ -30,6 +29,9 @@ define(function (require) {
         atom: template('({0})'),
         error: template(
                 '<span class=error>compiler.render error: {0}</span>'),
-        dot: '<b>.</b>'
+        VAR: function (name) {
+            name = name.replace(/\./g, '<b>.</b>');
+            return template('<span class=variable>{0}</span>')(name);
+        }
     };
 });

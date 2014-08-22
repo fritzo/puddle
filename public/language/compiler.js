@@ -1333,8 +1333,7 @@ define(function (require) {
         ASSERT: template('Assert {0}.'),
         CURSOR: template('[{0}]'),
         atom: template('({0})'),
-        error: template('compiler.render error: {0}'),
-        dot: '.'
+        error: template('compiler.render error: {0}')
     };
 
     var renderer = function (templates) {
@@ -1354,7 +1353,7 @@ define(function (require) {
 
         var renderPatt = pattern.match(
             VAR(name), function (match) {
-                return templates.VAR(match.name.replace(/\./g, templates.dot));
+                return templates.VAR(match.name);
             },
             QUOTE(x), function (match) {
                 return templates.QUOTE(renderPatt(match.x));
