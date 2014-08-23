@@ -10,7 +10,7 @@ To build only once with UglifyJS (minified) and run the server,
 
 To start a server that reloads on changes to **any** code
 
-    npm run server-dev      # alias for grunt serve --dev=server
+    npm run dev             # alias for grunt serve --dev=all
 
 To start a server that reloads on changes to **client** code
 
