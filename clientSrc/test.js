@@ -171,5 +171,8 @@ module.exports = (function () {
         return $log;
     };
 
+    // this is only used to pass test object to phantomjs automated tester
+    window.phantomjsTest = test;
+
     return test;
 })();
