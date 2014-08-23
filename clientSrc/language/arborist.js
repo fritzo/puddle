@@ -1,8 +1,9 @@
-define(function (require) {
+/*jslint node: true */
+module.exports = (function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var compiler = require('language/compiler');
+    var _ = require('underscore');
+    var compiler = require('./compiler');
 
     var arborist = {};
 
@@ -69,4 +70,4 @@ define(function (require) {
     };
 
     return arborist;
-});
+})();

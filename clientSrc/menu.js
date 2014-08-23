@@ -1,15 +1,16 @@
-define(function (require) {
+/*jslint node: true */
+module.exports = (function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var $ = require('vendor/jquery');
-    var assert = require('assert');
-    var compiler = require('language/compiler');
-    var tree = require('language/tree');
-    var renderTerm = require('render-term.js');
-    var navigate = require('navigate');
-    var arborist = require('language/arborist');
-    var corpus = require('corpus');
+    var _ = require('underscore');
+    var $ = require('jquery');
+    var assert = require('./assert');
+    var compiler = require('./language/compiler');
+    var tree = require('./language/tree');
+    var renderTerm = require('./render-term.js');
+    var navigate = require('./navigate');
+    var arborist = require('./language/arborist');
+    var corpus = require('./corpus');
 
     var actions;
     var getCursor;
@@ -166,4 +167,4 @@ define(function (require) {
     return {
         init: init
     };
-});
+})();

@@ -1,7 +1,8 @@
-define(function (require) {
+/*jslint node: true */
+module.exports = (function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
+    var _ = require('underscore');
 
     /** @constructor */
     var AssertException = function (message) {
@@ -61,4 +62,4 @@ define(function (require) {
     };
 
     return assert;
-});
+})();

@@ -1,5 +1,6 @@
 /* jshint camelcase: false */
-define(function () {
+/*jslint node: true */
+module.exports = (function () {
     'use strict';
 
     var shapes = {
@@ -32,4 +33,4 @@ define(function () {
             validity.is_top + '-' + validity.is_bot + '-' + validity.pending
         ];
     };
-});
+})();

@@ -3,16 +3,16 @@
   *
   * FIXME this is all concurrency-unsafe; client assumes it is the only writer.
   */
-
-define(function (require) {
+/*jslint node: true */
+module.exports = (function () {
     'use strict';
 
-    var ajax = require('vendor/jquery').ajax;
-    var _ = require('vendor/underscore');
-    var assert = require('assert');
-    var log = require('log');
-    var test = require('test');
-    var symbols = require('symbols');
+    var ajax = require('jquery').ajax;
+    var _ = require('underscore');
+    var assert = require('./assert');
+    var log = require('./log');
+    var test = require('./test');
+    var symbols = require('./symbols');
 
     var getFreeVariables = function (code) {
         var free = {};
@@ -406,4 +406,4 @@ define(function (require) {
         update: state.update,
         remove: state.remove,
     };
-});
+})();

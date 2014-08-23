@@ -28,9 +28,11 @@ var server = (function () {
         });
         server.stdout.on('data', function (data) {
             console.log('server: ' + data);
-            if (queue !== undefined) {
-                queue.forEach(function (cb) { cb(); });
-                queue = undefined;
+            if (/^serving/.test(data)) {  // HACK
+                if (queue !== undefined) {
+                    queue.forEach(function (cb) { cb(); });
+                    queue = undefined;
+                }
             }
         });
     };

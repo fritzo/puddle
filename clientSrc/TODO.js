@@ -1,4 +1,5 @@
-define(function () {
+/*jslint node: true */
+module.exports = (function () {
     'use strict';
 
     /** @constructor */
@@ -16,4 +17,4 @@ define(function () {
 
     /** @exports TODO */
     return TODO;
-});
+})();

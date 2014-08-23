@@ -1,6 +1,7 @@
 /* jshint strict: false */
+/*jslint node: true */
 /* global self */
-define(function () {
+module.exports = (function () {
     //'use strict';
 
     var log;
@@ -37,4 +38,4 @@ define(function () {
 
     return log;
 
-});
+})();

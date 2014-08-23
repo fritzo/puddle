@@ -1,4 +1,5 @@
-define({
+/*jslint node: true */
+module.exports = {
     'backspace': 8,
     'tab': 9,
     'enter': 13,
@@ -96,4 +97,4 @@ define({
     'backslash': 220,
     'closebracket': 221,
     'quote': 222
-});
+};

@@ -1,13 +1,14 @@
 /* jshint unused: false */
-define(function (require) {
+/*jslint node: true */
+module.exports = (function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var $ = require('vendor/jquery');
-    var io = require('socket.io');
-    var assert = require('assert');
-    var log = require('log');
-    var keycode = require('keycode');
+    var _ = require('underscore');
+    var $ = require('jquery');
+    var io = require('socket.io-client');
+    var assert = require('./assert');
+    var log = require('./log');
+    var keycode = require('./keycode');
 
     var socket = io();
 
@@ -224,4 +225,4 @@ define(function (require) {
         search: search,
         choose: choose
     };
-});
+})();

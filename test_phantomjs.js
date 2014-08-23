@@ -22,15 +22,11 @@ console.log('loading page ' + ADDRESS);
 page.open(ADDRESS, function (status) {
     assert(status === 'success', 'failed to load page: ' + status);
 
-    page.evaluate(function () {
-        require(['test'], function (test) { window.test = test; });
-    });
-
     var waitCount = 10;
     var validate = function () {
         console.log('checking...');
         var testState = page.evaluate(function () {
-            var test = window.test;
+            var test = window.phantomjsTest;
             return test && {
                 hasRun: test.hasRun(),
                 failCount: test.failCount(),

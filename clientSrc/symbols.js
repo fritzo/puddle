@@ -1,9 +1,10 @@
-define(function (require) {
+/*jslint node: true */
+module.exports = (function () {
     'use strict';
 
-    var _ = require('vendor/underscore');
-    var assert = require('assert');
-    var test = require('test');
+    var _ = require('underscore');
+    var assert = require('./assert');
+    var test = require('./test');
 
     var symbols = {};
 
@@ -82,4 +83,4 @@ define(function (require) {
     });
 
     return symbols;
-});
+})();
