@@ -8,6 +8,7 @@
     "body-parser": "^1.6.1",
     "debug": "^1.0.4",
     "express": "^4.8.3",
+    "gulp-nodemon": "^1.0.4",
     "jquery": "^2.1.1",
     "pomagma": ">=0.1.8",
     "socket.io": "^1.0.6",
@@ -32,7 +33,10 @@
     "lint": "jshint main.js test* lib clientSrc",
     "gulp": "gulp",
     "mocha": "mocha --reporter spec test_main.js",
-    "test": "npm run lint && npm run gulp && npm run mocha"
+    "test": "npm run lint && npm run gulp && npm run mocha",
+    "server": "gulp serve",
+    "dev-server": "gulp serve --dev=true",
+    "clean": "cd public && rm -f index.html main.css* main.js"
   },
   "repository": {
     "type": "git",

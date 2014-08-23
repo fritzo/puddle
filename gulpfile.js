@@ -4,6 +4,7 @@ var gulp = require('gulp'),
     jshint = require('gulp-jshint'),
     argv = require('yargs').argv,
     browserify = require('gulp-browserify'),
+    nodemon = require('gulp-nodemon'),
     less = require('gulp-less-sourcemap');
 
 gulp.task('default', function () {
@@ -20,7 +21,7 @@ gulp.task('default', function () {
     gulp.src('./clientSrc/main.js')
         .pipe(browserify({
             insertGlobals: true,
-            debug:argv.dev
+            debug: argv.dev
         }))
         .pipe(gulpif(!argv.dev, uglify()))
         .pipe(gulp.dest('./public'))
@@ -38,4 +39,20 @@ gulp.task('watch', ['default'], function () {
     watcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     });
+});
+
+gulp.task('serve', ['default'], function () {
+    if (argv.dev) {
+        nodemon({
+            script: 'main.js',
+            ext: 'html js less',
+            ignore: ['public/*', 'test_*.js', 'test/**/*']
+        })
+        .on('change', ['default'])
+        .on('restart', function () {
+            console.log('restarted server');
+        });
+    } else {
+        require('./main');
+    }
 });
