@@ -1,3 +1,6 @@
+/* jshint node: true */
+'use strict';
+
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
 var uglify = require('gulp-uglify');
@@ -28,15 +31,22 @@ gulp.task('default', function () {
 });
 
 gulp.task('lint', function() {
-    return gulp.src(['./clientSrc/**/*.js',"./server.js","./lib/**/*.js"])
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
+    return gulp.src([
+        './*.js',
+        './lib/**/*.js',
+        './test/**/*.js',
+        './clientSrc/**/*.js'
+    ])
+    .pipe(jshint())
+    .pipe(jshint.reporter('default'));
 });
 
 var watchClient = function () {
     var watcher = gulp.watch('./clientSrc/**/*', ['default']);
     watcher.on('change', function (event) {
-        console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+        console.log(
+            'File ' + event.path + ' was ' + event.type + ', running tasks...'
+        );
     });
 };
 
