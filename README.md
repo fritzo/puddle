@@ -9,14 +9,15 @@ Install node.js and npm. Then
 
     git clone https://github.com/fritzo/puddle
     cd puddle
-    npm update
+    npm install
+    npm run gulp
     npm test
 
 ## Quick Start
 
 To run a local Puddle server using the public Pomagma server:
 
-1.  Install Puddle
+1.  Install Puddle as above
 
 3.  Start a Puddle server
 
@@ -53,12 +54,3 @@ Puddle was factored out of [Pomagma](https://github.com/fritzo/pomagma) in 2014.
 
 Copyright 2005-2014 Fritz Obermeyer.<br/>
 Puddle is licensed under the [MIT license](/LICENSE).
-
-Puddle is distributed with the following third-party libraries:
-
--   [Underscore.js](http://underscorejs.org) - MIT
--   [jQuery](http://jquery.com/) - MIT
--   [less.js](https://github.com/less/less.js) - Apache 2
--   [require.js](https://github.com/jrburke/requirejs) - new BSD | MIT
--   [Signika](http://www.google.com/fonts/specimen/Signika) font -
-    [OFL](http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
