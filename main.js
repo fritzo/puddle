@@ -11,20 +11,23 @@ var corpus = require('./lib/corpus');
 var pomagma = require('pomagma');
 var socketio = require('socket.io');
 var mongoose = require('mongoose');
-var connection = mongoose.connect('mongodb://localhost/puddle');
 var db = mongoose.connection;
-var Log = mongoose.model('Log', { user: Number, action: mongoose.Schema.Types.Mixed});
+var Log = mongoose.model('Log', {
+    user: Number,
+    action: mongoose.Schema.Types.Mixed
+});
 
 var analyst = pomagma.analyst.connect(
         process.env.POMAGMA_ANALYST_ADDRESS ||
         'tcp://pomagma.org:34936');
 
+mongoose.connect('mongodb://localhost/puddle');
 db.on('error', function (err) {
-    console.log("Error in mongoose connection:", err);
+    console.log('Error in mongoose connection:', err);
     throw new Error(err);
 });
 db.once('open', function () {
-    console.log("Mongoose connected to DB")
+    console.log('Mongoose connected to DB');
 });
 
 var app = express();
@@ -113,7 +116,7 @@ var userId = 0;
 io.on('connection', function (socket) {
     var id = userId++;
     var logAction = function (action) {
-        console.log("Logger: user:", id, " action:", action);
+        console.log('Logger: user:', id, ' action:', action);
         var log = new Log({user: id, action: action});
         log.save();
     };
