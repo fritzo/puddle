@@ -33,7 +33,7 @@
     "lint": "jshint main.js test* lib clientSrc",
     "gulp": "gulp",
     "mocha": "mocha --reporter spec test_main.js",
-    "test": "npm run lint && npm run gulp && npm run mocha"
+    "test": "npm run gulp && npm run lint && npm run mocha"
   },
   "repository": {
     "type": "git",
