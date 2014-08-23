@@ -28,7 +28,7 @@ gulp.task('default', function () {
 });
 
 gulp.task('lint', function() {
-    return gulp.src('./clientSrc/**/*.js')
+    return gulp.src(['./clientSrc/**/*.js',"./main.js","./lib/**/*.js"])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
