@@ -10,7 +10,6 @@ Install node.js and npm. Then
     git clone https://github.com/fritzo/puddle
     cd puddle
     npm install
-    npm run gulp
     npm test
 
 ## Quick Start
