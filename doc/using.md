@@ -4,23 +4,17 @@
 
 To build only once with UglifyJS (minified) and run the server,
 
-    npm run server
-
-which is an alias for
-
-    grunt
-    nodejs main.js
+    npm start               # alias for: grunt && nodejs main.js
 
 ## Running during development
 
-To rebuild on watch and run through nodemon
+To start a server that reloads on changes to **any** code
 
-    npm run dev-server
+    npm run server-dev      # alias for grunt serve --dev=server
 
-which is an alias for the two processes
+To start a server that reloads on changes to **client** code
 
-    grunt watch &
-    nodemin main.js
+    npm run client-dev      # alias for grunt serve --dev=client
 
 ## Debugging Puddle
 

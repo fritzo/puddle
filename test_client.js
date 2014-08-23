@@ -16,7 +16,7 @@ var server = (function () {
         assert(server === undefined, 'start server twice');
         assert(queue !== undefined, 'start server twice');
         process.env.PUDDLE_PORT = PORT;
-        server = fork('main.js', [], {silent: true});
+        server = fork('server.js', [], {silent: true});
         server.on('close', function (code) {
             if (code !== 0) {
                 console.error('server exited with code ' + code);

@@ -5,12 +5,12 @@ Puddle is a reactive coding environment backed by the
 
 ## Installing
 
-Install node.js and npm. Then
+Install node, npm, and mongodb. Then
 
     git clone https://github.com/fritzo/puddle
     cd puddle
     npm install
-    npm test
+    npm test        # optional
 
 ## Quick Start
 

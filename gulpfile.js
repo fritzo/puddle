@@ -18,7 +18,7 @@ gulp.task('default', function () {
         .pipe(gulp.dest('./public'));
 
     //Browserify
-    gulp.src('./clientSrc/main.js')
+    gulp.src('./clientSrc/server.js')
         .pipe(browserify({
             insertGlobals: true,
             debug: argv.dev
@@ -29,22 +29,26 @@ gulp.task('default', function () {
 });
 
 gulp.task('lint', function() {
-    return gulp.src(['./clientSrc/**/*.js',"./main.js","./lib/**/*.js"])
+    return gulp.src(['./clientSrc/**/*.js',"./server.js","./lib/**/*.js"])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task('watch', ['default'], function () {
+var watchClient = function () {
     var watcher = gulp.watch('./clientSrc/**/*', ['default']);
     watcher.on('change', function (event) {
         console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
     });
-});
+};
+
+gulp.task('watch', ['default'], watchClient);
 
 gulp.task('serve', ['default'], function () {
-    if (argv.dev) {
+    if (argv.dev === 'client') {
+        watch();
+    } else if (arv.dev) {
         nodemon({
-            script: 'main.js',
+            script: 'server.js',
             ext: 'html js less',
             ignore: ['public/*', 'test_*.js', 'test/**/*']
         })
@@ -53,6 +57,6 @@ gulp.task('serve', ['default'], function () {
             console.log('restarted server');
         });
     } else {
-        require('./main');
+        require('./server');
     }
 });

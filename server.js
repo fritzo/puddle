@@ -1,7 +1,7 @@
 /* jshint node:true */
 'use strict';
 
-var debug = require('debug')('puddle:main');
+var debug = require('debug')('puddle:server');
 var assert = require('assert');
 var path = require('path');
 var _ = require('underscore');
