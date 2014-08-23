@@ -1,11 +1,11 @@
-var gulp = require('gulp'),
-    gulpif = require('gulp-if'),
-    uglify = require('gulp-uglify'),
-    jshint = require('gulp-jshint'),
-    argv = require('yargs').argv,
-    browserify = require('gulp-browserify'),
-    nodemon = require('gulp-nodemon'),
-    less = require('gulp-less-sourcemap');
+var gulp = require('gulp');
+var gulpif = require('gulp-if');
+var uglify = require('gulp-uglify');
+var jshint = require('gulp-jshint');
+var argv = require('yargs').argv;
+var browserify = require('gulp-browserify');
+var nodemon = require('gulp-nodemon');
+var less = require('gulp-less-sourcemap');
 
 gulp.task('default', function () {
     //copy index.html
@@ -24,8 +24,7 @@ gulp.task('default', function () {
             debug: argv.dev
         }))
         .pipe(gulpif(!argv.dev, uglify()))
-        .pipe(gulp.dest('./public'))
-
+        .pipe(gulp.dest('./public'));
 });
 
 gulp.task('lint', function() {
@@ -45,8 +44,9 @@ gulp.task('watch', ['default'], watchClient);
 
 gulp.task('serve', ['default'], function () {
     if (argv.dev === 'client') {
-        watch();
-    } else if (arv.dev) {
+        watchClient();
+        require('./server');
+    } else if (argv.dev) {
         nodemon({
             script: 'server.js',
             ext: 'html js less',

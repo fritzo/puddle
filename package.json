@@ -36,7 +36,7 @@
     "mocha": "mocha --reporter spec test_main.js",
     "test": "npm run gulp && npm run lint && npm run mocha",
     "start": "gulp serve",
-    "client-dev": "gulp watch --dev=true",
+    "client-dev": "gulp serve --dev=true",
     "server-dev": "gulp serve --dev=true",
     "clean": "cd public && rm -f index.html main.css* server.js"
   },
