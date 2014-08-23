@@ -21,7 +21,7 @@ gulp.task('default', function () {
         .pipe(gulp.dest('./public'));
 
     //Browserify
-    gulp.src('./clientSrc/server.js')
+    gulp.src('./clientSrc/main.js')
         .pipe(browserify({
             insertGlobals: true,
             debug: argv.dev

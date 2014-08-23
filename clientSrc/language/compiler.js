@@ -109,13 +109,13 @@ module.exports = (function () {
     });
 
     var printLine = function (term) {
-        var name = term[0];
-        if (name === 'ASSERT') {
+        var token = term[0];
+        if (token === 'ASSERT') {
             return {
-                name: null,
+                token: null,
                 code: print(term[1])
             };
-        } else if (name === 'DEFINE') {
+        } else if (token === 'DEFINE') {
             return {
                 name: term[1][1],
                 code: print(term[2])
@@ -127,23 +127,23 @@ module.exports = (function () {
     // Symbols
 
     var symbols = {};
-    var newSymbol = function (name, arity, parser) {
+    var newSymbol = function (token, arity, parser) {
         arity = arity || 0;
-        parse.declareSymbol(name, arity, parser);
+        parse.declareSymbol(token, arity, parser);
         var symbol;
         if (arity === 0) {
-            symbol = name;
+            symbol = token;
         } else {
-            var errorMessage = name +
+            var errorMessage = token +
                 '(...) called with wrong number of arguments';
             symbol = function () {
                 assert.equal(arguments.length, arity, errorMessage);
-                return [name].concat(_.toArray(arguments));
+                return [token].concat(_.toArray(arguments));
             };
-            //symbol.name = name;  // errors by setting a read only property
+            symbol.token = token;
             symbol.arity = arity;
         }
-        symbols[name] = symbol;
+        symbols[token] = symbol;
         return symbol;
     };
 
@@ -168,6 +168,7 @@ module.exports = (function () {
     var QNLESS = newSymbol('QNLESS');
     var QEQUAL = newSymbol('QEQUAL');
     var HOLE = newSymbol('HOLE');
+    var PAREN = newSymbol('PAREN', 1);
     var QUOTE = newSymbol('QUOTE', 1);
     var CURSOR = newSymbol('CURSOR', 1);
     var ASSERT = newSymbol('ASSERT', 1);
@@ -1296,191 +1297,162 @@ module.exports = (function () {
     });
 
     //--------------------------------------------------------------------------
-    // Render : lambda -> html
-    //
-    // see http://www.fileformat.info/info/unicode/category/Sm/list.htm
+    // Parenthesize
 
-    var template = function (string) {
-        return function () {
-            var args = arguments;
-            return string.replace(/{(\d+)}/g, function (match, pos) { 
-                return args[pos];
-            });
-        };
-    };
-
-    test('compiler.render.template', function () {
-        var t = template('test {0} test {1} test {0} test');
-        assert.equal(t('a', 'b'), 'test a test b test a test');
-    });
-
-    template.defaults = {
-        HOLE: '?',
-        TOP: 'T',
-        BOT: '_',
-        I: '1',
-        VAR: template('{0}'),
-        APP: template('{0} {1}'),
-        COMP: template('{0}*{1}'),
-        JOIN: template('{0}|{1}'),
-        RAND: template('({0}+{1})'),
-        LAMBDA: template('lambda {0} {1}'),
-        LETREC: template('let {0} = {1}. {2}'),
-        QUOTE: template('{{0}}'),
-        LESS: template('{{0} [= {1}}'),
-        NLESS: template('{{0} [!= {1}}'),
-        EQUAL: template('{{0} = {1}}'),
-        DEFINE: template('Define {0} = {1}.'),
-        ASSERT: template('Assert {0}.'),
-        CURSOR: template('[{0}]'),
-        atom: template('({0})'),
-        error: template('compiler.render error: {0}')
-    };
-
-    var renderer = function (templates) {
-
-        if (templates === undefined) {
-            templates = template.defaults;
-        } else {
-            assert.equal(
-                _.keys(templates).sort(),
-                _.keys(template.defaults).sort());
-        }
+    var parenthesize = (function () {
 
         var x = pattern.variable('x');
         var y = pattern.variable('y');
         var z = pattern.variable('z');
         var name = pattern.variable('name');
+        var atom = pattern.variable('atom', _.isString);
 
-        var renderPatt = pattern.match(
+        var tPatt = pattern.match(
             VAR(name), function (match) {
-                return templates.VAR(match.name);
+                return VAR(match.name);
             },
             QUOTE(x), function (match) {
-                return templates.QUOTE(renderPatt(match.x));
+                return QUOTE(tPatt(match.x));
             },
             CURSOR(x), function (match) {
-                return templates.CURSOR(renderPatt(match.x));
+                return CURSOR(tPatt(match.x));
             }
         );
 
-        var renderAtom = pattern.match(
-            HOLE, function () {
-                return templates.HOLE;
-            },
-            TOP, function () {
-                return templates.TOP;
-            },
-            BOT, function () {
-                return templates.BOT;
-            },
-            I, function () {
-                return templates.I;
+        var tAtom = pattern.match(
+            atom, function (match) {
+                return match.atom;
             },
             VAR(name), function (match) {
-                return templates.VAR(match.name);
+                return VAR(match.name);
             },
             RAND(x, y), function (match) {
-                return templates.RAND(renderInline(match.x), renderInline(match.y));
+                return RAND(tInline(match.x), tInline(match.y));
             },
             QUOTE(x), function (match) {
-                return templates.QUOTE(renderInline(match.x));
+                return QUOTE(tInline(match.x));
             },
             LESS(x, y), function (match) {
-                return templates.LESS(renderJoin(match.x), renderJoin(match.y));
+                return LESS(tJoin(match.x), tJoin(match.y));
             },
             NLESS(x, y), function (match) {
-                return templates.NLESS(renderJoin(match.x), renderJoin(match.y));
+                return NLESS(tJoin(match.x), tJoin(match.y));
             },
             EQUAL(x, y), function (match) {
-                return templates.EQUAL(renderJoin(match.x), renderJoin(match.y));
+                return EQUAL(tJoin(match.x), tJoin(match.y));
             },
             CURSOR(x), function (match) {
-                return templates.CURSOR(renderAtom(match.x));
-            },
-            x, function (match, failed) {
-                if (failed) {
-                    log('failed to render: ' + JSON.stringify(match.x));
-                    return templates.error(match.x);
-                } else {
-                    return templates.atom(renderInline(match.x, true));
-                }
-            }
-        );
-
-        var renderComp = pattern.match(
-            COMP(x, y), function (match) {
-                return templates.COMP(renderComp(match.x), renderComp(match.y));
-            },
-            CURSOR(x), function (match) {
-                return templates.CURSOR(renderComp(match.x));
-            },
-            x, function (match, failed) {
-                return renderAtom(match.x, failed);
-            }
-        );
-
-        var renderApp = pattern.match(
-            APP(x, y), function (match) {
-                return templates.APP(renderApp(match.x), renderAtom(match.y));
-            },
-            CURSOR(x), function (match) {
-                return templates.CURSOR(renderApp(match.x));
-            },
-            x, function (match, failed) {
-                return renderComp(match.x, failed);
-            }
-        );
-
-        var renderJoin = pattern.match(
-            JOIN(x, y), function (match) {
-                return templates.JOIN(renderJoin(match.x), renderJoin(match.y));
-            },
-            CURSOR(x), function (match) {
-                return templates.CURSOR(renderJoin(match.x));
-            },
-            x, function (match, failed) {
-                return renderApp(match.x, failed);
-            }
-        );
-
-        var renderInline = pattern.match(
-            LAMBDA(x, y), function (match) {
-                return templates.LAMBDA(renderPatt(match.x), renderInline(match.y));
-            },
-            LETREC(x, y, z), function (match) {
-                return templates.LETREC(
-                    renderPatt(match.x),
-                    renderJoin(match.y),
-                    renderInline(match.z));
-            },
-            CURSOR(x), function (match) {
-                return templates.CURSOR(renderInline(match.x));
-            },
-            x, function (match, failed) {
-                return renderJoin(match.x, failed);
-            }
-        );
-
-        var render = pattern.match(
-            DEFINE(x, y), function (match) {
-                return templates.DEFINE(renderAtom(match.x), renderJoin(match.y));
-            },
-            ASSERT(x), function (match) {
-                return templates.ASSERT(renderJoin(match.x));
-            },
-            CURSOR(x), function (match) {
-                return templates.CURSOR(render(match.x));
+                return CURSOR(tAtom(match.x));
             },
             x, function (match) {
-                return renderInline(match.x);
+                return PAREN(tInline(match.x));
             }
         );
 
-        return render;
+        var tComp = pattern.match(
+            COMP(x, y), function (match) {
+                return COMP(tComp(match.x), tComp(match.y));
+            },
+            CURSOR(x), function (match) {
+                return CURSOR(tComp(match.x));
+            },
+            x, function (match) {
+                return tAtom(match.x);
+            }
+        );
+
+        var tApp = pattern.match(
+            APP(x, y), function (match) {
+                return APP(tApp(match.x), tAtom(match.y));
+            },
+            CURSOR(x), function (match) {
+                return CURSOR(tApp(match.x));
+            },
+            x, function (match) {
+                return tComp(match.x);
+            }
+        );
+
+        var tJoin = pattern.match(
+            JOIN(x, y), function (match) {
+                return JOIN(tJoin(match.x), tJoin(match.y));
+            },
+            CURSOR(x), function (match) {
+                return CURSOR(tJoin(match.x));
+            },
+            x, function (match) {
+                return tApp(match.x);
+            }
+        );
+
+        var tInline = pattern.match(
+            LAMBDA(x, y), function (match) {
+                return LAMBDA(tPatt(match.x), tInline(match.y));
+            },
+            LETREC(x, y, z), function (match) {
+                return LETREC(
+                    tPatt(match.x),
+                    tJoin(match.y),
+                    tInline(match.z));
+            },
+            CURSOR(x), function (match) {
+                return CURSOR(tInline(match.x));
+            },
+            x, function (match) {
+                return tJoin(match.x);
+            }
+        );
+
+        var t = pattern.match(
+            DEFINE(x, y), function (match) {
+                return DEFINE(tAtom(match.x), tJoin(match.y));
+            },
+            ASSERT(x), function (match) {
+                return ASSERT(tJoin(match.x));
+            },
+            CURSOR(x), function (match) {
+                return CURSOR(t(match.x));
+            },
+            x, function (match) {
+                return tInline(match.x);
+            }
+        );
+
+        return t;
+    })();
+
+    //------------------------------------------------------------------------
+    // Folding
+
+    var fold = function (fun) {
+        var array = pattern.variable('array', _.isArray);
+        var string = pattern.variable('string', _.isString);
+
+        var t = pattern.match(
+            VAR(string), function (match) {
+                return fun('VAR', match.string);
+            },
+            array, function (match) {
+                var array = match.array;
+                var args = [];
+                for (var i = 1; i < array.length; ++i) {
+                    args.push(t(array[i]));
+                }
+                return fun(array[0], args);
+            },
+            string, function (match) {
+                return fun(match.string, []);
+            }
+        );
+
+        return t;
     };
 
-    renderer.template = template;
+    test('compiler.fold', function () {
+        // TODO add tests
+    });
+
+    //------------------------------------------------------------------------
 
     /** @exports compiler */
     return {
@@ -1505,8 +1477,9 @@ module.exports = (function () {
             return print(code);
         },
         print: print,
-        renderer: renderer,
+        fold: fold,
         enumerateFresh: fresh.enumerate,
         substitute: substitute,
+        parenthesize: parenthesize,
     };
 })();

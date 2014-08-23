@@ -4,6 +4,7 @@ module.exports = (function () {
 
     var _ = require('underscore');
     var $ = require('jquery');
+    var compiler = require('./language/compiler.js');
     var renderTerm = require('./render-term.js');
     var renderValidity = require('./render-validity.js');
 
@@ -29,6 +30,7 @@ module.exports = (function () {
         var line = getLine(id);
         var validity = getValidity(id);
         var $line = $lines[id];
+        line = compiler.parenthesize(line);
         $line.html(renderValidity(validity) + renderTerm(line));
         _.each(events, function (callback, eventName) {
             $line.on(eventName, function () { callback(id); });

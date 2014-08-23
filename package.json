@@ -38,7 +38,7 @@
     "start": "gulp serve",
     "client-dev": "gulp serve --dev=true",
     "server-dev": "gulp serve --dev=true",
-    "clean": "cd public && rm -f index.html main.css* server.js"
+    "clean": "cd public && rm -f index.html main.css* main.js"
   },
   "repository": {
     "type": "git",
