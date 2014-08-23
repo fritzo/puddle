@@ -21,7 +21,7 @@ To run a local Puddle server using the public Pomagma server:
 
 3.  Start a Puddle server
 
-        npm run server              # Ctrl-C to stop
+        npm start               # Ctrl-C to stop
 
 4.  In a browser, navigate to http://localhost:34934
 

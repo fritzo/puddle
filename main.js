@@ -10,10 +10,25 @@ var bodyParser = require('body-parser');
 var corpus = require('./lib/corpus');
 var pomagma = require('pomagma');
 var socketio = require('socket.io');
+var mongoose = require('mongoose');
+var db = mongoose.connection;
+var Log = mongoose.model('Log', {
+    user: Number,
+    action: mongoose.Schema.Types.Mixed
+});
 
 var analyst = pomagma.analyst.connect(
-    process.env.POMAGMA_ANALYST_ADDRESS ||
-    'tcp://pomagma.org:34936');
+        process.env.POMAGMA_ANALYST_ADDRESS ||
+        'tcp://pomagma.org:34936');
+
+mongoose.connect('mongodb://localhost/puddle');
+db.on('error', function (err) {
+    console.log('Error in mongoose connection:', err);
+    throw new Error(err);
+});
+db.once('open', function () {
+    console.log('Mongoose connected to DB');
+});
 
 var app = express();
 app.use(bodyParser.urlencoded({extended: false}));
@@ -84,9 +99,9 @@ var PORT = process.env.PUDDLE_PORT || 34934;
 process.on('uncaughtException', function (err) {
     if (err.errno === 'EADDRINUSE') {
         console.log(
-            'ERROR port ' + PORT + ' is already in use.\n' +
-            '    Stop existing puddle server or try another port, e.g.\n' +
-            '    PUDDLE_PORT=' + (PORT + 10) + ' nodejs main.js'
+                'ERROR port ' + PORT + ' is already in use.\n' +
+                '    Stop existing puddle server or try another port, e.g.\n' +
+                '    PUDDLE_PORT=' + (PORT + 10) + ' nodejs main.js'
         );
     } else {
         console.log('Uncaught exception: ' + err);
@@ -100,12 +115,14 @@ var userId = 0;
 
 io.on('connection', function (socket) {
     var id = userId++;
-    console.log('user ' + id + ' connected');
+    var logAction = function (action) {
+        console.log('Logger: user:', id, ' action:', action);
+        var log = new Log({user: id, action: action});
+        log.save();
+    };
+    logAction('connected');
     socket.on('disconnect', function () {
-        console.log('user ' + id + ' disconnected');
+        logAction('disconnected');
     });
-    socket.on('action', function (message) {
-        console.log('user ' + id + ' action: ' + message);
-        // TODO log to database
-    });
+    socket.on('action', logAction);
 });

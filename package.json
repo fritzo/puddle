@@ -10,6 +10,7 @@
     "express": "^4.8.3",
     "gulp-nodemon": "^1.0.4",
     "jquery": "^2.1.1",
+    "mongoose": "^3.8.15",
     "pomagma": ">=0.1.8",
     "socket.io": "^1.0.6",
     "underscore": "^1.6.0"
@@ -33,9 +34,9 @@
     "lint": "jshint main.js test* lib clientSrc",
     "gulp": "gulp",
     "mocha": "mocha --reporter spec test_main.js",
-    "test": "npm run lint && npm run gulp && npm run mocha",
-    "server": "gulp serve",
-    "dev-server": "gulp serve --dev=true",
+    "test": "npm run gulp && npm run lint && npm run mocha",
+    "start": "gulp serve",
+    "start-dev": "gulp serve --dev=true",
     "clean": "cd public && rm -f index.html main.css* main.js"
   },
   "repository": {
