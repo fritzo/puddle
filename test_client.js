@@ -1,4 +1,3 @@
-/* jshint node:true */
 'use strict';
 
 var PORT = 34935;

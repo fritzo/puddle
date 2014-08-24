@@ -10,7 +10,6 @@
 * [Client `test.js`](#testjs)
 * [Client `corpus.js`](#corpusjs)
 * [Client `navigate.js`](#navigatejs)
-* [Client `symbols.js`](#symbolsjs)
 * [Client `view.js`](#viewjs)
 * [Client `menu.js`](#menujs)
 * [Client `editor.js`](#editorjs)
@@ -210,14 +209,6 @@ Each client stores an in-memory copy.
 
     // create new global variable name
     navigate.choose(isValidFilter, acceptName, cancel);
-
-### `symbols.js` <a name="symbolsjs"/>
-
-    var symbols = require('./symbols');
-    assert(symbols.isToken('a'));
-    assert(symbols.isKeyword('JOIN'));
-    assert(symbols.isLocal('a'));
-    assert(symbols.isGlobal('util.pair'));
 
 ### `view.js` <a name="viewjs"/>
 

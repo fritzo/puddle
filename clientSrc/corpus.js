@@ -7,40 +7,10 @@
 
 var ajax = require('jquery').ajax;
 var _ = require('underscore');
+var tokens = require('puddle-syntax').tokens;
 var assert = require('./assert');
 var test = require('./test');
-var symbols = require('./symbols');
 var log = require('./log');
-
-var getFreeVariables = function (code) {
-    var free = {};
-    code.split(/\s+/).forEach(function (token) {
-        assert(symbols.isToken(token), 'invalid token: ' + token);
-        if (!symbols.isKeyword(token)) {
-            assert(symbols.isGlobal(token), 'invalid global: ' + token);
-            free[token] = null;
-        }
-    });
-    return free;
-};
-
-test('no-free-variables', function () {
-    var code = 'APP J I';
-    var free = {};
-    assert.equal(getFreeVariables(code), free);
-});
-
-test('one-free-variables', function () {
-    var code = 'APP CI types.div';
-    var free = {'types.div': null};
-    assert.equal(getFreeVariables(code), free);
-});
-
-test('many-free-variables', function () {
-    var code = 'APP APP P COMP types.div types.semi types.div';
-    var free = {'types.div': null, 'types.semi': null};
-    assert.equal(getFreeVariables(code), free);
-});
 
 //--------------------------------------------------------------------------
 // client state
@@ -64,11 +34,11 @@ var state = (function () {
     var occurrences = {};  // name -> (set id)
 
     state.canDefine = function (name) {
-        return symbols.isGlobal(name) && definitions[name] === undefined;
+        return tokens.isGlobal(name) && definitions[name] === undefined;
     };
 
     var insertDefinition = function (name, id) {
-        assert(symbols.isGlobal(name));
+        assert(tokens.isGlobal(name));
         assert(definitions[name] === undefined);
         assert(occurrences[name] === undefined);
         definitions[name] = id;
@@ -104,7 +74,7 @@ var state = (function () {
         if (line.name !== null) {
             insertDefinition(line.name, id);
         }
-        line.free = getFreeVariables(line.code);
+        line.free = tokens.getFreeVariables(line.code);
         for (var name in line.free) {
             insertOccurrence(name, id);
         }
@@ -155,7 +125,7 @@ var state = (function () {
         });
         linesToLoad.forEach(function (line) {
             var id = line.id;
-            line.free = getFreeVariables(line.code);
+            line.free = tokens.getFreeVariables(line.code);
             for (var name in line.free) {
                 insertOccurrence(name, id);
             }
@@ -211,7 +181,7 @@ var state = (function () {
             removeOccurrence(name, id);
         }
         line.code = newline.code;
-        line.free = getFreeVariables(line.code);
+        line.free = tokens.getFreeVariables(line.code);
         for (name in line.free) {
             insertOccurrence(name, id);
         }
@@ -233,20 +203,20 @@ var state = (function () {
             var name = line.name;
             if (name !== null) {
                 assert(
-                    symbols.isGlobal(name),
+                    tokens.isGlobal(name),
                     'name is not global: ' + name);
                 assert(
-                    !symbols.isKeyword(name),
+                    !tokens.isKeyword(name),
                     'name is keyword: ' + name);
                 assert(
                     definitions[name] === line.id,
                     'missing definition: ' + name);
             }
-            var free = getFreeVariables(line.code);
+            var free = tokens.getFreeVariables(line.code);
             assert.equal(line.free, free, 'wrong free variables:');
             for (name in free) {
                 assert(
-                    symbols.isGlobal(name),
+                    tokens.isGlobal(name),
                     'name is not global: ' + name);
                 var occurrencesName = occurrences[name];
                 assert(

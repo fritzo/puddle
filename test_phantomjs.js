@@ -3,7 +3,7 @@
 /*global setTimeout: false */
 'use strict';
 
-var TEST_COUNT = 9;  // this must be updated every time tests are added
+var TEST_COUNT = 2;  // this must be updated every time tests are added
 var PORT = 34935;
 var ADDRESS = 'http://localhost:' + PORT + '/#test';
 
