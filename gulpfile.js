@@ -86,11 +86,12 @@ gulp.task('watchLint', watcher(['lint'], [
 
 gulp.task('watchMocha', watcher(['mocha'], ['./test/**/*.js']));
 
-gulp.task('watch', watcher(['default'],['./clientSrc/**/*']));
+gulp.task('watch', watcher(['default'],['./clientSrc/**/*']) );
+
 
 gulp.task('serve', ['default'], function () {
   if (argv.dev === 'client') {
-    watchClient();
+    watcher(['default'],['./clientSrc/**/*'])();
     require('./server');
   } else if (argv.dev) {
     nodemon({
