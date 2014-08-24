@@ -41,13 +41,13 @@
   },
   "scripts": {
     "karma": "./node_modules/karma/bin/karma start",
-    "lint": "gulp lint",
-    "gulp": "gulp",
-    "mocha": "gulp mocha",
+    "lint": "./node_modules/gulp/bin/gulp.js lint",
+    "gulp": "./node_modules/gulp/bin/gulp.js",
+    "mocha": "./node_modules/gulp/bin/gulp.js mocha",
     "test": "npm run gulp && npm run lint && npm run mocha",
-    "start": "gulp serve",
-    "dev": "gulp serve --dev=all",
-    "client-dev": "gulp serve --dev=client",
+    "start": "./node_modules/gulp/bin/gulp.js serve",
+    "dev": "./node_modules/gulp/bin/gulp.js serve --dev=all",
+    "client-dev": "./node_modules/gulp/bin/gulp.js serve --dev=client",
     "clean": "cd public && rm -f index.html main.css* main.js"
   },
   "repository": {
