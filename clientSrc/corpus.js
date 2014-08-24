@@ -9,7 +9,6 @@ var ajax = require('jquery').ajax;
 var _ = require('underscore');
 var tokens = require('puddle-syntax').tokens;
 var assert = require('./assert');
-var test = require('./test');
 var log = require('./log');
 
 //--------------------------------------------------------------------------
