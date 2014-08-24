@@ -1,4 +1,8 @@
-# Puddle [![Build Status](https://travis-ci.org/fritzo/puddle.svg?branch=master)](http://travis-ci.org/fritzo/puddle) [![NPM Version](https://badge.fury.io/js/puddle.svg)](https://www.npmjs.org/package/puddle) [![NPM Dependencies](https://david-dm.org/fritzo/puddle.svg)](https://www.npmjs.org/package/puddle)
+[![Build Status](https://travis-ci.org/fritzo/puddle.svg?branch=master)](http://travis-ci.org/fritzo/puddle)
+[![NPM Version](https://badge.fury.io/js/puddle.svg)](https://www.npmjs.org/package/puddle)
+[![NPM Dependencies](https://david-dm.org/fritzo/puddle.svg)](https://www.npmjs.org/package/puddle)
+
+# Puddle
 
 Puddle is a reactive coding environment backed by the
 [Pomagma](https://github.com/fritzo/pomagma) inference engine.
@@ -51,5 +55,5 @@ Puddle was factored out of [Pomagma](https://github.com/fritzo/pomagma) in 2014.
 
 ## License
 
-Copyright 2005-2014 Fritz Obermeyer.<br/>
+Copyright 2013-2014 Fritz Obermeyer.<br/>
 Puddle is licensed under the [MIT license](/LICENSE).
