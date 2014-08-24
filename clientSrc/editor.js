@@ -5,13 +5,10 @@ module.exports = (function () {
     var _ = require('underscore');
     var $ = require('jquery');
     var io = require('socket.io-client');
+    var syntax = require('puddle-syntax');
     var assert = require('./assert');
     var log = require('./log');
     var test = require('./test');
-    var compiler = require('./language/compiler');
-    var tree = require('./language/tree');
-    var cursors = require('./language/cursors');
-    var arborist = require('./language/arborist');
     var view = require('./view');
     var menu = require('./menu');
     var corpus = require('./corpus');
@@ -36,8 +33,8 @@ module.exports = (function () {
         corpus.findAllLines().forEach(function (id) {
             ids.push(id);
             var line = corpus.findLine(id);
-            var lambda = compiler.loadLine(line);
-            trees[id] = tree.load(lambda);
+            var lambda = syntax.compiler.loadLine(line);
+            trees[id] = syntax.tree.load(lambda);
             validities[id] = _.clone(UNKNOWN);
         });
         pollValidities();
@@ -46,30 +43,32 @@ module.exports = (function () {
 
     var replaceBelow = function (newLambda, subsForDash) {
         if (subsForDash !== undefined) {
-            newLambda = compiler.substitute('&mdash;', subsForDash, newLambda);
+            newLambda = syntax.compiler.substitute(
+                '&mdash;',
+                subsForDash, newLambda);
         }
-        //log('replacing ' + compiler.print(cursor.below[0]) +
-        //    'with: ' + compiler.print(newLambda));
-        var newTerm = tree.load(newLambda);
-        cursor = cursors.replaceBelow(cursor, newTerm);
+        //log('replacing ' + syntax.compiler.print(cursor.below[0]) +
+        //    'with: ' + syntax.compiler.print(newLambda));
+        var newTerm = syntax.tree.load(newLambda);
+        cursor = syntax.cursor.replaceBelow(cursor, newTerm);
         lineChanged = true;
         view.update(ids[cursorPos]);
     };
 
     var insertAssert = function (done, fail) {
-        var HOLE = compiler.symbols.HOLE;
-        var ASSERT = compiler.symbols.ASSERT;
+        var HOLE = syntax.compiler.symbols.HOLE;
+        var ASSERT = syntax.compiler.symbols.ASSERT;
         var lambda = ASSERT(HOLE);
-        var line = compiler.dumpLine(lambda);
+        var line = syntax.compiler.dumpLine(lambda);
         insertLine(line, done, fail);
     };
 
     var insertDefine = function (varName, done, fail) {
-        var VAR = compiler.symbols.VAR;
-        var HOLE = compiler.symbols.HOLE;
-        var DEFINE = compiler.symbols.DEFINE;
+        var VAR = syntax.compiler.symbols.VAR;
+        var HOLE = syntax.compiler.symbols.HOLE;
+        var DEFINE = syntax.compiler.symbols.DEFINE;
         var lambda = DEFINE(VAR(varName), HOLE);
-        var line = compiler.dumpLine(lambda);
+        var line = syntax.compiler.dumpLine(lambda);
         insertLine(line, done, fail);
     };
 
@@ -77,14 +76,14 @@ module.exports = (function () {
         corpus.insert(
             line,
             function (line) {
-                cursors.remove(cursor);
+                syntax.cursor.remove(cursor);
                 view.update(ids[cursorPos]);
                 cursorPos += 1;
                 var id = line.id;
                 ids = ids.slice(0, cursorPos).concat([id], ids.slice(cursorPos));
-                var lambda = compiler.loadLine(line);
-                var root = tree.load(lambda);
-                cursors.insertAbove(cursor, _.last(root.below));  // HACK
+                var lambda = syntax.compiler.loadLine(line);
+                var root = syntax.tree.load(lambda);
+                syntax.cursor.insertAbove(cursor, _.last(root.below));  // HACK
                 trees[id] = root;
                 validities[id] = _.clone(UNKNOWN);
                 pollValidities();
@@ -106,7 +105,7 @@ module.exports = (function () {
     var removeLine = function () {
         var id = ids[cursorPos];
         corpus.remove(id);
-        cursors.remove(cursor);
+        syntax.cursor.remove(cursor);
         ids = ids.slice(0, cursorPos).concat(ids.slice(cursorPos + 1));
         delete trees[id];
         delete validities[id];
@@ -115,7 +114,7 @@ module.exports = (function () {
             cursorPos -= 1;
         }
         id = ids[cursorPos];
-        cursors.insertAbove(cursor, trees[id]);
+        syntax.cursor.insertAbove(cursor, trees[id]);
         view.update(id);
         scrollToCursor();
     };
@@ -123,15 +122,15 @@ module.exports = (function () {
     var commitLine = function () {
         var id = ids[cursorPos];
         var below = cursor.below[0];
-        cursors.remove(cursor);
-        var root = arborist.getRoot(below);
-        var lambda = tree.dump(root);
-        var line = compiler.dumpLine(lambda);
+        syntax.cursor.remove(cursor);
+        var root = syntax.tree.getRoot(below);
+        var lambda = syntax.tree.dump(root);
+        var line = syntax.compiler.dumpLine(lambda);
         line.id = id;
         line = corpus.update(line);
-        lambda = compiler.loadLine(line);
-        root = tree.load(lambda);
-        cursors.insertAbove(cursor, root);
+        lambda = syntax.compiler.loadLine(line);
+        root = syntax.tree.load(lambda);
+        syntax.cursor.insertAbove(cursor, root);
         trees[id] = root;
         var lineIsDefinition = (line.name !== null);
         if (lineIsDefinition) {
@@ -149,10 +148,10 @@ module.exports = (function () {
     var revertLine = function () {
         var id = ids[cursorPos];
         var line = corpus.findLine(id);
-        var lambda = compiler.loadLine(line);
-        var root = tree.load(lambda);
-        cursors.remove(cursor);
-        cursors.insertAbove(cursor, root);
+        var lambda = syntax.syntax.compiler.loadLine(line);
+        var root = syntax.tree.load(lambda);
+        syntax.cursor.remove(cursor);
+        syntax.cursor.insertAbove(cursor, root);
         trees[id] = root;
         view.update(id);
         lineChanged = false;
@@ -234,12 +233,12 @@ module.exports = (function () {
     };
 
     var initCursor = function () {
-        cursor = cursors.create();
+        cursor = syntax.cursor.create();
         cursorPos = 0;
         lineChanged = false;
         var id = ids[cursorPos];
         socket.emit('action', {'moveTo': id});
-        cursors.insertAbove(cursor, trees[id]);
+        syntax.cursor.insertAbove(cursor, trees[id]);
         view.update(id);
         scrollToCursor();
     };
@@ -249,19 +248,19 @@ module.exports = (function () {
             commitLine();
         }
         if (0 <= cursorPos + delta && cursorPos + delta < ids.length) {
-            cursors.remove(cursor);
+            syntax.cursor.remove(cursor);
             view.update(ids[cursorPos]);
             cursorPos = (cursorPos + ids.length + delta) % ids.length;
             var id = ids[cursorPos];
             socket.emit('action', {'moveTo': id});
-            cursors.insertAbove(cursor, trees[id]);
+            syntax.cursor.insertAbove(cursor, trees[id]);
             view.update(id);
             scrollToCursor();
         }
     };
 
     var moveCursor = function (direction) {
-        if (cursors.tryMove(cursor, direction)) {
+        if (syntax.cursor.tryMove(cursor, direction)) {
             view.update(ids[cursorPos]);
         }
     };
@@ -299,7 +298,7 @@ module.exports = (function () {
                 lines: corpus.findAllLines(),
                 events: {'click': moveCursorTo},
                 getLine: function (id) {
-                    return tree.dump(arborist.getRoot(trees[id]));
+                    return syntax.tree.dump(syntax.tree.getRoot(trees[id]));
                 },
                 getValidity: function (id) {
                     return validities[id];

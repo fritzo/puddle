@@ -4,33 +4,33 @@ module.exports = (function () {
 
     var _ = require('underscore');
     var $ = require('jquery');
-    var assert = require('./assert');
-    var compiler = require('./language/compiler');
-    var tree = require('./language/tree');
+    var assert = require('assert');
+    var syntax = require('puddle-syntax');
     var renderTerm = require('./render-term.js');
     var navigate = require('./navigate');
-    var arborist = require('./language/arborist');
     var corpus = require('./corpus');
 
-    var actions;
-    var getCursor;
+    var actions;  // set by init
+    var getCursor;  // set by init
 
-    var HOLE = compiler.symbols.HOLE;
-    var TOP = compiler.symbols.TOP;
-    var BOT = compiler.symbols.BOT;
-    var VAR = compiler.symbols.VAR;
-    var LAMBDA = compiler.symbols.LAMBDA;
-    var LETREC = compiler.symbols.LETREC;
-    var APP = compiler.symbols.APP;
-    var JOIN = compiler.symbols.JOIN;
-    var RAND = compiler.symbols.RAND;
-    var QUOTE = compiler.symbols.QUOTE;
-    var EQUAL = compiler.symbols.EQUAL;
-    var LESS = compiler.symbols.LESS;
-    var NLESS = compiler.symbols.NLESS;
-    var ASSERT = compiler.symbols.ASSERT;
-    var DEFINE = compiler.symbols.DEFINE;
-    var CURSOR = compiler.symbols.CURSOR;
+    var symbols = syntax.compiler.symbols;
+
+    var HOLE = symbols.HOLE;
+    var TOP = symbols.TOP;
+    var BOT = symbols.BOT;
+    var VAR = symbols.VAR;
+    var LAMBDA = symbols.LAMBDA;
+    var LETREC = symbols.LETREC;
+    var APP = symbols.APP;
+    var JOIN = symbols.JOIN;
+    var RAND = symbols.RAND;
+    var QUOTE = symbols.QUOTE;
+    var EQUAL = symbols.EQUAL;
+    var LESS = symbols.LESS;
+    var NLESS = symbols.NLESS;
+    var ASSERT = symbols.ASSERT;
+    var DEFINE = symbols.DEFINE;
+    var CURSOR = symbols.CURSOR;
     var DASH = VAR('&mdash;');
 
     var render = function (term) {
@@ -47,7 +47,7 @@ module.exports = (function () {
     var searchGlobals = function () {
         var names = corpus.findAllNames();
         var accept = function (name) {
-            assert(name !== undefined);
+            assert(name !== undefined, 'name not found: ' + name);
             actions.replaceBelow(VAR(name));
             build();
         };
@@ -102,7 +102,7 @@ module.exports = (function () {
     var build = function () {
         var term = getCursor().below[0];
         var name = term.name;
-        var varName = arborist.getFresh(term);
+        var varName = syntax.tree.getFresh(term);
         var fresh = VAR(varName);
 
         off();
@@ -130,14 +130,14 @@ module.exports = (function () {
 
             // TODO filter globals and locals by future validity
             navigate.on('/', searchGlobals, render(VAR('global.variable')));
-            var locals = arborist.getBoundAbove(term);
+            var locals = syntax.tree.getLocals(term);
             locals.forEach(function (varName) {
                 on(varName, VAR(varName));
                 // TODO deal with >26 variables
             });
 
         } else {
-            var dumped = tree.dump(term);
+            var dumped = syntax.tree.dump(term);
 
             // TODO define context-specific deletions
             on('X', HOLE);
