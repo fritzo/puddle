@@ -1,7 +1,6 @@
 'use strict';
 
 var PORT = 34935;
-var test = require('./lib/test').suite('client');
 var assert = require('assert');
 var mocha = require('mocha');
 var fork = require('child_process').fork;

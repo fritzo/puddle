@@ -1,7 +1,6 @@
 'use strict';
 
 var $ = require('jquery');
-var test = require('./test');
 var corpus = require('./corpus');
 var editor = require('./editor');
 

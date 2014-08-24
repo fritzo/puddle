@@ -5,7 +5,6 @@ var $ = require('jquery');
 var io = require('socket.io-client');
 var syntax = require('puddle-syntax');
 var assert = require('./assert');
-var test = require('./test');
 var view = require('./view');
 var menu = require('./menu');
 var corpus = require('./corpus');

@@ -26,3 +26,13 @@ To run headless unit tests in various debug modes:
 
 To run in-browser unit tests, start Pomagam+Puddle servers as above and
 navigate to http://localhost:34934#test
+
+## Continous testing and code quality
+
+To run tests on each code change:
+
+    gulp watchMocha
+    
+To run jshint on each code change:
+    
+    gulp watchLint
