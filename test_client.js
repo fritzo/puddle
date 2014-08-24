@@ -64,7 +64,7 @@ mocha.before(server.start);
 mocha.after(server.stop);
 
 test('in phantomjs browser', function (done) {
-    this.timeout(10000);
+    this.timeout(5000);
     server.ready(function () {
         var phantomjs = require('phantomjs');
         var args = ['--debug=true', 'test_phantomjs.js'];

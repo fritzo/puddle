@@ -1,6 +1,4 @@
-/*jslint node: true */
 'use strict';
-
 
 var $ = require('jquery');
 var test = require('./test');

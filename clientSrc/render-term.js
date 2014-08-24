@@ -1,4 +1,3 @@
-/*jslint node: true */
 'use strict';
 
 var _ = require('underscore');
@@ -47,9 +46,4 @@ var render = syntax.compiler.fold(function (token, args) {
     return templates[token](args);
 });
 
-module.exports = function (term) {
-    return render(term);
-};
-
-// DEBUG
-//module.exports = render;
+module.exports = render;
