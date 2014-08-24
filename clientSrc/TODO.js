@@ -1,20 +1,16 @@
-/*jslint node: true */
-module.exports = (function () {
-    'use strict';
+'use strict';
 
-    /** @constructor */
-    var TodoException = function (message) {
-        this.message = message || '(unfinished code)';
-    };
+/** @constructor */
+var TodoException = function (message) {
+    this.message = message || '(unfinished code)';
+};
 
-    TodoException.prototype.toString = function () {
-        return 'TODO: ' + this.message;
-    };
+TodoException.prototype.toString = function () {
+    return 'TODO: ' + this.message;
+};
 
-    var TODO = function (message) {
-        throw new TodoException(message);
-    };
+var TODO = function (message) {
+    throw new TodoException(message);
+};
 
-    /** @exports TODO */
-    return TODO;
-})();
+module.exports = TODO;

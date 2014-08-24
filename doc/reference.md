@@ -8,16 +8,18 @@
 * [Client `log.js`](#logjs)
 * [Client `keycode.js`](#keycodejs)
 * [Client `test.js`](#testjs)
-* [Client `language/pattern.js`](#patternjs)
-* [Client `language/compiler.js`](#compilerjs)
-* [Client `language/tree.js`](#treejs)
-* [Client `language/arborist.js`](#arboristjs)
-* [Client `language/cursors.js`](#cursorsjs)
 * [Client `corpus.js`](#corpusjs)
 * [Client `navigate.js`](#navigatejs)
 * [Client `symbols.js`](#symbolsjs)
+* [Client `view.js`](#viewjs)
+* [Client `menu.js`](#menujs)
 * [Client `editor.js`](#editorjs)
 * [Client `main.js`](#mainjs)
+
+Related documentation:
+
+* [puddle-syntax](https://github.com/fritzo/puddle-syntax)
+* [pomagma client](https://github.com/fritzo/pomagma/blob/master/doc/client.md)
 
 ## Server
 
@@ -95,6 +97,7 @@
     This is a batch request because
     each line's validity depends on all the lines it references,
 
+
     **Example Response:**
 
         {
@@ -121,21 +124,21 @@
 
 ### `TODO.js` <a name="todojs"/>
 
-    var TODO = require('TODO');
+    var TODO = require('./TODO');
     TODO('throws a TodoException with this message');
 
 ### `assert.js` <a name="assertjs"/>
 
-    var assert = require('assert');
+    var assert = require('./assert');
     assert(condition, message);
     assert.equal(actual, expected);
     assert.forward(fwd, listOfPairs);  // fwd(x) === y for each pair [x, y]
-    assert.backward(bwd, listOfPairs); // x === bwd(y) for each pair [x, y]
-    assert.inverses(fwd, bwd, listOfPairs); // fwd(x) === y && x === bwd(y)
+    assert.backward(bwd, listOfPairs);  // x === bwd(y) for each pair [x, y]
+    assert.inverses(fwd, bwd, listOfPairs);  // fwd(x) === y && x === bwd(y)
 
 ### `log.js` <a name="logjs"/>
 
-    var log = require('log');
+    var log = require('./log');
     log('just like console.log, bug works in web workers');
 
 ### `keycode.js` <a name="keycodejs"/>
@@ -154,7 +157,7 @@ Just a static dictionary of ascii key codes.
 
 Unit testing library.
 
-    var test = require('test');
+    var test = require('./test');
 
     test('test title', callback);       // declares synchronous test
     test.async('test title', callback); // declares async test
@@ -164,66 +167,6 @@ Unit testing library.
     console.log(test.hasRun());         // prints whether tests have finished
     console.log(test.testCount());      // prints cumulative test count
     console.log(test.failCount());      // prints cumulative failed test count
-
-### `language/pattern.js` <a name="patternjs"/>
-
-ML-style pattern matching with variable binding.
-This is used internally only by compiler.js.
-
-    var pattern = require('language/pattern');
-    var x = pattern.variable('x');
-    var y = pattern.variable('y');
-    pattern.match(
-        patt1, callback1,
-        patt2, callback2,
-        patt3, callback3
-    );
-
-### `language/compiler.js` <a name="compilerjs"/>
-
-    var compiler = require('compiler');
-    compiler.symbols;
-
-    // conversions
-    var lambda = compiler.load(string);
-    var string = compiler.dump(lambda);
-    var lambda = compiler.loadLine(line);
-    var line = compiler.dumpLine(lambda);
-
-    var string = compiler.print(lambda);
-    var html = compiler.render(lambda);
-
-    compiler.enumerateFresh(0);  // -> 'a'
-    compiler.enumerateFresh(1);  // -> 'b'
-    compiler.enumerateFresh(2);  // -> 'c'
-
-    compiler.substitute(name, def, body);  // replace name with def in body
-
-### `language/trees.js` <a name="treesjs"/>
-
-Abstract Syntax Trees.
-
-    var ast = require('language/ast');
-
-    // convert indexed <--> flat terms
-    var indexed = ast.load(flat);
-    var flat = ast.dump(indexed);
-
-### `language/cursors.js`
-
-A cursor is a special tree node denoting a user's location.
-
-    var cursor;
-    cursor = cursors.create();
-    cursors.remove(cursor);
-    cursors.insertBelow(cursor, above, pos);
-    cursors.insertAbove(cursor, below);
-    cursor = cursors.replaceBelow(oldCursor, newTerm);
-
-    var direction = 'U';  // or 'D', 'L', 'R'
-    var success = cursors.tryMove(cursor, direction);
-
-### `language/arborist.js` <a name="arboristjs"/>
 
 Utilities for performing functions on trees.
 
@@ -237,7 +180,7 @@ Utilities for performing functions on trees.
 Editor's view of the server-side corpus.
 Each client stores an in-memory copy.
 
-    var corpus = require('corpus');
+    var corpus = require('./corpus');
     corpus.ready(cb);       // calls cb after client loads corpus from server
     corpus.validate();      // validates corpus, throws AssertError if invalid
     var line = corpus.findLine(id);
@@ -257,7 +200,7 @@ Each client stores an in-memory copy.
 
 ### `navigate.js` <a name="navigatejs"/>
 
-    var navigate = require('navagate');
+    var navigate = require('./navagate');
     navigate.on(name, callback, description);   // add callback
     navigate.off();                             // clear callbacks
     navigate.trigger(event);
@@ -270,11 +213,26 @@ Each client stores an in-memory copy.
 
 ### `symbols.js` <a name="symbolsjs"/>
 
-    var symbols = require('symbols');
+    var symbols = require('./symbols');
     assert(symbols.isToken('a'));
     assert(symbols.isKeyword('JOIN'));
     assert(symbols.isLocal('a'));
     assert(symbols.isGlobal('util.pair'));
+
+### `view.js` <a name="viewjs"/>
+
+The view object is the pane on the left showing the corpus.
+
+    var view = require('./view');
+    view.init({
+        getLine: ...,
+        getValidity: ...,
+        lines: ...
+    });
+
+    view.insertAfter(prevId, id);
+    view.update(id);
+    view.remove(id);
 
 ### `menu.js` <a name="menujs"/>
 
@@ -282,7 +240,7 @@ The menu object is the pane on the right.
 It rebuilds itself at every action.
 The menu is the sole form of input to puddle, by design.
 
-    var menu = require('menu');
+    var menu = require('./menu');
     menu.init({
         actions = {...},                // callbacks bound to actions
         getCursor = function () {...}   // returns cursor
@@ -290,7 +248,7 @@ The menu is the sole form of input to puddle, by design.
 
 ### `editor.js` <a name="editorjs"/>
 
-    var editor = require('editor');
+    var editor = require('./editor');
     editor.main();                      // start puddle editor
 
 ### `main.js` <a name="mainjs"/>

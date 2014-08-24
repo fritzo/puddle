@@ -1,41 +1,18 @@
-/* jshint strict: false */
-/*jslint node: true */
-/* global self */
-module.exports = (function () {
-    //'use strict';
+'use strict';
 
-    var log;
-    var listeners = [];
+var listeners = [];
 
-    if (this.document) { // in main window
+var log = function (message) {
+    listeners.forEach(function (cb) { cb(message); });
+    console.log(message);
+};
 
-        if (window.console && window.console.log) {
-            log = function (message) {
-                listeners.forEach(function (cb) { cb(message); });
-                console.log(message);
-            };
-        } else {
-            log = function (message) {
-                listeners.forEach(function (cb) { cb(message); });
-            }; // ignore
-        }
+log.pushListener = function (cb) {
+    listeners.push(cb);
+};
 
-    } else { // in a web worker
+log.popListener = function (cb) {
+    listeners.pop(cb);
+};
 
-        log = function (message) {
-            listeners.forEach(function (cb) { cb(message); });
-            self.postMessage({'type':'log', 'data':message});
-        };
-    }
-
-    log.pushListener = function (cb) {
-        listeners.push(cb);
-    };
-
-    log.popListener = function (cb) {
-        listeners.pop(cb);
-    };
-
-    return log;
-
-})();
+module.exports = log;
