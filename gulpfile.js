@@ -11,11 +11,12 @@ var less = require('gulp-less-sourcemap');
 var exec = require('child_process').exec;
 
 
-gulp.task('mocha', function () {
+gulp.task('mocha', function (cb) {
   //Using exec instead of gulp-mocha plugin beacuse of issues with plugin.
   exec('mocha ./test/**/*.js --reporter spec', function (err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
+    cb(err);
   });
 });
 
@@ -40,15 +41,16 @@ gulp.task('default', function () {
         .pipe(gulp.dest('./public'));
 });
 
-gulp.task('lint', function () {
+gulp.task('lint', function (cb) {
   return gulp.src([
     './*.js',
     './lib/**/*.js',
     './test/**/*.js',
     './clientSrc/**/*.js'
   ])
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'));
+    .pipe(jshint(cb))
+    .pipe(jshint.reporter('default'))
+    .pipe(jshint.reporter('fail'));
 });
 
 // TODO shall probably be refactored into one function with multiple events.

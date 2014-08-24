@@ -38,9 +38,9 @@
   },
   "scripts": {
     "karma": "./node_modules/karma/bin/karma start",
-    "lint": "jshint *.js lib test* clientSrc",
+    "lint": "gulp lint",
     "gulp": "gulp",
-    "mocha": "mocha --reporter spec test/**/*.js",
+    "mocha": "gulp mocha",
     "test": "npm run gulp && npm run lint && npm run mocha",
     "start": "gulp serve",
     "dev": "gulp serve --dev=all",
