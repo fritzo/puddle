@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "gulp-mocha": "^1.0.0",
+    "gulp-util": "^3.0.0",
     "jshint": "^2.5.4",
     "karma": "^0.12.22",
     "karma-chrome-launcher": "^0.1.4",
