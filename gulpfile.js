@@ -24,6 +24,7 @@ gulp.task('default', function () {
     gulp.src('./clientSrc/main.js')
         .pipe(browserify({
             insertGlobals: true,
+            exclude: ['mocha'],
             debug: argv.dev
         }))
         .pipe(gulpif(!argv.dev, uglify()))

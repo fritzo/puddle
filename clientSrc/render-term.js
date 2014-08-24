@@ -2,8 +2,8 @@
 'use strict';
 
 var _ = require('underscore');
-var assert = require('./assert');
-var compiler = require('./language/compiler');
+var assert = require('assert');
+var syntax = require('puddle-syntax');
 
 var template = function (string) {
     return function (args) {
@@ -42,7 +42,7 @@ var templates = {
     }
 };
 
-var render = compiler.fold(function (token, args) {
+var render = syntax.compiler.fold(function (token, args) {
     assert(_.has(templates, token), 'unknown token: ' + token);
     return templates[token](args);
 });
