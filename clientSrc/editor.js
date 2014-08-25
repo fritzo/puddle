@@ -167,11 +167,15 @@ var pollValidities = (function () {
             type: 'GET',
             url: 'corpus/validities',
             cache: false
-        }).fail(function (jqXHR, textStatus) {
+        })
+          /*jslint unparam: true*/
+          .fail(function (jqXHR, textStatus) {
             log('pollValidities GET failed: ' + textStatus);
             polling = true;
             setTimeout(poll, delayFail);
-        }).done(function (data) {
+        })
+          /*jslint unparam: false*/
+          .done(function (data) {
             log('pollValidities GET succeeded');
             data.data.forEach(function (validity) {
                 var id = validity.id;
@@ -193,25 +197,6 @@ var pollValidities = (function () {
             }
         });
     };
-
-    var ready = function (done) {
-        var wait = function () {
-            if (validities.length === 0) {
-                setTimeout(wait, delay);
-                return;
-            }
-            for (var id in validities) {
-                if (validities[id].pending) {
-                    setTimeout(wait, delay);
-                    return;
-                }
-            }
-            done();
-        };
-        wait();
-    };
-
-    test.async('pollValidities.ready', ready, 1000);
 
     return function () {
         if (!polling) {
@@ -282,7 +267,7 @@ var actions = {
     moveDown: function () { moveCursorLine(1); },
     moveLeft: function () { moveCursor('L'); },
     moveRight: function () { moveCursor('R'); },
-    widenSelection: function () { moveCursor('U'); },
+    widenSelection: function () { moveCursor('U'); }
 };
 
 //--------------------------------------------------------------------------
@@ -306,5 +291,5 @@ module.exports = {
             actions: actions,
             getCursor: function () { return cursor; }
         });
-    },
+    }
 };
