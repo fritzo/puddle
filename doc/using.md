@@ -4,17 +4,18 @@
 
 To build only once with UglifyJS (minified) and run the server,
 
-    npm start               # alias for: grunt && nodejs main.js
+    npm start               # alias for gulp serve
 
 ## Running during development
 
-To start a server that reloads on changes to **any** code
+To start a server that:    
 
-    npm run dev             # alias for grunt serve --dev=all
+  - reloads on changes to server code
+  - refreshes browser on changes to client code
+  - builds with JS sourcemaps
+    
 
-To start a server that reloads on changes to **client** code
-
-    npm run client-dev      # alias for grunt serve --dev=client
+    npm run dev             # alias for gulp serve --dev=true
 
 ## Debugging Puddle
 

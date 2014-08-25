@@ -82,14 +82,14 @@ gulp.task('lint', function (cb) {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('watchLint', watcher(['lint'], [
+gulp.task('watchLint',['lint'], watcher(['lint'], [
   './clientSrc/**/*.js',
   './test/**/*.js',
   './*.js',
   './lib/**/*.js'
 ]));
 
-gulp.task('watchMocha', watcher(['mocha'], ['./test/**/*.js']));
+gulp.task('watchMocha',['mocha'], watcher(['mocha'], ['./test/**/*.js']));
 
 gulp.task('watch', watcher(['default'], ['./clientSrc/**/*']));
 
