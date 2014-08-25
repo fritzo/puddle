@@ -10,7 +10,22 @@ var browserify = require('gulp-browserify');
 var nodemon = require('gulp-nodemon');
 var less = require('gulp-less-sourcemap');
 var exec = require('child_process').exec;
+var LIVERELOAD_PORT = 34939;
+var lr = require('tiny-lr')();
 
+var watcher = function (tasks, paths) {
+  //Factory to build gulp.watch functions.
+  return function () {
+    gulp.watch(paths, tasks)
+      .on('change', function (event) {
+        gutil.log(
+            'File ' + event.path + ' was ' + event.type + ', running tasks...'
+        );
+      }).on('error', function swallowError() {
+        this.emit('end');
+      });
+  };
+};
 
 gulp.task('mocha', function (cb) {
   //Using exec instead of gulp-mocha plugin beacuse of issues with plugin.
@@ -28,18 +43,22 @@ gulp.task('mocha', function (cb) {
   });
 });
 
-gulp.task('default', function () {
-  //copy index.html
-  gulp.src('./clientSrc/index.html')
-    .pipe(gulp.dest('./public/'));
-
+gulp.task('less', function () {
   //process LESS -> CSS
-  gulp.src('./clientSrc/main.less')
+  return gulp.src('./clientSrc/main.less')
     .pipe(less())
     .pipe(gulp.dest('./public'));
+});
 
+gulp.task('copyHtml', function () {
+  //copy index.html
+  return gulp.src('./clientSrc/index.html')
+    .pipe(gulp.dest('./public/'));
+});
+
+gulp.task('browserify', function () {
   //Browserify
-  gulp.src('./clientSrc/main.js')
+  return gulp.src('./clientSrc/main.js')
     .pipe(browserify({
       insertGlobals: true,
       exclude: ['mocha'],
@@ -48,6 +67,8 @@ gulp.task('default', function () {
     .pipe(gulpif(!argv.dev, uglify()))
     .pipe(gulp.dest('./public'));
 });
+
+gulp.task('default', ['browserify', 'copyHtml', 'less']);
 
 gulp.task('lint', function (cb) {
   return gulp.src([
@@ -61,49 +82,37 @@ gulp.task('lint', function (cb) {
     .pipe(jshint.reporter('fail'));
 });
 
-var watcher = function (tasks, paths) {
-  return function () {
-    gulp.start(tasks);
-    var watcher = gulp.watch(paths, tasks);
-    watcher
-      .on('change', function (event) {
-        console.log(
-            'File ' + event.path + ' was ' + event.type + ', running tasks...'
-        );
-      }).on('error', function swallowError() {
-        this.emit('end');
-      });
-  };
-};
-
-
-gulp.task('watchLint', watcher(['lint'], [
+gulp.task('watchLint',['lint'], watcher(['lint'], [
   './clientSrc/**/*.js',
   './test/**/*.js',
   './*.js',
   './lib/**/*.js'
 ]));
 
-gulp.task('watchMocha', watcher(['mocha'], ['./test/**/*.js']));
+gulp.task('watchMocha',['mocha'], watcher(['mocha'], ['./test/**/*.js']));
 
-gulp.task('watch', watcher(['default'],['./clientSrc/**/*']) );
+gulp.task('watch', watcher(['default'], ['./clientSrc/**/*']));
 
+gulp.task('startLiveReload', function () {
+  lr.listen(LIVERELOAD_PORT);
+});
 
-gulp.task('serve', ['default'], function () {
-  if (argv.dev === 'client') {
-    watcher(['default'],['./clientSrc/**/*'])();
-    require('./server');
-  } else if (argv.dev) {
-    nodemon({
-      script: 'server.js',
-      ext: 'html js less',
-      ignore: ['public/*', 'test_*.js', 'test/**/*']
-    })
-      .on('change', ['default'])
-      .on('restart', function () {
-        console.log('restarted server');
-      });
-  } else {
-    require('./server');
-  }
+gulp.task('nodemon', function () {
+  nodemon({
+    script: 'server.js',
+    ext: 'js',
+    watch:['./lib', 'server.js']
+  }).on('restart', function () {
+    console.log('Restarted server');
+  });
+});
+
+gulp.task('trackLiveReload', ['default'], function () {
+  lr.changed({body: {
+    files: ['main.js', 'index.html', 'main.css']
+  }});
+});
+
+gulp.task('serve', ['startLiveReload', 'default','nodemon'], function () {
+  watcher(['trackLiveReload'], ['./clientSrc/**/*'])();
 });

@@ -11,6 +11,8 @@ var pomagma = require('pomagma');
 var socketio = require('socket.io');
 var mongoose = require('mongoose');
 var db = mongoose.connection;
+var LIVERELOAD_PORT = 34939;
+var liveReload = require('connect-livereload')({port: LIVERELOAD_PORT});
 var Log = mongoose.model('Log', {
     user: Number,
     action: mongoose.Schema.Types.Mixed
@@ -30,6 +32,7 @@ db.once('open', function () {
 });
 
 var app = express();
+app.use(liveReload);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/', express.static(path.join(__dirname, 'public'))); // HACK for index
 app.use('/static', express.static(path.join(__dirname, 'public')));
