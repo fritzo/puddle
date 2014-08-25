@@ -229,12 +229,6 @@ var state = (function () {
         log('corpus is valid');
     };
 
-    test.async('corpus.validate', function (done) {
-        state.ready(function () {
-            state.validate();
-            done();
-        });
-    });
 
     state.findLine = function (id) {
         var line = lines[id];

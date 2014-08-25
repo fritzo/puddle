@@ -211,7 +211,7 @@ var pollValidities = (function () {
         wait();
     };
 
-    test.async('pollValidities.ready', ready, 1000);
+
 
     return function () {
         if (!polling) {
