@@ -20,10 +20,10 @@ var KeyEvent = function (which, modifiers) {
     }
     this.state = [
         which,
-        modifiers.shift || false,
-        modifiers.ctrl || false,
-        modifiers.alt || false,
-        modifiers.meta || false,
+            modifiers.shift || false,
+            modifiers.ctrl || false,
+            modifiers.alt || false,
+            modifiers.meta || false,
     ];
 };
 
@@ -36,7 +36,7 @@ KeyEvent.prototype = {
             state[2] === event.ctrlKey &&
             state[3] === event.altKey &&
             state[4] === event.metaKey
-        );
+            );
     }
 };
 
@@ -101,7 +101,7 @@ var on = function (name, callback, description) {
             $('<tr>')
                 .on('click', loggedCallback)
                 .append(icons[name], $('<td>')
-                .html(description)));
+                    .html(description)));
     }
 };
 

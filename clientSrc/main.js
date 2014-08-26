@@ -6,7 +6,7 @@ var editor = require('./editor');
 
 
 $(function () {
-  corpus.ready(editor.main);
+    corpus.ready(editor.main);
 });
 
 
