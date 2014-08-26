@@ -11,6 +11,7 @@ var nodemon = require('gulp-nodemon');
 var less = require('gulp-less-sourcemap');
 var exec = require('child_process').exec;
 var LIVERELOAD_PORT = 34939;
+var rename = require('gulp-rename');
 var lr = require('tiny-lr')();
 
 var watcher = function (tasks, paths) {
@@ -45,7 +46,7 @@ gulp.task('mocha', function (cb) {
 
 gulp.task('less', function () {
     //process LESS -> CSS
-    return gulp.src('./clientSrc/main.less')
+    return gulp.src('./clientSrc/styles/style.less')
         .pipe(less())
         .pipe(gulp.dest('./public'));
 });
@@ -58,13 +59,13 @@ gulp.task('copyHtml', function () {
 
 gulp.task('browserify', function () {
     //Browserify
-    return gulp.src('./clientSrc/main.js')
+    return gulp.src('./clientSrc/app/app.js')
         .pipe(browserify({
-            insertGlobals: true,
             exclude: ['mocha'],
             debug: argv.dev
         }))
         .pipe(gulpif(!argv.dev, uglify()))
+        .pipe(rename('script.js'))
         .pipe(gulp.dest('./public'));
 });
 
@@ -109,10 +110,14 @@ gulp.task('nodemon', function () {
 
 gulp.task('trackLiveReload', ['default'], function () {
     lr.changed({body: {
-        files: ['main.js', 'index.html', 'main.css']
+        files: ['static/script.js', 'static/index.html', 'static/style.css']
     }});
 });
 
 gulp.task('serve', ['startLiveReload', 'default', 'nodemon'], function () {
-    watcher(['trackLiveReload'], ['./clientSrc/**/*'])();
+    watcher(['trackLiveReload'], [
+	    './clientSrc/**/*.js',
+	    './clientSrc/**/*.html',
+	    './clientSrc/**/*.less'
+    ])();
 });
