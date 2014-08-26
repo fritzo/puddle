@@ -54,8 +54,8 @@ corpus.factory('CorpusDB', function () {
 		'DEFINE VAR util.join J',
 		'DEFINE VAR util.pair COMP C APP C I'
 	];
-	log('Compiler load:',syntax.compiler.load(codes[1]));
-	log('Compiler load:',syntax.tree.load(syntax.compiler.load(codes[1])));
+	log('Term:', syntax.compiler.load(codes[1]));
+	log('Tree:', syntax.tree.load(syntax.compiler.load(codes[1])));
 	return {corpus: codes};
 
 });
