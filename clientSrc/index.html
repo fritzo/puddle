@@ -1,47 +1,20 @@
 <!DOCTYPE html>
 <html ng-app="puddle">
 <head>
-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Pomagma Editor</title>
     <link rel="icon" type="image/x-icon" href="static/favicon.ico"/>
     <link rel="stylesheet" type="text/css" href="static/style.css"/>
     <script src='static/script.js'></script>
 
-    <script type="text/ng-template" id="puddle.html">
-        <h1>State 1</h1>
-        <hr/>
-        <a ui-sref="puddle.list">Show List</a>
-        <div ui-view></div>
+    <script type="text/ng-template" id="corpus.html">
+        <div ng-repeat="line in corpus">{{line}}</div>
     </script>
 
-    <script type="text/ng-template" id="d3.html">
-        <h1>State 2</h1>
-        <hr/>
-        <a ui-sref="d3.list">Show List</a>
-        <div ui-view></div>
-    </script>
-
-    <script type="text/ng-template" id="puddle.list.html">
-        <h3>List of State 1 Items</h3>
-        <ul>
-            <li ng-repeat="item in items">{{ item }}</li>
-        </ul>
-    </script>
-
-    <script type="text/ng-template" id="d3.list.html">
-        <h3>List of State 2 Things</h3>
-        <ul>
-            <li ng-repeat="thing in things">{{ thing }}</li>
-        </ul>
-    </script>
 
 </head>
 <body>
-
-<a ui-sref="puddle">Puddle editor</a>
-<a ui-sref="d3">D3 view</a>
-
+<a ui-sref='corpus'>Corpus editor</a>
 <div ui-view></div>
 </body>
 </html>
