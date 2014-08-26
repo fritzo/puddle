@@ -3,7 +3,9 @@
 var listeners = [];
 
 var log = function (message) {
-    listeners.forEach(function (cb) { cb(message); });
+    listeners.forEach(function (cb) {
+        cb(message);
+    });
     console.log(message);
 };
 

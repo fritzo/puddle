@@ -66,7 +66,7 @@ var chooseDefine = function () {
 
 var generic;
 var initGeneric = function () {
-   generic = [
+    generic = [
         ['enter', action(actions.commitLine), 'commit line'],
         ['tab', action(actions.revertLine), 'revert line'],
         ['up', action(actions.moveUp), 'move up'],

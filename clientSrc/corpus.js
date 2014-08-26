@@ -1,8 +1,8 @@
 /**
-  * Corpus of lines of code.
-  *
-  * FIXME this is all concurrency-unsafe; client assumes it is the only writer.
-  */
+ * Corpus of lines of code.
+ *
+ * FIXME this is all concurrency-unsafe; client assumes it is the only writer.
+ */
 'use strict';
 
 var ajax = require('jquery').ajax;
@@ -15,13 +15,13 @@ var log = require('./log');
 // client state
 
 /** Example.
-var exampleLine = {
+ var exampleLine = {
     'id': 'asfgvg1tr457et46979yujkm',
     'name': 'div',      // or null for anonymous lines
     'code': 'APP V K',  // compiled code
     'free': {}          // set of free variables in line : string -> null
 };
-*/
+ */
 
 var state = (function () {
     var state = {};
@@ -138,14 +138,14 @@ var state = (function () {
             url: 'corpus/lines',
             cache: false
         })
-        .fail(function (jqXHR, textStatus) {
-            log('init GET failed: ' + textStatus);
-        })
-        .done(function (data) {
-            // FIXME this is not reached in express+zombie unit tests
-            log('init GET succeeded');
-            loadAll(data.data);
-        });
+            .fail(function (jqXHR, textStatus) {
+                log('init GET failed: ' + textStatus);
+            })
+            .done(function (data) {
+                // FIXME this is not reached in express+zombie unit tests
+                log('init GET succeeded');
+                loadAll(data.data);
+            });
     };
 
     state.insert = function (line, done, fail) {
@@ -158,16 +158,16 @@ var state = (function () {
             data: JSON.stringify(line),
             contentType: 'application/json',
         })
-        .fail(function (jqXHR, textStatus) {
-            log('insert POST failed: ' + textStatus);
-            fail();
-        })
-        .done(function (data) {
-            log('insert POST succeded: ' + data.id);
-            line.id = data.id;
-            insertLine(line);
-            done(line);
-        });
+            .fail(function (jqXHR, textStatus) {
+                log('insert POST failed: ' + textStatus);
+                fail();
+            })
+            .done(function (data) {
+                log('insert POST succeded: ' + data.id);
+                line.id = data.id;
+                insertLine(line);
+                done(line);
+            });
     };
 
     state.update = function (newline) {
@@ -203,27 +203,27 @@ var state = (function () {
             if (name !== null) {
                 assert(
                     tokens.isGlobal(name),
-                    'name is not global: ' + name);
+                        'name is not global: ' + name);
                 assert(
                     !tokens.isKeyword(name),
-                    'name is keyword: ' + name);
+                        'name is keyword: ' + name);
                 assert(
-                    definitions[name] === line.id,
-                    'missing definition: ' + name);
+                        definitions[name] === line.id,
+                        'missing definition: ' + name);
             }
             var free = tokens.getFreeVariables(line.code);
             assert.equal(line.free, free, 'wrong free variables:');
             for (name in free) {
                 assert(
                     tokens.isGlobal(name),
-                    'name is not global: ' + name);
+                        'name is not global: ' + name);
                 var occurrencesName = occurrences[name];
                 assert(
-                    occurrencesName !== undefined,
-                    'missing occurrences: ' + name);
+                        occurrencesName !== undefined,
+                        'missing occurrences: ' + name);
                 assert(
-                    occurrencesName[id] === null,
-                    'missing occurrence: ' + name);
+                        occurrencesName[id] === null,
+                        'missing occurrence: ' + name);
             }
         }
         log('corpus is valid');
@@ -310,14 +310,14 @@ var sync = (function () {
                         data: JSON.stringify(change.line),
                         contentType: 'application/json',
                     })
-                    .fail(function (jqXHR, textStatus) {
-                        log('putChanges PUT failed: ' + textStatus);
-                        setTimeout(pushChanges, delayFail);
-                    })
-                    .done(function () {
-                        log('putChanges PUT succeeded: ' + id);
-                        setTimeout(pushChanges, 0);
-                    });
+                        .fail(function (jqXHR, textStatus) {
+                            log('putChanges PUT failed: ' + textStatus);
+                            setTimeout(pushChanges, delayFail);
+                        })
+                        .done(function () {
+                            log('putChanges PUT succeeded: ' + id);
+                            setTimeout(pushChanges, 0);
+                        });
                     return;
 
                 case 'remove':
@@ -325,14 +325,14 @@ var sync = (function () {
                         type: 'DELETE',
                         url: 'corpus/line/' + id,
                     })
-                    .fail(function (jqXHR, textStatus) {
-                        log('putChanges DELETE failed: ' + textStatus);
-                        setTimeout(pushChanges, delayFail);
-                    })
-                    .done(function () {
-                        log('putChanges DELETE succeeded: ' + id);
-                        setTimeout(pushChanges, 0);
-                    });
+                        .fail(function (jqXHR, textStatus) {
+                            log('putChanges DELETE failed: ' + textStatus);
+                            setTimeout(pushChanges, delayFail);
+                        })
+                        .done(function () {
+                            log('putChanges DELETE succeeded: ' + id);
+                            setTimeout(pushChanges, 0);
+                        });
                     return;
 
                 default:

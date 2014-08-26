@@ -131,9 +131,9 @@ var commitLine = function () {
     trees[id] = root;
     var lineIsDefinition = (line.name !== null);
     if (lineIsDefinition) {
-          ids.forEach(function (id) {
-              validities[id] = _.clone(UNKNOWN);
-          });
+        ids.forEach(function (id) {
+            validities[id] = _.clone(UNKNOWN);
+        });
     } else {
         validities[id] = _.clone(UNKNOWN);
     }
@@ -168,34 +168,34 @@ var pollValidities = (function () {
             url: 'corpus/validities',
             cache: false
         })
-          /*jslint unparam: true*/
-          .fail(function (jqXHR, textStatus) {
-            log('pollValidities GET failed: ' + textStatus);
-            polling = true;
-            setTimeout(poll, delayFail);
-        })
-          /*jslint unparam: false*/
-          .done(function (data) {
-            log('pollValidities GET succeeded');
-            data.data.forEach(function (validity) {
-                var id = validity.id;
-                delete validity.id;
-                var oldValidity = validities[id];
-                if (oldValidity !== undefined) {
-                    if (!_.isEqual(oldValidity, validity)) {
-                        validities[id] = validity;
-                        view.update(id);
+            /*jslint unparam: true*/
+            .fail(function (jqXHR, textStatus) {
+                log('pollValidities GET failed: ' + textStatus);
+                polling = true;
+                setTimeout(poll, delayFail);
+            })
+            /*jslint unparam: false*/
+            .done(function (data) {
+                log('pollValidities GET succeeded');
+                data.data.forEach(function (validity) {
+                    var id = validity.id;
+                    delete validity.id;
+                    var oldValidity = validities[id];
+                    if (oldValidity !== undefined) {
+                        if (!_.isEqual(oldValidity, validity)) {
+                            validities[id] = validity;
+                            view.update(id);
+                        }
+                    }
+                });
+                for (var id in validities) {
+                    if (validities[id].pending) {
+                        polling = true;
+                        setTimeout(poll, delay);
+                        return;
                     }
                 }
             });
-            for (var id in validities) {
-                if (validities[id].pending) {
-                    polling = true;
-                    setTimeout(poll, delay);
-                    return;
-                }
-            }
-        });
     };
 
     return function () {
@@ -263,11 +263,21 @@ var actions = {
     insertAssert: insertAssert,
     insertDefine: insertDefine,
     replaceBelow: replaceBelow,
-    moveUp: function () { moveCursorLine(-1); },
-    moveDown: function () { moveCursorLine(1); },
-    moveLeft: function () { moveCursor('L'); },
-    moveRight: function () { moveCursor('R'); },
-    widenSelection: function () { moveCursor('U'); }
+    moveUp: function () {
+        moveCursorLine(-1);
+    },
+    moveDown: function () {
+        moveCursorLine(1);
+    },
+    moveLeft: function () {
+        moveCursor('L');
+    },
+    moveRight: function () {
+        moveCursor('R');
+    },
+    widenSelection: function () {
+        moveCursor('U');
+    }
 };
 
 //--------------------------------------------------------------------------
@@ -289,7 +299,9 @@ module.exports = {
         initCursor();
         menu.init({
             actions: actions,
-            getCursor: function () { return cursor; }
+            getCursor: function () {
+                return cursor;
+            }
         });
     }
 };

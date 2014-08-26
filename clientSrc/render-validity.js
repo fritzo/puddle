@@ -29,5 +29,5 @@ var table = {
 module.exports = function (validity) {
     return table[
         validity.is_top + '-' + validity.is_bot + '-' + validity.pending
-    ];
+        ];
 };
