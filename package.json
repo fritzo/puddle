@@ -19,7 +19,7 @@
     "less": "^1.7.4",
     "mongoose": "~3.8.15",
     "pomagma": ">=0.1.8",
-    "puddle-syntax": "~0.1.0",
+    "puddle-syntax": "~0.1.2",
     "socket.io": "^1.0.6",
     "socket.io-client": "^1.0.6",
     "underscore": "^1.6.0",
