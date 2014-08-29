@@ -4,6 +4,14 @@ See the [Introduction](/doc/intro.md) for vocabulary.
 
 See [asana](https://app.asana.com/0/15654386884203) for task planning.
 
+## Values
+
+1. Maintainability
+2. Data Integrity and Correctness
+3. API Before UI
+4. Responsive Minimal UI
+5. Extensibility
+
 ## Roadmap (unprioritized)
 
 - Prototype
@@ -14,9 +22,8 @@ See [asana](https://app.asana.com/0/15654386884203) for task planning.
     - [x] Server talks to a Pomagma engine
 - User Action Logging
     - [x] Client logs user action to server
-    - [ ] Server aggregates and stores user action logs
+    - [x] Server aggregates and stores user action logs
     - [ ] Server broadcasts user position to other users
-    - [ ] Server persists corpus to database, not a file (still dumped to git)
     - [ ] Server can replay actions to a test client
     - [ ] Client can generate random action stream for testing
 - Single-User Multi-Device support
