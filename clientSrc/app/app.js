@@ -9,8 +9,8 @@ require('./corpus.js');
 var puddle = angular.module('puddle', [uiRouter, 'corpus']);
 
 puddle.config(function ($stateProvider, $urlRouterProvider) {
-	// For any unmatched url, redirect to corpus
-	$urlRouterProvider.otherwise('/corpus');
+    // For any unmatched url, redirect to corpus
+    $urlRouterProvider.otherwise('/corpus');
 });
 
 
