@@ -47,9 +47,10 @@ To optionally run a local Pomagma server
 - [API Reference](/doc/reference.md)
 - [Contributing](/doc/contributing.md)
 
-## Authors
+## Contributors
 
 - Fritz Obermeyer <https://github.com/fritzo>
+- Yan T. <https://github.com/yangit>
 
 Puddle was factored out of [Pomagma](https://github.com/fritzo/pomagma) in 2014.
 
