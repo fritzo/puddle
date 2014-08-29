@@ -5,7 +5,6 @@ var assert = require('assert');
 var path = require('path');
 var _ = require('underscore');
 var express = require('express');
-var bodyParser = require('body-parser');
 var corpus = require('./lib/corpus');
 var pomagma = require('pomagma');
 var socketio = require('socket.io');
@@ -33,9 +32,8 @@ db.once('open', function () {
 
 var app = express();
 app.use(liveReload);
-app.use(bodyParser.urlencoded({extended: false}));
-app.use('/', express.static(path.join(__dirname, 'public'))); // HACK for index
-app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use('/', express.static(path.join(__dirname, 'public')));
+
 
 app.get('/corpus/lines', function (req, res) {
     debug('GET lines');
