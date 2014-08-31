@@ -20,7 +20,8 @@ var watcher = function (tasks, paths) {
         gulp.watch(paths, tasks)
             .on('change', function (event) {
                 gutil.log(
-                        'File ' + event.path + ' was ' + event.type + ', refreshing'
+                        'File ' + event.path + ' was ' + event.type +
+                        ', refreshing'
                 );
             }).on('error', function swallowError() {
                 this.emit('end');
@@ -124,10 +125,11 @@ gulp.task('develop', function () {
     gulp.start('developStart');
 });
 
-gulp.task('developStart', ['startLiveReload', 'default' , 'nodemon'], function () {
-    watcher(['trackLiveReload'], [
-        './clientSrc/**/*.js',
-        './clientSrc/**/*.html',
-        './clientSrc/**/*.less'
-    ])();
-});
+gulp.task('developStart', ['startLiveReload', 'default' , 'nodemon'],
+    function () {
+        watcher(['trackLiveReload'], [
+            './clientSrc/**/*.js',
+            './clientSrc/**/*.html',
+            './clientSrc/**/*.less'
+        ])();
+    });
