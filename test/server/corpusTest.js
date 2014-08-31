@@ -90,6 +90,18 @@ describe('Server', function () {
             assert.equal(corpus.update(3, testData.codes[1]),
                 testData.codes[1]);
         });
+        it('.update() throws if not string given as "code" parameter',
+            function () {
+                assert.throws(function () {
+                    corpus.update(3,1);
+                });
+                assert.throws(function () {
+                    corpus.update(3,[]);
+                });
+                assert.throws(function () {
+                    corpus.update(3,{});
+                });
+            });
 
         it('.remove() shortens .findAll() by one', function () {
             //This test depends on two functions!

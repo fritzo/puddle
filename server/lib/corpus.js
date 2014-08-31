@@ -57,6 +57,7 @@ module.exports = {
     },
     update: function (id, code) {
         validateId(id);
+        assert.isString(code);
         statements[id] = code;
         return code;
     },
