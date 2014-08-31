@@ -100,9 +100,9 @@ gulp.task('startLiveReload', function () {
 
 gulp.task('nodemon', function () {
     nodemon({
-        script: 'server.js',
+        script: './server/server.js',
         ext: 'js',
-        watch: ['./lib', 'server.js']
+        watch: ['./server']
     }).on('restart', function () {
         console.log('Restarted server');
     });
