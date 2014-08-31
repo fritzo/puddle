@@ -103,7 +103,7 @@ gulp.task('nodemon', function () {
     nodemon({
         script: './server/server.js',
         ext: 'js',
-        nodeArgs: argv.dev ? ['--withLiveReload=true'] : null,
+        args: argv.dev ? ['--withLiveReload=true'] : null,
         watch: ['./server']
     }).on('restart', function () {
         console.log('Restarted server');
