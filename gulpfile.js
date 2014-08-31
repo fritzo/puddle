@@ -11,6 +11,7 @@ var nodemon = require('gulp-nodemon');
 var less = require('gulp-less-sourcemap');
 var exec = require('child_process').exec;
 var LIVERELOAD_PORT = 34939;
+var rename = require('gulp-rename');
 var lr = require('tiny-lr')();
 
 var watcher = function (tasks, paths) {
@@ -19,7 +20,8 @@ var watcher = function (tasks, paths) {
         gulp.watch(paths, tasks)
             .on('change', function (event) {
                 gutil.log(
-                    'File ' + event.path + ' was ' + event.type + ', refreshing'
+                        'File ' + event.path + ' was ' + event.type +
+                        ', refreshing'
                 );
             }).on('error', function swallowError() {
                 this.emit('end');
@@ -45,7 +47,7 @@ gulp.task('mocha', function (cb) {
 
 gulp.task('less', function () {
     //process LESS -> CSS
-    return gulp.src('./clientSrc/main.less')
+    return gulp.src('./clientSrc/styles/style.less')
         .pipe(less())
         .pipe(gulp.dest('./public'));
 });
@@ -58,13 +60,13 @@ gulp.task('copyHtml', function () {
 
 gulp.task('browserify', function () {
     //Browserify
-    return gulp.src('./clientSrc/main.js')
+    return gulp.src('./clientSrc/app/app.js')
         .pipe(browserify({
-            insertGlobals: true,
             exclude: ['mocha'],
             debug: argv.dev
         }))
         .pipe(gulpif(!argv.dev, uglify()))
+        .pipe(rename('script.js'))
         .pipe(gulp.dest('./public'));
 });
 
@@ -99,9 +101,10 @@ gulp.task('startLiveReload', function () {
 
 gulp.task('nodemon', function () {
     nodemon({
-        script: 'server.js',
+        script: './server/server.js',
         ext: 'js',
-        watch: ['./lib', 'server.js']
+        args: argv.dev ? ['--withLiveReload=true'] : null,
+        watch: ['./server']
     }).on('restart', function () {
         console.log('Restarted server');
     });
@@ -109,10 +112,24 @@ gulp.task('nodemon', function () {
 
 gulp.task('trackLiveReload', ['default'], function () {
     lr.changed({body: {
-        files: ['main.js', 'index.html', 'main.css']
+        files: ['static/script.js', 'static/index.html', 'static/style.css']
     }});
 });
 
-gulp.task('serve', ['startLiveReload', 'default', 'nodemon'], function () {
-    watcher(['trackLiveReload'], ['./clientSrc/**/*'])();
+gulp.task('serve', ['default'], function () {
+    require('./server/server');
 });
+
+gulp.task('develop', function () {
+    argv.dev = true;
+    gulp.start('developStart');
+});
+
+gulp.task('developStart', ['startLiveReload', 'default' , 'nodemon'],
+    function () {
+        watcher(['trackLiveReload'], [
+            './clientSrc/**/*.js',
+            './clientSrc/**/*.html',
+            './clientSrc/**/*.less'
+        ])();
+    });
