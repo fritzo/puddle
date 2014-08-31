@@ -1,5 +1,4 @@
-/* jshint node:true */
-'use strict';
+'use strict' ;
 
 var debug = require('debug')('puddle:corpus');
 var assert = require('chai').assert;

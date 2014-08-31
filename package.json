@@ -51,7 +51,7 @@
     "mocha": "./node_modules/gulp/bin/gulp.js mocha",
     "test": "npm run gulp && npm run lint && npm run mocha",
     "start": "./node_modules/gulp/bin/gulp.js serve",
-    "dev": "./node_modules/gulp/bin/gulp.js serve --dev=true",
+    "dev": "./node_modules/gulp/bin/gulp.js develop",
     "clean": "cd public && rm -f index.html main.css* main.js"
   },
   "repository": {

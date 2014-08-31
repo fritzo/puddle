@@ -3,7 +3,8 @@
 var debug = require('debug')('puddle:server');
 var assert = require('assert');
 var path = require('path');
-var _ = require('underscore');
+var _ = require('lodash');
+var argv = require('yargs').argv;
 var express = require('express');
 var corpus = require('./lib/corpus');
 var pomagma = require('pomagma');
@@ -31,8 +32,10 @@ db.once('open', function () {
 });
 
 var app = express();
-app.use(liveReload);
-app.use('/', express.static(path.join(__dirname, 'public')));
+if (argv.withLiveReload) {
+    app.use(liveReload);
+}
+app.use('/', express.static(path.join(__dirname, '../public')));
 
 
 app.get('/corpus/lines', function (req, res) {

@@ -15,7 +15,7 @@ To start a server that:
   - builds with JS sourcemaps
     
 
-    npm run dev             # alias for gulp serve --dev=true
+    npm run dev             # alias for gulp develop
 
 ## Debugging Puddle
 
@@ -24,9 +24,6 @@ To run headless unit tests in various debug modes:
     npm test
     DEBUG=* npm test
     DEBUG=express:*,puddle:* npm test
-
-To run in-browser unit tests, start Pomagam+Puddle servers as above and
-navigate to http://localhost:34934#test
 
 ## Continous testing and code quality
 

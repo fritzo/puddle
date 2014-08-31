@@ -20,7 +20,7 @@ var watcher = function (tasks, paths) {
         gulp.watch(paths, tasks)
             .on('change', function (event) {
                 gutil.log(
-                    'File ' + event.path + ' was ' + event.type + ', refreshing'
+                        'File ' + event.path + ' was ' + event.type + ', refreshing'
                 );
             }).on('error', function swallowError() {
                 this.emit('end');
@@ -102,6 +102,7 @@ gulp.task('nodemon', function () {
     nodemon({
         script: './server/server.js',
         ext: 'js',
+        nodeArgs: argv.dev ? ['--withLiveReload=true'] : null,
         watch: ['./server']
     }).on('restart', function () {
         console.log('Restarted server');
@@ -114,10 +115,19 @@ gulp.task('trackLiveReload', ['default'], function () {
     }});
 });
 
-gulp.task('serve', ['startLiveReload', 'default', 'nodemon'], function () {
+gulp.task('serve', ['default'], function () {
+    require('./server/server');
+});
+
+gulp.task('develop', function () {
+    argv.dev = true;
+    gulp.start('developStart');
+});
+
+gulp.task('developStart', ['startLiveReload', 'default' , 'nodemon'], function () {
     watcher(['trackLiveReload'], [
-	    './clientSrc/**/*.js',
-	    './clientSrc/**/*.html',
-	    './clientSrc/**/*.less'
+        './clientSrc/**/*.js',
+        './clientSrc/**/*.html',
+        './clientSrc/**/*.less'
     ])();
 });
