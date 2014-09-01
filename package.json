@@ -14,6 +14,7 @@
     "mongoose": "~3.8.15",
     "pomagma": ">=0.1.8",
     "puddle-syntax": "~0.1.0",
+    "q": "^1.0.1",
     "socket.io": "^1.0.6",
     "socket.io-client": "^1.0.6",
     "underscore": "^1.6.0",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "chai": "^1.9.1",
+    "chai-as-promised": "^4.1.1",
     "connect-livereload": "^0.4.0",
     "gulp": "^3.8.7",
     "gulp-browserify": "^0.5.0",
@@ -39,6 +41,7 @@
     "karma-mocha": "^0.1.9",
     "karma-phantomjs-launcher": "^0.1.4",
     "mocha": "^1.21.4",
+    "mockgoose": "^1.10.2",
     "phantomjs": "^1.9.7-15",
     "rewire": "^2.1.0",
     "sinon": "^1.10.3",

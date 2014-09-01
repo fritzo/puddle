@@ -6,10 +6,10 @@ var path = require('path');
 var _ = require('lodash');
 var argv = require('yargs').argv;
 var express = require('express');
-var corpus = require('./lib/corpus');
 var pomagma = require('pomagma');
 var socketio = require('socket.io');
 var mongoose = require('mongoose');
+var corpus = require('./lib/corpus')(mongoose);
 var db = mongoose.connection;
 var LIVERELOAD_PORT = 34939;
 var liveReload = require('connect-livereload')({port: LIVERELOAD_PORT});
@@ -38,39 +38,6 @@ if (argv.withLiveReload) {
 app.use('/', express.static(path.join(__dirname, '../public')));
 
 
-app.get('/corpus/lines', function (req, res) {
-    debug('GET lines');
-    res.send({'data': corpus.findAll()});
-});
-
-app.get('/corpus/line/:id', function (req, res) {
-    debug('GET line ' + req.params.id);
-    res.send({'data': corpus.findOne(req.params.id)});
-});
-
-app.post('/corpus/line', function (req, res) {
-    debug('POST ' + JSON.stringify(req.body));
-    var line = req.body;
-    var statement = {
-        'name': line.name,
-        'code': line.code
-    };
-    var id = corpus.create(statement);
-    res.send({'id': id});
-});
-
-app.put('/corpus/line/:id', function (req, res) {
-    debug('PUT line ' + req.params.id + ': ' + JSON.stringify(req.body));
-    corpus.update(req.params.id, req.body);
-    res.status(200).end();
-});
-
-app.delete('/corpus/line/:id', function (req, res) {
-    debug('DELETE line ' + req.params.id);
-    corpus.remove(req.params.id);
-    res.status(200).end();
-});
-
 app.get('/corpus/validities', function (req, res) {
     debug('GET validities');
     var lines = corpus.findAll();
@@ -89,10 +56,9 @@ app.get('/corpus/validities', function (req, res) {
     });
 });
 
-corpus.load();
+
 process.on('SIGINT', function () {
     analyst.close();
-    corpus.dump();
     process.exit();
 });
 
@@ -119,7 +85,7 @@ var userId = 0;
 io.on('connection', function (socket) {
     var id = userId++;
     var logAction = function (action) {
-        console.log('Logger: user:', id, ' action:', action);
+        debug('Logger: user:', id, ' action:', action);
         var log = new Log({user: id, action: action});
         log.save();
     };

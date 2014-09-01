@@ -1,65 +1,65 @@
 'use strict';
-var assert = require('chai').assert;
-var sinon = require('sinon');
-var rewire = require('rewire');
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
+var assert = chai.assert;
+var Q = require('q');
 var _ = require('lodash');
 var testData = require('./testData');
 var debug = require('debug')('puddle:mocha');
-
-//Note that below it is 'rewire' not 'require' !
-var corpus = rewire('../../server/lib/corpus');
+debug.log = function () {
+    //workaround for debug library to add newline char for each string;
+    console.log.apply(console,
+        ['\n'].concat(Array.prototype.slice.call(arguments))
+    );
+};
+var Mongoose = require('mongoose');
 
 debug('Testing server:');
-describe('Server', function () {
-    describe('Corpus', function () {
-        var testCorpus = testData.corpus;
-        var testCorpusLength = Object.keys(testData.corpus).length;
 
-        beforeEach(function () {
-            // Setup mock for 'fs' module so no files affected.
-            corpus.__set__({
-                fs: {
-                    readFileSync: sinon.stub()
-                        .returns(JSON.stringify(testCorpus)),
-                    writeFileSync: sinon.stub(),
-                    renameSync: sinon.stub()
-                }
+
+describe('Corpus', function () {
+    var mongoose;
+    var corpusUninitialized;
+    var corpus;
+    var mockgoose = require('mockgoose');
+
+    beforeEach(function () {
+        debug('Reinit mongoose');
+        mongoose = new Mongoose.Mongoose();
+        mockgoose(mongoose);
+        corpusUninitialized = require('../../server/lib/corpus');
+    });
+
+    describe('initialiszation',
+        function () {
+            it('throws if not passed a mongoose as init parameter',
+                function () {
+                    assert.throws(function () {
+                        corpusUninitialized();
+                    });
+                });
+            it('returns an object if passed a mongoose', function () {
+                assert.isObject(corpusUninitialized(mongoose));
             });
-            corpus.load();
         });
 
-        it('.findAll() returns correct amount of lines',
+    describe('after init ', function () {
+        beforeEach(function () {
+            debug('Reset DB data');
+            corpus = corpusUninitialized(mongoose);
+            mockgoose.reset();
+        });
+
+        it('.create() returns created object',
             function () {
-                assert.equal(
-                    corpus.findAll().length,
-                    testCorpusLength
+                return assert.eventually.equal(
+                    corpus.create(testData.codes[1]).then(function (code) {
+                        return code.code;
+                    }),
+                    testData.codes[1]
                 );
             });
-
-        it('.findAll() returns an array',
-            function () {
-                assert(_.isArray(corpus.findAll()));
-            });
-
-        it('.findAll() return objects with ID and code',
-            function () {
-                //test each for String
-                corpus.findAll().forEach(function (item) {
-                    assert(item.id);
-                    assert.isString(item.code);
-                });
-            });
-
-        it('.findOne() finds correct item', function () {
-            assert.equal(
-                corpus.findOne(3),
-                testCorpus[3]
-            );
-            assert.equal(
-                corpus.findOne('507c7f79bcf86cd7994f6c0e'),
-                testCorpus['507c7f79bcf86cd7994f6c0e']
-            );
-        });
 
         it('.create() throws if not string given', function () {
             assert.throws(function () {
@@ -73,66 +73,62 @@ describe('Server', function () {
             });
         });
 
-        it('.create() returns an ID', function () {
-            assert.ok(corpus.create(testData.codes[1]));
-        });
-
-        it('.create() returns an ID and ' +
-                'same object can be fetched by that ID using .findOne() ',
-            function () {
-                //This test depends on two functions!
-                //Make sure to fix them first if this test fails.
-                var id = corpus.create(testData.codes[1]);
-                assert.equal(corpus.findOne(id), testData.codes[1]);
+        describe('given test data', function () {
+            beforeEach(function () {
+                debug('Add test data to DB');
+                return Q.all(testData.codes.map(function (code) {
+                    return corpus.create(code);
+                }));
             });
 
-        it('.update() returns updated object', function () {
-            assert.equal(corpus.update(3, testData.codes[1]),
-                testData.codes[1]);
+            it('.findAll() returns correct amount of lines',
+                function () {
+                    return assert.eventually.equal(
+                        corpus.findAll().then(function (codes) {
+                            return codes.length;
+                        }), testData.codes.length
+                    );
+                }
+            );
+            it('.findAll() returns an array',
+                function () {
+                    return assert.eventually.isArray(corpus.findAll());
+                }
+            );
+            it('.findAll() return objects with ID and code',
+                function () {
+                    return assert.eventually.ok(corpus.findAll().then(
+                            function (codes) {
+                                return _.all(codes, function (code) {
+                                    return _.isString(code.id.toString()) &&
+                                        _.isString(code.code);
+                                });
+                            })
+                    );
+                }
+            );
+            describe('and known ID',
+                function () {
+                    var id;
+                    beforeEach(function (done) {
+                        corpus.create(testData.codes[1]).then(function (code) {
+                            id = code.id;
+                            done();
+                        });
+                    });
+                    it('.findById() returns object', function () {
+                        return assert.eventually.isObject(corpus.findById(id));
+                    });
+                    it('.remove() removes an object', function () {
+                        return assert.eventually.isObject(corpus.remove(id));
+                    });
+                    it('.update() returns new object', function () {
+                        return assert.eventually.isObject(
+                            corpus.update(id, testData.codes[1])
+                        );
+                    });
+                }
+            );
         });
-        it('.update() throws if not string given as "code" parameter',
-            function () {
-                assert.throws(function () {
-                    corpus.update(3,1);
-                });
-                assert.throws(function () {
-                    corpus.update(3,[]);
-                });
-                assert.throws(function () {
-                    corpus.update(3,{});
-                });
-            });
-
-        it('.remove() shortens .findAll() by one', function () {
-            //This test depends on two functions!
-            //Make sure to fix them first if this test fails.
-            var length = corpus.findAll().length;
-            corpus.remove(3);
-            assert.equal(corpus.findAll().length, length - 1);
-        });
-
-        it('.dump() saves same object as was loaded', function () {
-            assert.equal(corpus.dump(), JSON.stringify(testCorpus));
-        });
-
-        describe('API fails if nonexistent ID given for', function () {
-            it('.findOne()', function () {
-                assert.throws(function () {
-                    corpus.findOne('NOT AN ID');
-                });
-            });
-            it('.update()', function () {
-                assert.throws(function () {
-                    corpus.update('NOT AN ID', testData.codes[1]);
-                });
-            });
-            it('.remove()', function () {
-                assert.throws(function () {
-                    corpus.remove('NOT AN ID');
-                });
-            });
-        });
-
-
     });
 });
