@@ -24,6 +24,12 @@ To run headless unit tests in various debug modes:
     npm test
     DEBUG=* npm test
     DEBUG=express:*,puddle:* npm test
+    
+## To debug browserside 
+
+Run following command in console.
+ 
+    debug.enable('puddle:*')   
 
 ## Continous testing and code quality
 

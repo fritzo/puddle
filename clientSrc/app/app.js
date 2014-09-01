@@ -7,9 +7,11 @@
 //Navigator -
 
 
-var log = console.log.bind(console);
 var angular = require('angular');
 var uiRouter = require('angular-ui-router');
+
+var debug = global.debug = require('debug');
+var log = debug('puddle:client');
 
 //this will register ng-modules into angular namespace.
 require('./corpus.js');
@@ -23,6 +25,5 @@ var puddle = angular.module('puddle', [uiRouter, 'corpus']);
 puddle.config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/corpus');
 });
-
 
 log('Puddle init complete.');
