@@ -2,6 +2,7 @@
 
 var gulp = require('gulp');
 var gulpif = require('gulp-if');
+var ngAnnotate = require('gulp-ng-annotate');
 var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
 var gutil = require('gulp-util');
@@ -65,6 +66,7 @@ gulp.task('browserify', function () {
             exclude: ['mocha'],
             debug: argv.dev
         }))
+        .pipe(ngAnnotate())
         .pipe(gulpif(!argv.dev, uglify()))
         .pipe(rename('script.js'))
         .pipe(gulp.dest('./public'));
