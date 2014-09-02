@@ -89,9 +89,30 @@ io.on('connection', function (socket) {
         var log = new Log({user: id, action: action});
         log.save();
     };
-    logAction('connected');
-    socket.on('disconnect', function () {
-        logAction('disconnected');
+
+    //send user whatever latest corpus we have;
+    corpus.findAll().then(function (corpus) {
+        socket.emit('corpusUpdate', corpus);
     });
-    socket.on('action', logAction);
+
+    //define methods of API
+    var serverAPI = {
+        'log': logAction,
+        'disconnect': function () {
+            logAction('disconnected');
+        },
+        'corpus': function (method, args) {
+            debug('Socket method: ', method, ' called');
+            corpus[method].apply(null, args).then(function () {
+                socket.emit('corpus', method, _.toArray(arguments));
+            });
+        }
+    };
+
+    //bind methods of API
+    _.each(serverAPI, function (method, event) {
+        socket.on(event, method);
+    });
+
+    logAction('connected');
 });

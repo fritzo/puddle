@@ -1,10 +1,11 @@
 'use strict';
 
-var log = console.log.bind(console);
+
+var log = require('debug')('puddle:client:corpus');
 var angular = require('angular');
+var _ = require('lodash');
 var uiRouter = require('angular-ui-router');
-var corpus = angular.module('corpus', [uiRouter]);
-var syntax = require('puddle-syntax');
+var corpus = angular.module('corpus', [uiRouter, 'btford.socket-io']);
 
 corpus.config(function ($stateProvider) {
     $stateProvider
@@ -15,48 +16,32 @@ corpus.config(function ($stateProvider) {
         });
 });
 
+corpus.factory('Socket', function (socketFactory) {
+    return socketFactory();
+});
+
 corpus.controller('corpus', function ($scope, CorpusDB) {
     $scope.corpus = CorpusDB.corpus;
 });
 
-corpus.factory('CorpusDB', function () {
-    var codes = [
-        'ASSERT EQUAL APP APP C APP APP C VAR util.pair BOT VAR util.join I',
-        'ASSERT EQUAL APP APP C APP VAR util.pair BOT VAR util.join I',
-        'ASSERT EQUAL APP VAR types.div BOT BOT',
-        'ASSERT EQUAL APP VAR types.div TOP TOP',
-        'ASSERT EQUAL APP VAR types.semi BOT BOT',
-        'ASSERT EQUAL APP VAR types.semi I I',
-        'ASSERT EQUAL APP VAR types.semi TOP TOP',
-        'ASSERT EQUAL APP VAR types.type I I',
-        'ASSERT EQUAL APP VAR types.type TOP TOP',
-        'ASSERT EQUAL APP VAR types.unit I I',
-        'ASSERT EQUAL APP VAR types.unit TOP TOP',
-        'ASSERT EQUAL COMP VAR types.forall.lower VAR types.forall.raise I',
-        'ASSERT EQUAL COMP VAR types.forall.pull VAR types.forall.push I',
-        'ASSERT EQUAL COMP VAR types.type VAR types.type VAR types.type',
-        'ASSERT EQUAL VAR types.div APP VAR types.type APP CI TOP',
-        'DEFINE VAR types.div APP VAR types.type K',
-            'DEFINE VAR types.exp COMP COMP COMP COMP APP CB VAR ' +
-            'types.type APP CB B CB CB VAR types.type',
-            'DEFINE VAR types.forall JOIN APP APP VAR util.pair VAR ' +
-            'types.forall.lower VAR types.forall.raise JOIN APP APP VAR ' +
-            'util.pair VAR types.forall.pull VAR types.forall.push HOLE',
-        'DEFINE VAR types.forall.lower APP APP C I TOP',
-        'DEFINE VAR types.forall.pull COMP APP CB VAR types.div J',
-        'DEFINE VAR types.forall.push APP APP C I TOP',
-        'DEFINE VAR types.forall.raise K',
-        'DEFINE VAR types.pow P',
-            'DEFINE VAR types.semi APP VAR types.type APP VAR types.forall ' +
-            'COMP APP CB B COMP CB COMP APP CB I CB',
-        'DEFINE VAR types.type V',
-        'DEFINE VAR types.unit APP VAR types.type JOIN APP K I VAR types.semi',
-        'DEFINE VAR util.join J',
-        'DEFINE VAR util.pair COMP C APP C I'
-    ];
-    log('Term:', syntax.compiler.load(codes[1]));
-    log('Tree:', syntax.tree.load(syntax.compiler.load(codes[1])));
-    return {corpus: codes};
+corpus.factory('CorpusDB', function (Socket) {
+    var codes = [];
+    Socket.on('corpus', function (method, args) {
+        switch (method) {
+            case 'findAll':
+                var corpus = args[0];
+                if (_.isArray(corpus)) {
+                    codes.length = 0;
+                    corpus.forEach(function (a) {
+                        codes.push(a);
+                    });
+                }
+                break;
+        }
+    });
 
+    return {corpus: codes};
 });
+
+log('Corpus module init complete');
 
