@@ -14,7 +14,8 @@ stdin.on('end', function () {
             corpus.push(json[key].code);
         });
         corpus.sort();
-        corpus.unshift('# this file is created by convert.js of puddle-corpus module');
+        corpus.unshift(
+            '# this file is created by convert.jsof puddle-corpus module');
         process.stdout.write(corpus.join('\n'));
     } catch (e) {
         var id = 0;

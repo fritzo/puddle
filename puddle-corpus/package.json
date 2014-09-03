@@ -4,7 +4,9 @@
   "description": "Corpus representaion stored in JSON and wrapped into Corpus CRUD API",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./test/**/*.js --reporter spec"
+    "jshint": "jshint *.js corpus test*",
+    "mocha": "mocha ./test/**/*.js --reporter spec",
+    "test": "npm run mocha && npm run jshint"
   },
   "repository": {
     "type": "git",
@@ -19,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/pomagma/puddle-corpus/issues"
   },
-  "homepage": "https://github.com/pomagma/puddle-corpus"
+  "homepage": "https://github.com/pomagma/puddle-corpus",
+  "dependencies": {
+    "jshint": "^2.5.5",
+    "mocha": "^1.21.4"
+  }
 }
