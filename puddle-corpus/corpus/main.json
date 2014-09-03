@@ -1,0 +1,114 @@
+[
+    {
+        "id": 0,
+        "code": "ASSERT EQUAL APP APP C APP APP C VAR util.pair BOT VAR util.join I"
+    },
+    {
+        "id": 1,
+        "code": "ASSERT EQUAL APP APP C APP VAR util.pair BOT VAR util.join I"
+    },
+    {
+        "id": 2,
+        "code": "ASSERT EQUAL APP VAR types.div BOT BOT"
+    },
+    {
+        "id": 3,
+        "code": "ASSERT EQUAL APP VAR types.div TOP TOP"
+    },
+    {
+        "id": 4,
+        "code": "ASSERT EQUAL APP VAR types.semi BOT BOT"
+    },
+    {
+        "id": 5,
+        "code": "ASSERT EQUAL APP VAR types.semi I I"
+    },
+    {
+        "id": 6,
+        "code": "ASSERT EQUAL APP VAR types.semi TOP TOP"
+    },
+    {
+        "id": 7,
+        "code": "ASSERT EQUAL APP VAR types.type I I"
+    },
+    {
+        "id": 8,
+        "code": "ASSERT EQUAL APP VAR types.type TOP TOP"
+    },
+    {
+        "id": 9,
+        "code": "ASSERT EQUAL APP VAR types.unit I I"
+    },
+    {
+        "id": 10,
+        "code": "ASSERT EQUAL APP VAR types.unit TOP TOP"
+    },
+    {
+        "id": 11,
+        "code": "ASSERT EQUAL COMP VAR types.forall.lower VAR types.forall.raise I"
+    },
+    {
+        "id": 12,
+        "code": "ASSERT EQUAL COMP VAR types.forall.pull VAR types.forall.push I"
+    },
+    {
+        "id": 13,
+        "code": "ASSERT EQUAL COMP VAR types.type VAR types.type VAR types.type"
+    },
+    {
+        "id": 14,
+        "code": "ASSERT EQUAL VAR types.div APP VAR types.type APP CI TOP"
+    },
+    {
+        "id": 15,
+        "code": "DEFINE VAR types.div APP VAR types.type K"
+    },
+    {
+        "id": 16,
+        "code": "DEFINE VAR types.exp COMP COMP COMP COMP APP CB VAR types.type APP CB B CB CB VAR types.type"
+    },
+    {
+        "id": 17,
+        "code": "DEFINE VAR types.forall JOIN APP APP VAR util.pair VAR types.forall.lower VAR types.forall.raise JOIN APP APP VAR util.pair VAR types.forall.pull VAR types.forall.push HOLE"
+    },
+    {
+        "id": 18,
+        "code": "DEFINE VAR types.forall.lower APP APP C I TOP"
+    },
+    {
+        "id": 19,
+        "code": "DEFINE VAR types.forall.pull COMP APP CB VAR types.div J"
+    },
+    {
+        "id": 20,
+        "code": "DEFINE VAR types.forall.push APP APP C I TOP"
+    },
+    {
+        "id": 21,
+        "code": "DEFINE VAR types.forall.raise K"
+    },
+    {
+        "id": 22,
+        "code": "DEFINE VAR types.pow P"
+    },
+    {
+        "id": 23,
+        "code": "DEFINE VAR types.semi APP VAR types.type APP VAR types.forall COMP APP CB B COMP CB COMP APP CB I CB"
+    },
+    {
+        "id": 24,
+        "code": "DEFINE VAR types.type V"
+    },
+    {
+        "id": 25,
+        "code": "DEFINE VAR types.unit APP VAR types.type JOIN APP K I VAR types.semi"
+    },
+    {
+        "id": 26,
+        "code": "DEFINE VAR util.join J"
+    },
+    {
+        "id": 27,
+        "code": "DEFINE VAR util.pair COMP C APP C I"
+    }
+]

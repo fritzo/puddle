@@ -1,0 +1,23 @@
+{
+  "name": "puddle-corpus",
+  "version": "1.0.0",
+  "description": "Corpus representaion stored in JSON and wrapped into Corpus CRUD API",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./test/**/*.js --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pomagma/puddle-corpus"
+  },
+  "keywords": [
+    "pomagma",
+    "corpus"
+  ],
+  "author": "Yan T <yan@yan.my> (http://yan.my/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pomagma/puddle-corpus/issues"
+  },
+  "homepage": "https://github.com/pomagma/puddle-corpus"
+}
