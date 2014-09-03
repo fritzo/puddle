@@ -51,3 +51,15 @@ In addition, each file should satisfy the constraints:
 * Duplicate lines are removed.
 * No variable is DEFINE'd multiple times,
 * Every free variable is DEFINE'd once.
+
+## Contributors
+
+- Fritz Obermeyer <https://github.com/fritzo>
+- Yan T. <https://github.com/yangit>
+
+Puddle was factored out of [Pomagma](https://github.com/fritzo/pomagma) in 2014.
+
+## License
+
+Copyright 2013-2014 Fritz Obermeyer.<br/>
+Puddle is licensed under the [MIT license](/LICENSE).
