@@ -5,15 +5,14 @@ Corpus representaion stored in JSON and wrapped into Corpus CRUD API
 
 ###Features:
     [X] Minimum dependencies
-    [*] .json <-> .corpus file conversion utility
+    [X] .json <-> .corpus file conversion utility
         [X] Pretty prints .json output to make it easier to track with git
         [X] Uses STDIO and STDOUT as input and output
         [X] Automatically determines type of input data (json or corpus)
         [X] Corpus file may have comments starting with #
-        [X] Normalize corpus (i.e. cat corpus.dump | sort | uniq)        
-    [ ] Conforms to Corpus CRUD API
-    [ ] Stores data as JSON
-    [*] Test covered
+        [X] Normalize corpus (i.e. cat corpus.dump | sort | uniq)            
+    [X] Stores data as JSON
+    [ ] Conforms to Corpus CRUD API    
     To be implemented:    
     [ ] Validate variable appearance constraints    
         [ ] Duplicate lines are removed.

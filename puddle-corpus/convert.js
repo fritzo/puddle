@@ -2,9 +2,12 @@
 
 var stdin = process.openStdin();
 var input = '';
-stdin.on('data', function (chunk) {
-    input += chunk;
-});
+stdin.on('data',
+    /* istanbul ignore next */
+    function (chunk) {
+        input += chunk;
+    }
+);
 
 
 function onlyUnique(value, index, self) {
@@ -42,9 +45,12 @@ var converter = function (input) {
 };
 
 
-stdin.on('end', function () {
-    process.stdout.write(converter(input));
-});
+stdin.on('end',
+    /* istanbul ignore next */
+    function () {
+        process.stdout.write(converter(input));
+    }
+);
 
 
 module.exports = converter;
