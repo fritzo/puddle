@@ -9,10 +9,11 @@ Corpus representaion stored in JSON and wrapped into Corpus CRUD API
         [X] Pretty prints .json output to make it easier to track with git
         [X] Uses STDIO and STDOUT as input and output
         [X] Automatically determines type of input data (json or corpus)
-        [*] Normalize corpus (i.e. cat corpus.dump | sort | uniq)        
+        [X] Corpus file may have comments starting with #
+        [X] Normalize corpus (i.e. cat corpus.dump | sort | uniq)        
     [ ] Conforms to Corpus CRUD API
     [ ] Stores data as JSON
-    [ ] Test covered
+    [*] Test covered
     To be implemented:    
     [ ] Validate variable appearance constraints    
         [ ] Duplicate lines are removed.

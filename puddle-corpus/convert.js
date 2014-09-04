@@ -6,30 +6,38 @@ stdin.on('data', function (chunk) {
     input += chunk;
 });
 
+
+function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
+
 var converter = function (input) {
+    var array;
     try {
         //if we can parse JSON than it is JSON->Corpus
-        var json = JSON.parse(input);
+        array = JSON.parse(input);
         var corpus = [];
-        Object.keys(json).forEach(function (key) {
-            corpus.push(json[key].code);
+        array.forEach(function (obj) {
+            corpus.push(obj.code);
         });
-        corpus.sort();
+        corpus = corpus.filter(onlyUnique).sort();
         corpus.unshift(
             '# this file is created by convert.js of puddle-corpus module');
         return corpus.join('\n');
     } catch (e) {
         //if not than it is Corpus->JSON
         var id = 0;
-        var json = [];
-        input.toString().split('\n').forEach(function (line) {
+        array = [];
+        var unique = input.toString().split('\n').filter(onlyUnique);
+        unique.sort().forEach(function (line) {
             line = line.replace(/#.*/, '').trim();
             if (line) {
-                json.push({id: id, code: line});
+                array.push({id: id, code: line});
                 id++;
             }
         });
-        return JSON.stringify(json, undefined, 4);
+
+        return JSON.stringify(array, undefined, 4);
     }
 };
 
