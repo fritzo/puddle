@@ -9,11 +9,15 @@ Corpus representaion stored in JSON and wrapped into Corpus CRUD API
         [X] Pretty prints .json output to make it easier to track with git
         [X] Uses STDIO and STDOUT as input and output
         [X] Automatically determines type of input data (json or corpus)
-        [*] Test covered
+        [*] Normalize corpus (i.e. cat corpus.dump | sort | uniq)        
     [ ] Conforms to Corpus CRUD API
-    [ ] Stores data as JSON    
-    [ ] Validate variable appearance constraints
-    [ ] Normalize corpus (i.e. cat corpus.dump | sort | uniq)
+    [ ] Stores data as JSON
+    [ ] Test covered
+    To be implemented:    
+    [ ] Validate variable appearance constraints    
+        [ ] Duplicate lines are removed.
+        [ ] No variable is DEFINE'd multiple times,
+        [ ] Every free variable is DEFINE'd once.
     
     
 ###Installation:
