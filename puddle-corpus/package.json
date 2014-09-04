@@ -22,7 +22,8 @@
     "url": "https://github.com/pomagma/puddle-corpus/issues"
   },
   "homepage": "https://github.com/pomagma/puddle-corpus",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "jshint": "^2.5.5",
     "mocha": "^1.21.4"
   }
