@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/pomagma/puddle.svg?branch=master)](http://travis-ci.org/pomagma/puddle)
-[![Coverage Status](https://img.shields.io/coveralls/pomagma/puddle.svg)](https://coveralls.io/r/pomagma/puddle)
 #Puddle
 
 This is a main Puddle repository.
@@ -11,7 +10,7 @@ While puddle modules are being actievely developed they are checked into this re
 There are following puddle- repos:
 
 - puddle-hub <sup>1</sup>  // synchronization
-- puddle-corpus <sup>1</sup> // storage
+- puddle-corpus <sup>1</sup> [![Coverage Status](https://img.shields.io/coveralls/pomagma/puddle-corpus.svg)](https://coveralls.io/r/pomagma/puddle-corpus) // storage
 - [puddle-syntax](https://github.com/pomagma/puddle-syntax) // conversion from one courpus form to another
 - puddle-editor <sup>1</sup>// in memory editor
 - puddle-cli <sup>1</sup>// simple command line client to puddle-editor
