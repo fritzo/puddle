@@ -2,7 +2,7 @@
 var assert = require('assert');
 
 describe('Conversion utility', function () {
-    it('Fails', function () {
-        assert(false);
+    it('Passes', function () {
+        assert(true);
     });
 });

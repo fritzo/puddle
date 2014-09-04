@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/pomagma/puddle/issues"
   },
-  "homepage": "https://github.com/pomagma/puddle"
+  "homepage": "https://github.com/pomagma/puddle",
+  "devDependencies": {
+        "jshint": "^2.5.5",
+        "mocha": "^1.21.4"
+  }
 }
