@@ -1,0 +1,23 @@
+{
+  "name": "puddle",
+  "version": "1.0.0",
+  "description": "Main puddle repo with documentation and some modules in active development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pomagma/puddle.git"
+  },
+  "keywords": [
+    "puddle",
+    "pomagma"
+  ],
+  "author": "Yan T <yan@yan.my> (http://yan.my/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pomagma/puddle/issues"
+  },
+  "homepage": "https://github.com/pomagma/puddle"
+}
