@@ -18,6 +18,9 @@ There are following puddle- repos:
 
 1: Implements Corpus CRUD API
 
+Please reffer to the [./doc](./doc) for features, architecture, contributing, etc.
+
+
 ##Corpus CRUD API
 Below is example on Corpus CRUD API and API description:
     
