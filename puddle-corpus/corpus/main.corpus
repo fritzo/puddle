@@ -1,4 +1,4 @@
-# this file is managed by corpus.js
+# this file is created by convert.js of puddle-corpus module
 ASSERT EQUAL APP APP C APP APP C VAR util.pair BOT VAR util.join I
 ASSERT EQUAL APP APP C APP VAR util.pair BOT VAR util.join I
 ASSERT EQUAL APP VAR types.div BOT BOT

@@ -6,8 +6,9 @@ stdin.on('data', function (chunk) {
     input += chunk;
 });
 
-stdin.on('end', function () {
+var converter = function (input) {
     try {
+        //if we can parse JSON than it is JSON->Corpus
         var json = JSON.parse(input);
         var corpus = [];
         Object.keys(json).forEach(function (key) {
@@ -15,9 +16,10 @@ stdin.on('end', function () {
         });
         corpus.sort();
         corpus.unshift(
-            '# this file is created by convert.jsof puddle-corpus module');
-        process.stdout.write(corpus.join('\n'));
+            '# this file is created by convert.js of puddle-corpus module');
+        return corpus.join('\n');
     } catch (e) {
+        //if not than it is Corpus->JSON
         var id = 0;
         var json = [];
         input.toString().split('\n').forEach(function (line) {
@@ -27,10 +29,14 @@ stdin.on('end', function () {
                 id++;
             }
         });
-        process.stdout.write(JSON.stringify(json, undefined, 4));
+        return JSON.stringify(json, undefined, 4);
     }
+};
 
 
+stdin.on('end', function () {
+    process.stdout.write(converter(input));
 });
 
 
+module.exports = converter;
