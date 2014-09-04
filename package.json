@@ -4,7 +4,7 @@
   "description": "Main puddle repo with documentation and some modules in active development",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd $MODULE; npm test;"
   },
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
     "puddle",
     "pomagma"
   ],
-  "author": "Yan T <yan@yan.my> (http://yan.my/)",
+  "author": "Fritz Obermeyer",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/pomagma/puddle/issues"
