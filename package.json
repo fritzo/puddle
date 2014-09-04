@@ -4,7 +4,7 @@
   "description": "Main puddle repo with documentation and some modules in active development",
   "main": "index.js",
   "scripts": {
-    "test": "cd $MODULE; npm test;"
+    "test": "cd $MODULE; npm install; npm test;"
   },
   "repository": {
     "type": "git",
@@ -19,9 +19,5 @@
   "bugs": {
     "url": "https://github.com/pomagma/puddle/issues"
   },
-  "homepage": "https://github.com/pomagma/puddle",
-  "devDependencies": {
-        "jshint": "^2.5.5",
-        "mocha": "^1.21.4"
-  }
+  "homepage": "https://github.com/pomagma/puddle"
 }

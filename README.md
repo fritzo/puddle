@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/pomagma/puddle.svg?branch=master)](http://travis-ci.org/pomagma/puddle)
-
+[![Coverage Status](https://img.shields.io/coveralls/pomagma/puddle.svg)](https://coveralls.io/r/pomagma/puddle)
 #Puddle
 
 This is a main Puddle repository.
