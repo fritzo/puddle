@@ -3,6 +3,5 @@ node_js:
   - "0.10"
 cache:
   apt: true
-services:
 env:
   - MODULE='puddle-corpus'
