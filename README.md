@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pomagma/puddle.svg?branch=master)](http://travis-ci.org/pomagma/puddle)
+
 #Puddle
 
 This is a main Puddle repository.
