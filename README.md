@@ -106,7 +106,7 @@ Below is example on Corpus CRUD API and API description:
 
 
 
-#### Demo of how to use local modules:
+## Demo of how to use local modules:
 
     $ git clone git@github.com:pomagma/puddle
     $ cd puddle
@@ -121,3 +121,8 @@ Below is example on Corpus CRUD API and API description:
     $ cd ..
     $ git add node_modules/puddle-corpus  # so other devs can use this
     $ git commit -m 'Add local npm link to puddle-corpus'
+    
+## Travis
+With current setup of submodules travis usese an ENV variable MODULES and it has to be defined before npm test
+    MODULE='puddle-corpus' npm test // that means run npm test from './puddle-corpus' only
+Make sure to declare env variables for each of sub modules 

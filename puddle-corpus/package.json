@@ -4,7 +4,7 @@
   "description": "Corpus representaion stored in JSON and wrapped into Corpus CRUD API",
   "main": "index.js",
   "scripts": {
-    "jshint": "jshint *.js corpus test*",
+    "jshint": "jshint *.js corpus* test*",
     "mocha": "mocha ./test/**/*.js --reporter spec",
     "test": "npm run mocha && npm run jshint"
   },
