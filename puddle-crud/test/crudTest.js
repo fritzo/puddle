@@ -111,7 +111,7 @@ describe('Crud instance', function () {
             });
             it('Object not passed', function () {
                 assert.throws(function () {
-                    crud.create(id,object);
+                    crud.create(id, object);
                     crud.update(id);
                 });
             });
@@ -157,24 +157,40 @@ describe('Crud instance', function () {
         });
 
     });
-//
-//    describe('chaning', function () {
-//        var one;
-//        var two;
-//        var three;
-//        beforeEach(function () {
-//            one = new Crud();
-//            two = new Crud();
-//            three = new Crud();
-//        });
-//        it('Method called on one side of the chain emits on the other',
-//            function (done) {
-//                two.connect(one);
-//                three.connect(two);
-//                three.on('create', function () {
-//                    done();
-//                });
-//                two.create(id, object);
-//            });
-//    });
+
+    describe('chaning', function () {
+        var one;
+        var two;
+        var three;
+        beforeEach(function () {
+            one = new Crud();
+            two = new Crud();
+            three = new Crud();
+        });
+        describe('Method calls propogate through the chain', function () {
+            it('forward',
+                function (done) {
+                    two.connect(one);
+                    three.connect(two);
+                    three.on('create', function () {
+                        done();
+                    });
+                    one.create(id, object);
+                }
+            );
+            it('baclwards',
+                function (done) {
+                    two.connect(one);
+                    three.connect(two);
+                    one.on('create', function () {
+                        done();
+                    });
+                    three.create(id, object);
+                }
+            );
+
+        });
+
+
+    });
 });
