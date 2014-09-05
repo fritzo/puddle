@@ -5,14 +5,15 @@ Corpus CRUD API wrapper
 
 ###Features:
     [X] Minimum dependencies
-    [*] Can be connectd in a branched fashion, can't in circular  
+    [X] Can be connectd in a branched fashion, can't in circular  
     Returns a `Crud` class which is:    
-        [X] an instance of EventEmitter
+        [X] has .on method to hook to events
         [X] emits: `create`,`remove`,`update` events
-        [X] implements create,remove, update methods
-        [X] implements getState method which returns internal state
-        [X] implements connect method which allows to 
+        [X] implements .create,.remove, .update methods
+        [X] implements .getState method which returns internal state
+        [X] implements .connect method which allows to 
                 bi-directionally bind it to another instance of same class.
+        [X] Constructor takes optional initial hash
         [X] Object agnostic (does not care what to sync)
         
         
@@ -29,41 +30,45 @@ Corpus CRUD API wrapper
 ####Basic usage:    
     
     var Crud = require(‘puddle-crud’)
-    var initialArray = [Obj1, Obj2, ...];
-    var crud = new Crud(initialArray);  //optionaly pass in init array
-    crud.on('create', function (obj) {
+    var uuid = require(‘node-uuid’)
+    var newId = uuid(); 
+    var initialHash = {uuid():Obj1, uuid():Obj2, ...};    
+    var crud = new Crud(initialHash);  //optionaly pass in init hash
+    
+    crud.on('create', function (id,obj) {
         console.log('Create event called with ',obj);
     })
-    crud.create(Obj3); //here an event will fire and you'll see in Console
+    crud.create(newId,Obj3); //here an event will fire and you'll see in Console
     // Create event called with Obj3
     
-    crud.getState() // returns current state of the internal array currently : [Obj1, Obj2, Obj3 ...];
+    crud.getState() // returns current state of the internal hash including added Obj3;
 
 ####Chaining:
     var Crud = require(‘puddle-crud’)
-    var initialArray = [Obj1, Obj2, ...];
-    var one = new Crud(initialArray);
+    var uuid = require(‘node-uuid’)     
+    var initialHash = {uuid():Obj1, uuid():Obj2, ...};    
+    
+    var one = new Crud(initialHash);  //pass in init hash       
     var two = new Crud();
     var three = new Crud();
     
-    two.connect(one);
-    
-    three.getState() // []
+    two.connect(one);    
+    three.getState() // {}
     three.connect(two);        
-    three.getState() // [Obj1, Obj2, ...]; because .connect() pulls in other instance's state.
+    three.getState() // {uuid():Obj1, uuid():Obj2, ...}; because .connect() pulls in other instance's state.
     
-    one.on('create', function (obj) {
+    one.on('create', function (id,obj) {
         console.log('One got an object ',obj);
     })
-    three.on('create', function (obj) {
+    three.on('create', function (id,obj) {
         console.log('Three got an object ',obj);
     })
     
     //events propogate through the chain
-    one.create(obj) // 'Three got an object obj'
+    one.create(uuid(),obj) // 'Three got an object obj'
     
     //both ways
-    three.create(obj) // 'One got an object obj'         
+    three.create(uuid(),obj) // 'One got an object obj'         
             
 
 ## Contributors
