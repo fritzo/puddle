@@ -1,20 +1,23 @@
 'use strict';
 
-var _ = require('lodash');
 var assert = require('assert');
+var path = require('path');
 var fs = require('fs');
 var Crud = require('puddle-crud');
 
 module.exports = function (file) {
-    assert(_.isString(file));
-    var corpus = JSON.parse(fs.readFileSync(file));
-    var crud = Crud(corpus);
+    var filePath = path.join(__dirname, file);
+    assert.equal(path.extname(filePath), '.json');
+    var corpus = JSON.parse(fs.readFileSync(filePath));
+    var crud = new Crud(corpus);
     var dumpCorpus = function () {
-        console.log('Dumping', crud.getState());
-//        fs.writeFileSync(file, JSON.stringify(crud.getState()));
+        fs.writeFileSync(
+            filePath,
+            JSON.stringify(crud.getState(), undefined, 4)
+        );
     };
-    crud.on('create', dumpCorpus());
-    crud.on('remove', dumpCorpus());
-    crud.on('updade', dumpCorpus());
+    crud.on('create', dumpCorpus);
+    crud.on('remove', dumpCorpus);
+    crud.on('update', dumpCorpus);
     return crud;
 };

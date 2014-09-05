@@ -4,5 +4,6 @@ node_js:
 cache:
   apt: true
 env:
-#  - MODULE='puddle-corpus'
   - MODULE='puddle-crud'
+  - MODULE='puddle-corpus'
+

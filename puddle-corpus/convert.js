@@ -1,5 +1,6 @@
 'use strict';
 
+var uuid = require('node-uuid');
 var stdin = process.openStdin();
 var input = '';
 stdin.on('data',
@@ -15,13 +16,13 @@ function onlyUnique(value, index, self) {
 }
 
 var converter = function (input) {
-    var array;
+    var hash;
     try {
         //if we can parse JSON than it is JSON->Corpus
-        array = JSON.parse(input);
+        hash = JSON.parse(input);
         var corpus = [];
-        array.forEach(function (obj) {
-            corpus.push(obj.code);
+        Object.keys(hash).forEach(function (key) {
+            corpus.push(hash[key]);
         });
         corpus = corpus.filter(onlyUnique).sort();
         corpus.unshift(
@@ -29,18 +30,15 @@ var converter = function (input) {
         return corpus.join('\n');
     } catch (e) {
         //if not than it is Corpus->JSON
-        var id = 0;
-        array = [];
+        hash = {};
         var unique = input.toString().split('\n').filter(onlyUnique);
         unique.sort().forEach(function (line) {
             line = line.replace(/#.*/, '').trim();
             if (line) {
-                array.push({id: id, code: line});
-                id++;
+                hash[uuid()] = line;
             }
         });
-
-        return JSON.stringify(array, undefined, 4);
+        return JSON.stringify(hash, undefined, 4);
     }
 };
 

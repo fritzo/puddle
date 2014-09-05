@@ -13,6 +13,11 @@ describe('Crud instance', function () {
         crud = new Crud();
         object = {code: 'I\'m an object'};
     });
+    it('throws if not a function given as an event callback', function () {
+       assert.throws(function () {
+         crud.on('create',{});
+       });
+    });
     describe('create', function () {
         describe('throws if ', function () {
             it('ID or Object are not passed', function () {

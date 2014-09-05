@@ -17,6 +17,7 @@ module.exports = function (hash) {
 
     var events = {};
     this.on = function (event, callback, id) {
+        assert(_.isFunction(callback));
         if (events[event] === undefined) {
             events[event] = [];
         }
