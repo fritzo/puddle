@@ -12,7 +12,7 @@ Corpus representaion stored in JSON and wrapped into Corpus CRUD API
         [X] Corpus file may have comments starting with #
         [X] Normalize corpus (i.e. cat corpus.dump | sort | uniq)            
     [X] Stores data as JSON
-    [ ] Conforms to Corpus CRUD API    
+    [*] Conforms to Corpus CRUD API    
     To be implemented:    
     [ ] Validate variable appearance constraints    
         [ ] Duplicate lines are removed.

@@ -14,9 +14,10 @@ pids
 logs
 results
 
+coverage
 npm-debug.log
-node_modules
-public/index.html
-public/main.css
-public/main.css.map
-public/main.js
+
+#For travis
+node_modules/*
+!node_modules/lodash
+!node_modules/node-uuid

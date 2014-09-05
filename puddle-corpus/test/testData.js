@@ -30,50 +30,13 @@ module.exports = {
 
     },
     json: {
-        unsorted: JSON.stringify([
+        nonUnique: JSON.stringify(
             {
-                'id': 15,
-                'code': 'DEFINE VAR types.div APP VAR types.type K'
-            },
-            {
-                'id': 14,
-                'code': 'ASSERT EQUAL VAR types.div APP VAR types.type ' +
-                    'APP CI TOP'
-            },
-            {
-                'id': 16,
-                'code': 'DEFINE VAR types.exp COMP COMP COMP COMP APP CB ' +
-                    'VAR types.type APP CB B CB CB VAR types.type'
-            }
-        ]),
-        sorted: JSON.stringify([
-            {
-                'id': 14,
-                'code': 'ASSERT EQUAL VAR types.div APP VAR types.type ' +
-                    'APP CI TOP'
-            },
-            {
-                'id': 15,
-                'code': 'DEFINE VAR types.div APP VAR types.type K'
-            },
-            {
-                'id': 16,
-                'code': 'DEFINE VAR types.exp COMP COMP COMP COMP APP CB ' +
-                    'VAR types.type APP CB B CB CB VAR types.type'
-            }
-        ]),
-        nonUnique: JSON.stringify([
-            {
-                'id': 14,
-                'code': 'ASSERT EQUAL VAR types.div APP VAR types.type ' +
-                    'APP CI TOP'
-            },
-            {
-                'id': 15,
-                'code': 'ASSERT EQUAL VAR types.div APP VAR types.type ' +
+                '14': 'ASSERT EQUAL VAR types.div APP VAR types.type ' +
+                    'APP CI TOP',
+                '15': 'ASSERT EQUAL VAR types.div APP VAR types.type ' +
                     'APP CI TOP'
             }
-        ])
-
+        )
     }
 };
