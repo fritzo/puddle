@@ -14,9 +14,9 @@ describe('Crud instance', function () {
         object = {code: 'I\'m an object'};
     });
     it('throws if not a function given as an event callback', function () {
-       assert.throws(function () {
-         crud.on('create',{});
-       });
+        assert.throws(function () {
+            crud.on('create', {});
+        });
     });
     describe('create', function () {
         describe('throws if ', function () {
@@ -83,7 +83,10 @@ describe('Crud instance', function () {
         it('re-emits removed object and ID', function (done) {
 
             crud.on('remove', function (removedId, removedObject) {
-                assert.equal(removedObject, object);
+                assert.equal(
+                    JSON.stringify(removedObject),
+                    JSON.stringify(object)
+                );
                 assert.equal(removedId, id);
                 done();
             });
@@ -158,12 +161,15 @@ describe('Crud instance', function () {
             var hash = {};
             hash[id] = object;
             var crud = new Crud(hash);
-            assert.equal(crud.getState(), hash);
+            assert.equal(
+                JSON.stringify(crud.getState()),
+                JSON.stringify(hash)
+            );
         });
 
     });
 
-    describe('chaning', function () {
+    describe('chained', function () {
         var one;
         var two;
         var three;
@@ -172,6 +178,37 @@ describe('Crud instance', function () {
             two = new Crud();
             three = new Crud();
         });
+        describe('instance propagate initial state', function () {
+            it('downwards', function () {
+                one = new Crud(object);
+                two = new Crud();
+                three = new Crud();
+                two.connect(one);
+                three.connect(two);
+                assert.equal(
+                    JSON.stringify(three.getState()),
+                    JSON.stringify(object)
+                );
+            });
+
+            it('but not upwards', function () {
+                one = new Crud();
+                two = new Crud();
+                three = new Crud(object);
+                two.connect(one);
+                three.connect(two);
+
+                assert.notEqual(
+                    JSON.stringify(three.getState()),
+                    JSON.stringify(object)
+                );
+                assert.notEqual(
+                    JSON.stringify(one.getState()),
+                    JSON.stringify(object)
+                );
+            });
+        });
+
         describe('Method calls propogate through the chain', function () {
             it('forward',
                 function (done) {
@@ -206,8 +243,6 @@ describe('Crud instance', function () {
                             }
                         };
                     })(done, 2);
-
-
 
                     two.connect(one);
                     three.connect(two);

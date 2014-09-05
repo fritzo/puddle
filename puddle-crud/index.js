@@ -38,7 +38,7 @@ module.exports = function (hash) {
     };
     this.connect = function (otherCrud) {
         //reset our own data before connect;
-        this.hash = _.cloneDeep(otherCrud.getState());
+        this.hash = otherCrud.getState();
 
         //bind all methods together
         ['create', 'remove', 'update'].forEach(function (method) {
@@ -61,7 +61,7 @@ module.exports = function (hash) {
         assert(obj, 'Object must be set');
         assert(!this.hash[id], 'Id has to be unique');
 
-        this.hash[id] = obj;
+        this.hash[id] = _.cloneDeep(obj);
         this.emit('create', id, obj, nodeId || this.nodeId);
     };
 
@@ -79,11 +79,11 @@ module.exports = function (hash) {
         assert(obj, 'Object must be set');
         assert(this.hash[id], 'Id has to exists');
 
-        this.hash[id] = obj;
+        this.hash[id] = _.cloneDeep(obj);
         this.emit('update', id, obj, this.nodeId);
     };
     this.getState = function () {
-        return this.hash;
+        return _.cloneDeep(this.hash);
     };
 
 };
