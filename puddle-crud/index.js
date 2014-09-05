@@ -17,7 +17,7 @@ module.exports = function (hash) {
     assert(!_.isArray(this.hash), 'Hash must not be an Array');
 
 
-    this.create = function (id, obj, nodeId) {
+    this.create = function (id, obj) {
         assert(_.isString(id), 'Id must be a string');
         assert(obj, 'Object must be set');
         assert(!this.hash[id], 'Id has to be unique');
