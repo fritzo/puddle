@@ -5,9 +5,19 @@ var assert = require('assert');
 var uuid = require('node-uuid');
 
 module.exports = function (hash) {
+    assert(this, 'Constructor can\'t be called without New');
+    if (hash === undefined) {
+        this.hash = {};
+    } else {
+        this.hash = hash;
+    }
+    assert(_.isObject(this.hash), 'Hash must be an object');
+    assert(!_.isArray(this.hash), 'Hash must not be an Array');
+    this.nodeId = uuid();
+
     var events = {};
     this.on = function (event, callback, id) {
-        if (!event[event]) {
+        if (events[event] === undefined) {
             events[event] = [];
         }
         events[event].push({id: id, callback: callback});
@@ -25,16 +35,24 @@ module.exports = function (hash) {
             }
         });
     };
+    this.connect = function (otherCrud) {
+        //reset our own data before connect;
+        this.hash = _.cloneDeep(otherCrud.getState());
 
-    this.nodeId = uuid();
-    assert(this, 'Constructor can\'t be called without New');
-    if (hash === undefined) {
-        this.hash = {};
-    } else {
-        this.hash = hash;
-    }
-    assert(_.isObject(this.hash), 'Hash must be an object');
-    assert(!_.isArray(this.hash), 'Hash must not be an Array');
+        //bind all methods together
+        ['create', 'remove', 'update'].forEach(function (method) {
+            otherCrud.on(
+                method,
+                _.bind(this[method], this),
+                this.nodeId
+            );
+            this.on(
+                method,
+                _.bind(otherCrud[method], otherCrud),
+                otherCrud.nodeId
+            );
+        }, this);
+    };
 
 
     this.create = function (id, obj, nodeId) {
@@ -62,17 +80,9 @@ module.exports = function (hash) {
 
         this.hash[id] = obj;
         this.emit('update', id, obj, this.nodeId);
-
     };
     this.getState = function () {
         return this.hash;
     };
-    this.connect = function (otherCorpus) {
-        //reset our own data before connect;
-        this.hash = _.cloneDeep(otherCorpus.getState());
-        otherCorpus.on('create', _.bind(this.create, this), this.nodeId);
-        otherCorpus.on('remove', _.bind(this.remove, this), this.nodeId);
-        otherCorpus.on('update', _.bind(this.update, this), this.nodeId);
-    };
-    //assigh all properties to instance of EventEmitter classs
+
 };

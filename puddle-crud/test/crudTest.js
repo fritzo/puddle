@@ -4,7 +4,7 @@ var Crud = require('../index.js');
 var uuid = require('node-uuid');
 
 describe('Crud instance', function () {
-    this.timeout(2000);
+//    this.timeout(2000);
     var crud;
     var id;
     var object;
@@ -178,7 +178,7 @@ describe('Crud instance', function () {
                     one.create(id, object);
                 }
             );
-            it('baclwards',
+            it('backwards',
                 function (done) {
                     two.connect(one);
                     three.connect(two);
@@ -188,7 +188,33 @@ describe('Crud instance', function () {
                     three.create(id, object);
                 }
             );
+            it('to both forks upstream and downstream simultaneously',
+                function (done) {
 
+                    //calls callback after being called given times.
+                    var counter = (function (callback, times) {
+                        var i = 0;
+                        return function () {
+                            i++;
+                            if (times === i) {
+                                callback();
+                            }
+                        };
+                    })(done, 2);
+
+
+
+                    two.connect(one);
+                    three.connect(two);
+                    one.on('create', function () {
+                        counter();
+                    });
+                    three.on('create', function () {
+                        counter();
+                    });
+                    two.create(id, object);
+                }
+            );
         });
 
 
