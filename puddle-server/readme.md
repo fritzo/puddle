@@ -16,7 +16,14 @@ Server to store corpus and sync it over multiple clients and pomagma backend.
     
 ###Usage:    
                                         
-
+    npm start
+    
+####Development mode
+Development mode includes livereload of client side and restart of the server upon changes detected
+    
+    npm run develop         #same as gulp develop
+    
+    
 ## Contributors
 
 - Fritz Obermeyer <https://github.com/fritzo>
