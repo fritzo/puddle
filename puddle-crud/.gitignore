@@ -19,5 +19,6 @@ npm-debug.log
 
 #For travis
 node_modules/*
+!node_modules/debug
 !node_modules/lodash
 !node_modules/node-uuid
