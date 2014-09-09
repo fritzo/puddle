@@ -53,6 +53,7 @@ module.exports = function (hash) {
                 otherCrud.nodeId
             );
         }, this);
+        this.emit('connect', this.getState());
     };
 
 

@@ -2,6 +2,7 @@
 var assert = require('assert');
 var Crud = require('../index.js');
 var uuid = require('node-uuid');
+var sinon = require('sinon');
 
 describe('Crud instance', function () {
 //    this.timeout(2000);
@@ -177,6 +178,14 @@ describe('Crud instance', function () {
             one = new Crud();
             two = new Crud();
             three = new Crud();
+        });
+        it('.connect fires connect event', function (done) {
+            this.timeout(2000);
+            two.on('connect', function () {
+                done();
+            });
+            two.connect(one);
+
         });
         describe('instance propagate initial state', function () {
             it('downwards', function () {
