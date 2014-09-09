@@ -3,10 +3,18 @@
 var argv = require('yargs').argv;
 var path =  require('path');
 var express = require('express');
+var app = express();
 var pomagma = require('pomagma');
 var FROM_LOCALHOST = '127.0.0.1';
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 var PORT = process.env.PUDDLE_PORT || 34934;
-
+var mongoose = require('mongoose');
+var Debug = require('debug');
+var Log = mongoose.model('Log', {
+    user: Number,
+    action: mongoose.Schema.Types.Mixed
+});
 var analyst = pomagma.analyst.connect(
         process.env.POMAGMA_ANALYST_ADDRESS ||
         'tcp://pomagma.org:34936');
@@ -27,7 +35,7 @@ process.on('uncaughtException', function (err) {
     process.exit(1);
 });
 
-var app = express();
+
 
 if (argv.withLiveReload) {
     console.log('livereload enabled');
@@ -39,8 +47,26 @@ if (argv.withLiveReload) {
 app.use(express.static(path.join(__dirname, '../public')));
 
 
-app.listen(PORT, FROM_LOCALHOST);
-console.log('serving puddle at http://localhost:' + PORT);
+http.listen(PORT, FROM_LOCALHOST, function () {
+    console.log('serving puddle at http://localhost:' + PORT);
+});
+
+var userId = 0;
+
+io.on('connection', function (socket) {
+    var debugSocket = Debug('puddle:server:socket');
+    var id = userId++;
+    var logAction = function (action) {
+        debugSocket('User:', id, ' action:', action);
+        var log = new Log({user: id, action: action});
+        log.save();
+    };
+    logAction('connected');
+    socket.on('disconnect', function () {
+        logAction('disconnected');
+    });
+    socket.on('action', logAction);
+});
 
 
 

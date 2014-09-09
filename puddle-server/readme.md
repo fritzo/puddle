@@ -20,6 +20,7 @@ Server to store corpus and sync it over multiple clients and pomagma backend.
     
 ####Development mode
 Development mode includes livereload of client side and restart of the server upon changes detected
+Also console is using verbose debug output.
     
     npm run develop         #same as gulp develop
     

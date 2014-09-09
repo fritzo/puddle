@@ -26,19 +26,19 @@ corpus.controller('corpus', function ($scope, CorpusDB) {
 
 corpus.factory('CorpusDB', function (Socket) {
     var codes = [];
-//    Socket.on('corpus', function (method, args) {
-//        switch (method) {
-//            case 'findAll':
-//                var corpus = args[0];
-//                if (_.isArray(corpus)) {
-//                    codes.length = 0;
-//                    corpus.forEach(function (a) {
-//                        codes.push(a);
-//                    });
-//                }
-//                break;
-//        }
-//    });
+    Socket.on('corpus', function (method, args) {
+        switch (method) {
+            case 'findAll':
+                var corpus = args[0];
+                if (_.isArray(corpus)) {
+                    codes.length = 0;
+                    corpus.forEach(function (a) {
+                        codes.push(a);
+                    });
+                }
+                break;
+        }
+    });
 
     return {corpus: codes};
 });
