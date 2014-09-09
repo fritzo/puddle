@@ -19,3 +19,4 @@ coverage
 npm-debug.log
 node_modules/*
 !node_modules/puddle-hub
+!node_modules/puddle-corpus
