@@ -11,19 +11,19 @@ var server = function (io) {
 
     var puddleHub = io.of('/puddleHub');
     puddleHub.on('connection', function (socket) {
-        socket.emit('reset', crud.getState(), crud.nodeId);
+        socket.emit('reset', crud.getState(), socket.id);
         ['reset', 'create', 'remove', 'update'].forEach(function (action) {
             socket.on(action, function () {
                 var args = _.toArray(arguments);
                 args.pop();
-                args.push('socket');
+                args.push(socket.id);
                 crud[action].apply(crud, args);
             });
             crud.on(action, function () {
                 var args = _.toArray(arguments);
                 args.unshift(action);
                 socket.emit.apply(socket, args);
-            }, 'socket');
+            }, socket.id);
         });
     });
     return crud;
