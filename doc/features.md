@@ -1,22 +1,11 @@
 
 
 - Corpus CRUD API
-    - Create
-    - Update
-    - Remove
-    - Delete
-    - OnBind (that is assymetric)
-    - To be implemented:
-        - Checkout
-        - Commit
+    - see puddle-corpus repo...
 - puddle-corpus
     - see puddle-corpus repo...
 - puddle-hub
-    - consists of Server and Client parts  
-    - Conforms to Corpus CRUD API
-    - Stores objects
-    - Does not use puddle syntax
-    - Synchronizes puddle-core-network instances
+    - see puddle-corpus repo...
 - puddle-syntax
     - Provides conversions between:
     - string
@@ -74,13 +63,7 @@
     - Single-user ?
     - Uses terminal or optionally blessed library
 - puddle-html5
-    - Uses cutting edge packages and interfaces
-    - HTML5 editor
-    - Uses puddle-editor-wrapper as interface
-    - Syncs in realtime
-    - Works in latest Chrome, FF
-    - no Opera or IE
-    - no previous versions tested
+    - see puddle-corpus repo...    
 - puddle-d3
     - Visualisation engine
     - Can’t edit, view only
