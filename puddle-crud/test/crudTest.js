@@ -2,17 +2,17 @@
 var assert = require('assert');
 var Crud = require('../index.js');
 var uuid = require('node-uuid');
-var sinon = require('sinon');
 
 describe('Crud instance', function () {
-//    this.timeout(2000);
     var crud;
     var id;
     var object;
+    var object2;
     beforeEach(function () {
         id = uuid();
         crud = new Crud();
         object = {code: 'I\'m an object'};
+        object2 = {code: 'I\'m another object'};
     });
     it('throws if not a function given as an event callback', function () {
         assert.throws(function () {
@@ -81,13 +81,8 @@ describe('Crud instance', function () {
                 });
             });
         });
-        it('re-emits removed object and ID', function (done) {
-
-            crud.on('remove', function (removedId, removedObject) {
-                assert.equal(
-                    JSON.stringify(removedObject),
-                    JSON.stringify(object)
-                );
+        it('re-emits removed ID', function (done) {
+            crud.on('remove', function (removedId) {
                 assert.equal(removedId, id);
                 done();
             });
@@ -171,6 +166,7 @@ describe('Crud instance', function () {
     });
 
     describe('chained', function () {
+        this.timeout(2000);
         var one;
         var two;
         var three;
@@ -179,14 +175,29 @@ describe('Crud instance', function () {
             two = new Crud();
             three = new Crud();
         });
-        it('.connect fires connect event', function (done) {
-            this.timeout(2000);
-            two.on('connect', function () {
+        it('.connect fires reset event', function (done) {
+            two.on('reset', function () {
                 done();
             });
             two.connect(one);
-
         });
+
+        it('.reset fires reset event', function (done) {
+            one.on('reset', function () {
+                done();
+            });
+            one.reset();
+        });
+        it('.reset updates state', function (done) {
+            var hash = {};
+            hash[id] = object;
+            one.on('reset', function (state) {
+                assert.equal(JSON.stringify(state), JSON.stringify(hash));
+                done();
+            });
+            one.reset(hash);
+        });
+
         describe('instance propagate initial state', function () {
             it('downwards', function () {
                 one = new Crud(object);
@@ -219,51 +230,200 @@ describe('Crud instance', function () {
         });
 
         describe('Method calls propogate through the chain', function () {
-            it('forward',
-                function (done) {
-                    two.connect(one);
-                    three.connect(two);
-                    three.on('create', function () {
-                        done();
-                    });
-                    one.create(id, object);
-                }
-            );
-            it('backwards',
-                function (done) {
-                    two.connect(one);
-                    three.connect(two);
-                    one.on('create', function () {
-                        done();
-                    });
-                    three.create(id, object);
-                }
-            );
-            it('to both forks upstream and downstream simultaneously',
-                function (done) {
+            describe('create', function () {
+                it('forward',
+                    function (done) {
+                        two.connect(one);
+                        three.connect(two);
+                        three.on('create', function () {
+                            done();
+                        });
+                        one.create(id, object);
+                    }
+                );
+                it('backwards',
+                    function (done) {
+                        two.connect(one);
+                        three.connect(two);
+                        one.on('create', function () {
+                            done();
+                        });
+                        three.create(id, object);
+                    }
+                );
+                it('to both forks upstream and downstream simultaneously',
+                    function (done) {
 
-                    //calls callback after being called given times.
-                    var counter = (function (callback, times) {
-                        var i = 0;
-                        return function () {
-                            i++;
-                            if (times === i) {
-                                callback();
-                            }
-                        };
-                    })(done, 2);
+                        //calls callback after being called given times.
+                        var counter = (function (callback, times) {
+                            var i = 0;
+                            return function () {
+                                i++;
+                                if (times === i) {
+                                    callback();
+                                }
+                            };
+                        })(done, 2);
 
-                    two.connect(one);
-                    three.connect(two);
-                    one.on('create', function () {
-                        counter();
-                    });
-                    three.on('create', function () {
-                        counter();
-                    });
-                    two.create(id, object);
-                }
-            );
+                        two.connect(one);
+                        three.connect(two);
+                        one.on('create', function () {
+                            counter();
+                        });
+                        three.on('create', function () {
+                            counter();
+                        });
+                        two.create(id, object);
+                    }
+                );
+            });
+            describe('remove', function () {
+                it('forward',
+                    function (done) {
+                        two.connect(one);
+                        three.connect(two);
+                        three.on('remove', function () {
+                            done();
+                        });
+                        one.create(id, object);
+                        one.remove(id);
+                    }
+                );
+                it('backwards',
+                    function (done) {
+                        two.connect(one);
+                        three.connect(two);
+                        one.on('remove', function () {
+                            done();
+                        });
+                        three.create(id, object);
+                        three.remove(id);
+                    }
+                );
+                it('to both forks upstream and downstream simultaneously',
+                    function (done) {
+
+                        //calls callback after being called given times.
+                        var counter = (function (callback, times) {
+                            var i = 0;
+                            return function () {
+                                i++;
+                                if (times === i) {
+                                    callback();
+                                }
+                            };
+                        })(done, 2);
+
+                        two.connect(one);
+                        three.connect(two);
+                        one.on('remove', function () {
+                            counter();
+                        });
+                        three.on('remove', function () {
+                            counter();
+                        });
+                        two.create(id, object);
+                        two.remove(id);
+                    }
+                );
+            });
+            describe('update', function () {
+                it('forward',
+                    function (done) {
+                        two.connect(one);
+                        three.connect(two);
+                        three.on('update', function () {
+                            done();
+                        });
+                        one.create(id, object);
+                        one.update(id, object2);
+                    }
+                );
+                it('backwards',
+                    function (done) {
+                        two.connect(one);
+                        three.connect(two);
+                        one.on('update', function () {
+                            done();
+                        });
+                        three.create(id, object);
+                        three.update(id, object2);
+                    }
+                );
+                it('to both forks upstream and downstream simultaneously',
+                    function (done) {
+
+                        //calls callback after being called given times.
+                        var counter = (function (callback, times) {
+                            var i = 0;
+                            return function () {
+                                i++;
+                                if (times === i) {
+                                    callback();
+                                }
+                            };
+                        })(done, 2);
+
+                        two.connect(one);
+                        three.connect(two);
+                        one.on('update', function () {
+                            counter();
+                        });
+                        three.on('update', function () {
+                            counter();
+                        });
+                        two.create(id, object);
+                        two.update(id, object2);
+                    }
+                );
+            });
+            describe('reset', function () {
+                it('forward',
+                    function (done) {
+                        two.connect(one);
+                        three.connect(two);
+                        three.on('reset', function () {
+                            done();
+                        });
+                        one.reset();
+                    }
+                );
+                it('backwards',
+                    function (done) {
+                        two.connect(one);
+                        three.connect(two);
+                        one.on('reset', function () {
+                            done();
+                        });
+                        three.reset();
+                    }
+                );
+                it('to both forks upstream and downstream simultaneously',
+                    function (done) {
+
+                        //calls callback after being called given times.
+                        var counter = (function (callback, times) {
+                            var i = 0;
+                            return function () {
+                                i++;
+                                if (times === i) {
+                                    callback();
+                                }
+                            };
+                        })(done, 2);
+
+                        two.connect(one);
+                        three.connect(two);
+                        one.on('reset', function () {
+                            counter();
+                        });
+                        three.on('reset', function () {
+                            counter();
+                        });
+                        two.reset();
+                    }
+                );
+            });
         });
 
 

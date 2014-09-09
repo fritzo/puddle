@@ -27,9 +27,9 @@
   },
   "homepage": "https://github.com/pomagma/puddle-crud",
   "dependencies": {
+    "debug": "^2.0.0",
     "lodash": "^2.4.1",
-    "node-uuid": "^1.4.1",
-    "sinon": "^1.10.3"
+    "node-uuid": "^1.4.1"
   },
   "devDependencies": {
     "coveralls": "^2.11.1",
