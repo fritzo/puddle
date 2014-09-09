@@ -34,7 +34,7 @@ file as a DB
 
 ###JSON file format:
     
-    [{id: id ,code: code, checkedOut:userName},...]
+    [{id: code, id2: code2, id3: code3 ...}]
 
 ###.json<=>.corpus conversion utility
     //Takes file on STDIO and outputs to STDOUT
