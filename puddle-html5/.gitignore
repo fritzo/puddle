@@ -18,4 +18,5 @@ results
 coverage
 npm-debug.log
 node_modules/*
+build
 !node_modules/puddle-hub
