@@ -8,7 +8,7 @@
     "coveralls": "coveralls < ./coverage/lcov.info",
     "jshint": "jshint .",
     "mocha": "istanbul cover _mocha",
-    "test": "npm run mocha && npm run jshint && npm run coverage"
+    "test": "npm run jshint"
   },
   "repository": {
     "type": "git",
