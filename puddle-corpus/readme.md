@@ -30,11 +30,11 @@ Corpus representaion stored in JSON and wrapped into Corpus CRUD API
     var corpus = require(‘puddle-corpus’)(JSONfile)
         
 In corpus variable you will have Corpus CRUD API object which will use given 
-file as a DB
+file as a DB. Referr to puddle-crud module for API documentation.
 
 ###JSON file format:
     
-    [{id: id ,code: code, checkedOut:userName},...]
+    [{id: code, id2: code2, id3: code3 ...}]
 
 ###.json<=>.corpus conversion utility
     //Takes file on STDIO and outputs to STDOUT

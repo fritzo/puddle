@@ -1,35 +1,34 @@
 {
-  "name": "puddle-crud",
+  "name": "puddle-hub",
   "version": "1.0.0",
-  "description": "Corpus CRUD API wrapper",
-  "main": "index.js",
+  "description": "Socket.io adapter for puddle-crud to sync data server<=>browser",
+  "main": "hub/hub.js",
   "scripts": {
     "coverage": "istanbul check-coverage _mocha",
     "coveralls": "coveralls < ./coverage/lcov.info",
     "jshint": "jshint .",
     "mocha": "istanbul cover _mocha",
-    "test": "npm run mocha && npm run jshint && npm run coverage"
+    "test": "npm run jshint"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/pomagma/puddle-crud"
+    "url": "git://github.com/pomagma/puddle-hub"
   },
   "keywords": [
     "pomagma",
-    "corpus",
-    "API",
-    "CRUD"
+    "hub",
+    "puddle"
   ],
   "author": "Fritz Obermeyer",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pomagma/puddle-crud/issues"
+    "url": "https://github.com/pomagma/puddle-hub/issues"
   },
-  "homepage": "https://github.com/pomagma/puddle-crud",
+  "homepage": "https://github.com/pomagma/puddle-hub",
   "dependencies": {
     "debug": "^2.0.0",
     "lodash": "^2.4.1",
-    "node-uuid": "^1.4.1"
+    "puddle-crud": "^1.0.0"
   },
   "devDependencies": {
     "coveralls": "^2.11.1",

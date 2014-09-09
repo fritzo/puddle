@@ -1,0 +1,50 @@
+{
+  "name": "puddle-server",
+  "version": "1.0.0",
+  "description": "Server to serve puddle hub",
+  "main": "server/server.js",
+  "scripts": {
+    "coverage": "istanbul check-coverage _mocha",
+    "coveralls": "coveralls < ./coverage/lcov.info",
+    "jshint": "jshint .",
+    "mocha": "istanbul cover _mocha",
+    "start": "node server/server.js",
+    "develop": "DEBUG=puddle:* gulp develop",
+    "test": "npm run jshint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pomagma/puddle-server"
+  },
+  "keywords": [
+    "pomagma",
+    "server",
+    "puddle"
+  ],
+  "author": "Fritz Obermeyer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pomagma/puddle-server/issues"
+  },
+  "homepage": "https://github.com/pomagma/puddle-server",
+  "dependencies": {
+    "debug": "^2.0.0",
+    "express": "^4.9.0",
+    "mongoose": "^3.8.16",
+    "puddle-hub": "^1.0.0",
+    "puddle-corpus": "^1.0.0",
+    "socket.io": "^1.1.0",
+    "yargs": "^1.3.1"
+  },
+  "devDependencies": {
+    "connect-livereload": "^0.4.0",
+    "coveralls": "^2.11.1",
+    "gulp": "^3.8.8",
+    "gulp-nodemon": "^1.0.4",
+    "gulp-util": "^3.0.1",
+    "istanbul": "^0.3.0",
+    "jshint": "^2.5.5",
+    "mocha": "^1.21.4",
+    "tiny-lr": "^0.1.4"
+  }
+}

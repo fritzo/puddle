@@ -10,15 +10,13 @@ lib-cov
 .DS_Store
 workspace.xml
 
+
 pids
 logs
 results
 
 coverage
 npm-debug.log
-
-#For travis
 node_modules/*
-!node_modules/debug
-!node_modules/lodash
-!node_modules/node-uuid
+build
+!node_modules/puddle-hub

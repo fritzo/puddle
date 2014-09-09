@@ -14,10 +14,7 @@ Corpus CRUD API wrapper
         [X] implements .connect method which allows to 
                 bi-directionally bind it to another instance of same class.
         [X] Constructor takes optional initial hash
-        [X] Object agnostic (does not care what to sync)
-        
-        
-         
+        [X] Object agnostic (does not care what to sync)                         
     
     
 ###Installation:
