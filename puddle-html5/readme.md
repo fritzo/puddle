@@ -17,7 +17,10 @@ HTML5 app to be served by puddle-server
     
 ###Installation:
     
+    npm start               # will build everything into ./build folder
     
+    npm run develop         # same as above but with source maps and file watcher 
+                            # to rebuild every time there is a change
 ###Usage:    
                                         
 
