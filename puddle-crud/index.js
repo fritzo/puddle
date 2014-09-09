@@ -48,16 +48,14 @@ module.exports = function (hash) {
         debug('on', event, 'fired by', this.nodeId, 'ignore', ignoredId);
         var that = this;
         var listeners = events[event];
-        setTimeout(function () {
-            _.each(listeners, function (listener) {
-                if (ignoredId !== listener.id) {
-                    var cb = listener.callback;
-                    debug('on', event, 'called by', that.nodeId,
-                        'ignore', ignoredId, 'listener', listener.id);
-                    cb.apply(cb, args);
-                }
-            });
-        }, 2000);
+        _.each(listeners, function (listener) {
+            if (ignoredId !== listener.id) {
+                var cb = listener.callback;
+                debug('on', event, 'called by', that.nodeId,
+                    'ignore', ignoredId, 'listener', listener.id);
+                cb.apply(cb, args);
+            }
+        });
 
     };
     this.connect = function (otherCrud) {

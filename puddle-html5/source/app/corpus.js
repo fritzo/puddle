@@ -3,7 +3,6 @@
 
 var debug = require('debug')('puddle:html5:corpus');
 var angular = require('angular');
-var _ = require('lodash');
 var io = require('socket.io-client');
 var hub = require('puddle-hub').client(io);
 debug('Client hub crud id', hub.nodeId);

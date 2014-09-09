@@ -5,10 +5,12 @@ Server to store corpus and sync it over multiple clients and pomagma backend.
 
 ###Features:    
 
-    [ ] Serves puddle-html5 and puddle-d3 code
-    [ ] Uses puddle-corpus for corpus storage 
-    [ ] Uses puddle-hub for corpus sync
-    [ ] Has livereload feature to speed up development of client-side code
+    [X] Serves puddle-html5    
+    [X] Uses puddle-corpus for corpus storage 
+    [X] Uses puddle-hub for corpus sync
+    [X] Has livereload feature to speed up development of client-side code
+    ToDO:
+    [ ] Serves puddle-d3 code
     
     
 ###Installation:

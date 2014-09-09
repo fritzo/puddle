@@ -26,6 +26,5 @@
     "0996ee76-f1dc-45d3-8183-ee53722c936b": "DEFINE VAR types.type V",
     "d1e69ec2-6235-4c04-9d9a-7cc15c711d92": "DEFINE VAR types.unit APP VAR types.type JOIN APP K I VAR types.semi",
     "2808442f-01b2-4bcd-98de-886203f90738": "DEFINE VAR util.join J",
-    "a6a66e13-2456-4ed1-a6cf-dc078a14bb9c": "DEFINE VAR util.pair COMP C APP C I",
-    "99b72a86-7147-490f-bb4e-9815c5985024": "test"
+    "a6a66e13-2456-4ed1-a6cf-dc078a14bb9c": "DEFINE VAR util.pair COMP C APP C I"
 }

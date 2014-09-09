@@ -5,15 +5,16 @@ HTML5 app to be served by puddle-server
 
 ###Features:    
 
-    [ ] Display corpus
+    [X] Display corpus
+    [X] Syncs in realtime
+    [X] Works in latest Chrome, FF
+    [X] no Opera or IE
+    [X] no previous versions tested
     [ ] Edit corpus
     [ ] Uses cutting edge packages and interfaces
     [ ] HTML5 editor
     [ ] Uses puddle-editor-wrapper as interface
-    [ ] Syncs in realtime
-    [ ] Works in latest Chrome, FF
-    [ ] no Opera or IE
-    [ ] no previous versions tested    
+    
     
 ###Installation:
     
