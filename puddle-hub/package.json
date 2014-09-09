@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/pomagma/puddle-hub",
   "dependencies": {
+    "debug": "^2.0.0",
     "puddle-crud": "^1.0.0"
   },
   "devDependencies": {

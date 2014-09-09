@@ -4,13 +4,17 @@ var argv = require('yargs').argv;
 var path =  require('path');
 var express = require('express');
 var app = express();
-var pomagma = require('pomagma');
-var FROM_LOCALHOST = '127.0.0.1';
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var pomagma = require('pomagma');
+var FROM_LOCALHOST = '127.0.0.1';
+
 var PORT = process.env.PUDDLE_PORT || 34934;
 var mongoose = require('mongoose');
 var Debug = require('debug');
+var debug = Debug('puddle:server');
+var corpus = require('puddle-corpus')('../corpus/main.json');
+var hub = require('puddle-hub').server(io);
 var Log = mongoose.model('Log', {
     user: Number,
     action: mongoose.Schema.Types.Mixed
@@ -67,6 +71,8 @@ io.on('connection', function (socket) {
     });
     socket.on('action', logAction);
 });
+
+debug(corpus.getState());
 
 
 
