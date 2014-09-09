@@ -1,12 +1,9 @@
 'use strict';
 
-var assert = require('assert');
-var path = require('path');
+var argv = require('yargs').argv;
+var path =  require('path');
 var express = require('express');
 var pomagma = require('pomagma');
-var socketio = require('socket.io');
-var LIVERELOAD_PORT = 34939;
-var liveReload = require('connect-livereload')({port: LIVERELOAD_PORT});
 var FROM_LOCALHOST = '127.0.0.1';
 var PORT = process.env.PUDDLE_PORT || 34934;
 
@@ -32,11 +29,18 @@ process.on('uncaughtException', function (err) {
 
 var app = express();
 
-app.use(liveReload);
-app.use('/', express.static(path.join(__dirname, 'public')));
+if (argv.withLiveReload) {
+    console.log('livereload enabled');
+    var LIVERELOAD_PORT = 34939;
+    var liveReload = require('connect-livereload')({port: LIVERELOAD_PORT});
+    app.use(liveReload);
+}
 
-var server = app.listen(PORT, FROM_LOCALHOST);
+app.use(express.static(path.join(__dirname, '../public')));
+
+
+app.listen(PORT, FROM_LOCALHOST);
 console.log('serving puddle at http://localhost:' + PORT);
-var io = socketio(server);
+
 
 
