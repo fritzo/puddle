@@ -6,4 +6,7 @@ cache:
 env:
   - MODULE='puddle-crud'
   - MODULE='puddle-corpus'
+  - MODULE='puddle-html5'
+  - MODULE='puddle-hub'
+  - MODULE='puddle-server'
 

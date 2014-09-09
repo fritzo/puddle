@@ -29,6 +29,7 @@
   "homepage": "https://github.com/pomagma/puddle-html5",
   "dependencies": {
     "gulp": "^3.8.8",
+    "node-uuid": "^1.4.1",
     "puddle-hub": "^1.0.0"
   },
   "devDependencies": {

@@ -50,7 +50,10 @@ describe('Crud instance', function () {
         });
         it('re-emits same object', function (done) {
             crud.on('create', function (newId, newObject) {
-                assert.equal(newObject, object);
+                assert.equal(
+                    JSON.stringify(newObject),
+                    JSON.stringify(object)
+                    );
                 assert.equal(newId, id);
                 done();
             });

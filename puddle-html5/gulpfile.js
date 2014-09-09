@@ -53,9 +53,13 @@ gulp.task('browserify', function () {
 
 gulp.task('default', ['browserify', 'copyHtml', 'less']);
 
-gulp.task('watch', watcher(['default'], ['./source/**/*']));
+gulp.task('watchJS', watcher(['browserify'], ['./source/**/*.js']));
+gulp.task('watchHTML', watcher(['copyHtml'], ['./source/**/*.html']));
+gulp.task('watchLESS', watcher(['less'], ['./source/**/*.less']));
 
 gulp.task('develop', ['default'], function () {
     argv.dev = true;
-    gulp.start('watch');
+    gulp.start('watchJS');
+    gulp.start('watchHTML');
+    gulp.start('watchLESS');
 });

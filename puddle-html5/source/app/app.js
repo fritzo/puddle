@@ -9,9 +9,9 @@
 
 var angular = require('angular');
 var uiRouter = require('angular-ui-router');
-var socket = global.io = require('socket.io-client')();
+var io = global.io = require('socket.io-client')();
 var debug = global.debug = require('debug');
-var log = debug('puddle:client:init');
+var log = debug('puddle:html5:init');
 
 //this will register ng-modules into angular namespace.
 require('angular-socket-io');
@@ -28,14 +28,10 @@ puddle.config(function ($stateProvider, $urlRouterProvider) {
 });
 
 
-socket.on('connect', function () {
+io.on('connect', function () {
     log('Socket IO connection estabilished');
 });
-socket.on('corpus', function (method, args) {
-    log('Corpus API incoming call: ', method, args);
-});
 
-socket.emit('corpus', 'findAll');
-socket.emit('corpus', 'findById', ['540448b62711b16e9a6c7132']);
+io.emit('action','test action');
 
-log('Puddle init complete.');
+log('Complete.');

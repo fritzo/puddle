@@ -8,7 +8,9 @@
     <script src='script.js'></script>
 
     <script type="text/ng-template" id="corpus.html">
-        <div ng-repeat="line in corpus">{{line}}</div>
+        <input type="text" ng-model="code">
+        <input type="button" value="Add" ng-click="create(code)">
+        <div ng-repeat="(id, obj) in corpus.corpus">{{id}} : {{obj}}</div>
     </script>
 
 

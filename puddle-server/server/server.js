@@ -14,7 +14,10 @@ var mongoose = require('mongoose');
 var Debug = require('debug');
 var debug = Debug('puddle:server');
 var corpus = require('puddle-corpus')('../corpus/main.json');
+debug('Corpus crud id', corpus.nodeId);
 var hub = require('puddle-hub').server(io);
+debug('Hub crud id', hub.nodeId);
+hub.connect(corpus);
 var Log = mongoose.model('Log', {
     user: Number,
     action: mongoose.Schema.Types.Mixed
@@ -72,7 +75,6 @@ io.on('connection', function (socket) {
     socket.on('action', logAction);
 });
 
-debug(corpus.getState());
 
 
 

@@ -25,12 +25,13 @@ module.exports = function (hash) {
 
     var events = {};
     this.on = function (event, callback, otherNodeId) {
-        //otherNodeId is optional.
+        //otherNodeId is MANDATORY for internal functinos.
         //It is used by .emit function to filter events by origin
         //If not set will fire anyway. That is what we need for 'normal' api.
         //All internal functions MUST provide otherNodeId to prevent event storm
 
-        debug('listener', event, 'bound to', this.nodeId);
+        debug('listener', event, 'bound to', this.nodeId,
+            'with otherID', otherNodeId);
         assert(_.isFunction(callback));
         if (events[event] === undefined) {
             events[event] = [];
@@ -45,13 +46,19 @@ module.exports = function (hash) {
         var ignoredId = args.pop();
         args.push(this.nodeId);
         debug('on', event, 'fired by', this.nodeId, 'ignore', ignoredId);
+        var that = this;
         var listeners = events[event];
-        _.each(listeners, function (listener) {
-            if (ignoredId !== listener.id) {
-                var cb = listener.callback;
-                cb.apply(cb, args);
-            }
-        });
+        setTimeout(function () {
+            _.each(listeners, function (listener) {
+                if (ignoredId !== listener.id) {
+                    var cb = listener.callback;
+                    debug('on', event, 'called by', that.nodeId,
+                        'ignore', ignoredId, 'listener', listener.id);
+                    cb.apply(cb, args);
+                }
+            });
+        }, 2000);
+
     };
     this.connect = function (otherCrud) {
         debug('.connect ->', this.nodeId);
@@ -87,7 +94,7 @@ module.exports = function (hash) {
         assert(!this.hash[id], 'Id has to be unique ' + this.nodeId);
 
         this.hash[id] = _.cloneDeep(obj);
-        this.emit('create', id, obj, nodeId || this.nodeId);
+        this.emit('create', id, _.cloneDeep(obj), nodeId || this.nodeId);
     };
 
     this.remove = function (id, nodeId) {
@@ -106,7 +113,7 @@ module.exports = function (hash) {
         assert(this.hash[id], 'Id has to exists ' + this.nodeId);
 
         this.hash[id] = _.cloneDeep(obj);
-        this.emit('update', id, obj, nodeId || this.nodeId);
+        this.emit('update', id, _.cloneDeep(obj), nodeId || this.nodeId);
     };
     this.getState = function () {
         debug('.getState ->', this.nodeId);
