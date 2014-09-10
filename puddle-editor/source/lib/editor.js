@@ -199,10 +199,10 @@ var pollValidities = (function () {
     };
 
     return function () {
-        if (!polling) {
-            polling = true;
-            setTimeout(poll, 0);
-        }
+//        if (!polling) {
+//            polling = true;
+//            setTimeout(poll, 0);
+//        }
     };
 })();
 
