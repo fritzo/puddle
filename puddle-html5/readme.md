@@ -23,7 +23,10 @@ HTML5 app to be served by puddle-server
     npm run develop         # same as above but with source maps and file watcher 
                             # to rebuild every time there is a change
 ###Usage:    
-                                        
+To debug on the client using [debug module](https://github.com/visionmedia/debug#browser-support) 
+type in your browser console and refresh the browser:
+  
+    debug.enable('puddle:*')                       
 
 ## Contributors
 
