@@ -58,7 +58,6 @@ gulp.task('watchHTML', watcher(['copyHtml'], ['./source/**/*.html']));
 gulp.task('watchLESS', watcher(['less'], ['./source/**/*.less']));
 
 gulp.task('develop', ['default'], function () {
-    argv.dev = true;
     gulp.start('watchJS');
     gulp.start('watchHTML');
     gulp.start('watchLESS');

@@ -37,9 +37,19 @@ gulp.task('nodemon', function () {
     });
 });
 
-gulp.task('updateLiveReload', function () {
+gulp.task('updateLiveReloadJS', function () {
     lr.changed({body: {
-        files: ['static/script.js', 'static/index.html', 'static/style.css']
+        files: ['script.js']
+    }});
+});
+gulp.task('updateLiveReloadCSS', function () {
+    lr.changed({body: {
+        files: ['style.css']
+    }});
+});
+gulp.task('updateLiveReloadHTML', function () {
+    lr.changed({body: {
+        files: ['index.html']
     }});
 });
 
@@ -50,7 +60,13 @@ gulp.task('develop', function () {
 
 gulp.task('developStart', ['startLiveReload', 'nodemon'],
     function () {
-        watcher(['updateLiveReload'], [
-            './public/**/*'
+        watcher(['updateLiveReloadJS'], [
+            './public/script.js'
+        ])();
+        watcher(['updateLiveReloadCSS'], [
+            './public/style.css'
+        ])();
+        watcher(['updateLiveReloadHTML'], [
+            './public/index.html'
         ])();
     });

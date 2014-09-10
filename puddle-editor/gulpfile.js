@@ -26,13 +26,13 @@ var watcher = function (tasks, paths) {
 
 gulp.task('less', ['lessCopy'], function () {
     //process LESS -> CSS
-    return gulp.src('./source/main.less')
+    return gulp.src('./source/style.less')
         .pipe(less())
         .pipe(gulp.dest('./build'));
 });
 gulp.task('lessCopy', function () {
     //copy LESS for sourcemaps
-    return gulp.src('./source/main.less')
+    return gulp.src('./source/style.less')
         .pipe(gulp.dest('./build'));
 });
 
