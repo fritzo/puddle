@@ -39,17 +39,27 @@ gulp.task('nodemon', function () {
 
 gulp.task('updateLiveReloadJS', function () {
     lr.changed({body: {
-        files: ['script.js']
+        files: [
+            'editor/script.js',
+            'html5/script.js'
+        ]
     }});
 });
 gulp.task('updateLiveReloadCSS', function () {
     lr.changed({body: {
-        files: ['style.css']
+        files: [
+            'editor/style.css',
+            'html5/style.css',
+
+        ]
     }});
 });
 gulp.task('updateLiveReloadHTML', function () {
     lr.changed({body: {
-        files: ['index.html']
+        files: [
+            'editor/index.html',
+            'html5/index.html'
+        ]
     }});
 });
 
@@ -61,12 +71,12 @@ gulp.task('develop', function () {
 gulp.task('developStart', ['startLiveReload', 'nodemon'],
     function () {
         watcher(['updateLiveReloadJS'], [
-            './public/script.js'
+            './public/**/script.js'
         ])();
         watcher(['updateLiveReloadCSS'], [
-            './public/style.css'
+            './public/**/style.css'
         ])();
         watcher(['updateLiveReloadHTML'], [
-            './public/index.html'
+            './public/**/index.html'
         ])();
     });
