@@ -1,6 +1,5 @@
 # Puddle API Reference
 
-* [Corpus File Format](#corpus-format)
 * [Server Admin](#server-admin)
 * [Server REST API](#server-rest)
 * [Server socket.io API](#server-socketio)
@@ -20,21 +19,6 @@ Related documentation:
 
 * [puddle-syntax](https://github.com/fritzo/puddle-syntax)
 * [pomagma client](https://github.com/fritzo/pomagma/blob/master/doc/client.md)
-
-## Corpus File Format <a name="corpus-format"/>
-
-The corpus file format is as follows:
-
-* One line per statement,
-* Statements are either ASSERT or DEFINE
-* No trailing newline,
-* Lines are sorted lexicographically,
-* Duplicate lines are removed.
- 
-In addition, each file should satisfy the constraints:
-
-* No variable is DEFINE'd multiple times,
-* Every free variable is DEFINE'd once.
 
 ## Server
 

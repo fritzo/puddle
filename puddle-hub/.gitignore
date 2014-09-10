@@ -10,9 +10,12 @@ lib-cov
 .DS_Store
 workspace.xml
 
+
 pids
 logs
 results
 
+coverage
 npm-debug.log
 node_modules/*
+!node_modules/puddle-crud

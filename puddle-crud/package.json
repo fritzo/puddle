@@ -1,0 +1,40 @@
+{
+  "name": "puddle-crud",
+  "version": "1.0.0",
+  "description": "Corpus CRUD API wrapper",
+  "main": "index.js",
+  "scripts": {
+    "coverage": "istanbul check-coverage _mocha",
+    "coveralls": "coveralls < ./coverage/lcov.info",
+    "jshint": "jshint .",
+    "mocha": "istanbul cover _mocha",
+    "test": "npm run mocha && npm run jshint && npm run coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pomagma/puddle-crud"
+  },
+  "keywords": [
+    "pomagma",
+    "corpus",
+    "API",
+    "CRUD"
+  ],
+  "author": "Fritz Obermeyer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pomagma/puddle-crud/issues"
+  },
+  "homepage": "https://github.com/pomagma/puddle-crud",
+  "dependencies": {
+    "debug": "^2.0.0",
+    "lodash": "^2.4.1",
+    "node-uuid": "^1.4.1"
+  },
+  "devDependencies": {
+    "coveralls": "^2.11.1",
+    "istanbul": "^0.3.0",
+    "jshint": "^2.5.5",
+    "mocha": "^1.21.4"
+  }
+}

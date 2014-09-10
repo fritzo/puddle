@@ -1,69 +1,26 @@
 {
   "name": "puddle",
-  "version": "0.1.8",
-  "description": "A responsive editor built on Pomagma",
-  "main": "server.js",
-  "dependencies": {
-    "amdefine": "=0.1.0",
-    "body-parser": "^1.6.1",
-    "debug": "^1.0.4",
-    "express": "^4.8.3",
-    "gulp": "^3.8.7",
-    "gulp-browserify": "^0.5.0",
-    "gulp-if": "^1.2.4",
-    "gulp-jshint": "^1.8.4",
-    "gulp-less-sourcemap": "^1.3.3",
-    "gulp-nodemon": "^1.0.4",
-    "gulp-uglify": "^0.3.1",
-    "jquery": "^2.1.1",
-    "less": "^1.7.4",
-    "mongoose": "~3.8.15",
-    "pomagma": ">=0.1.8",
-    "puddle-syntax": "~0.1.2",
-    "socket.io": "^1.0.6",
-    "socket.io-client": "^1.0.6",
-    "underscore": "^1.6.0",
-    "yargs": "^1.3.1"
-  },
-  "devDependencies": {
-    "connect-livereload": "^0.4.0",
-    "gulp-mocha": "^1.0.0",
-    "gulp-util": "^3.0.0",
-    "jshint": "^2.5.4",
-    "karma": "^0.12.22",
-    "karma-chrome-launcher": "^0.1.4",
-    "karma-firefox-launcher": "^0.1.3",
-    "karma-mocha": "^0.1.9",
-    "karma-phantomjs-launcher": "^0.1.4",
-    "mocha": "^1.21.4",
-    "phantomjs": "^1.9.7-15",
-    "rewire": "^2.1.0",
-    "sinon": "^1.10.3",
-    "tiny-lr": "^0.1.0"
-  },
+  "version": "1.0.0",
+  "description": "Main puddle repo with documentation and some modules in active development",
+  "main": "index.js",
   "scripts": {
-    "karma": "./node_modules/karma/bin/karma start",
-    "lint": "./node_modules/gulp/bin/gulp.js lint",
-    "gulp": "./node_modules/gulp/bin/gulp.js",
-    "mocha": "./node_modules/gulp/bin/gulp.js mocha",
-    "test": "npm run gulp && npm run lint && npm run mocha",
-    "start": "./node_modules/gulp/bin/gulp.js serve",
-    "dev": "./node_modules/gulp/bin/gulp.js serve --dev=true",
-    "clean": "cd public && rm -f index.html main.css* main.js"
+    "install": "ls | grep '^puddle-' | xargs -n 1 -P 8 sh -c '(cd $1; npm install)' sh; done",
+    "develop": "cd puddle-html5; npm run develop",
+    "start": "cd puddle-server; npm run start",
+    "test": "cd $MODULE; npm test"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/fritzo/puddle"
+    "url": "https://github.com/pomagma/puddle.git"
   },
   "keywords": [
-    "editor",
-    "ide",
+    "puddle",
     "pomagma"
   ],
   "author": "Fritz Obermeyer",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fritzo/puddle/issues"
+    "url": "https://github.com/pomagma/puddle/issues"
   },
-  "homepage": "https://github.com/fritzo/puddle"
+  "homepage": "https://github.com/pomagma/puddle"
 }

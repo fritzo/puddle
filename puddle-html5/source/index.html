@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html ng-app="puddle">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Pomagma HTML5</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <script src='script.js'></script>
+
+    <script type="text/ng-template" id="corpus.html">
+        <input type="text" ng-model="code">
+        <input type="button" value="Add" ng-click="create(code)">
+        <div ng-repeat="(id, obj) in corpus.corpus">{{id}} : {{obj}}</div>
+    </script>
+
+
+</head>
+<body>
+<a ui-sref='corpus'>Corpus editor</a>
+
+<div ui-view></div>
+</body>
+</html>

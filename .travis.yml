@@ -1,10 +1,11 @@
 language: node_js
 node_js:
   - "0.10"
-before_install:
-  - sudo apt-get remove -qq libzmq3 libzmq3-dev
-  - sudo apt-get install -qq libzmq-dev
 cache:
   apt: true
-services:
-  - mongodb
+env:
+  - MODULE='puddle-crud'
+  - MODULE='puddle-corpus'
+  - MODULE='puddle-html5'
+  - MODULE='puddle-hub'
+  - MODULE='puddle-server'
