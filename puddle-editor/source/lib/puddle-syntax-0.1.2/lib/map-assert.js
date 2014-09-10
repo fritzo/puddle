@@ -1,7 +1,7 @@
 'use strict';
 
 var assert = require('assert');
-var _ = require('lodash');
+var _ = require('underscore');
 
 exports.forward = function (fwd, pairs) {
     assert(_.isFunction(fwd), 'Expected fwd function, actual: ' + fwd);

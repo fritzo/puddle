@@ -2,7 +2,7 @@
 
 var _ = require('underscore');
 var $ = require('jquery');
-var syntax = require('./puddle-syntax-old');
+var syntax = require('./puddle-syntax-0.1.2');
 var renderTerm = require('./render-term.js');
 var renderValidity = require('./render-validity.js');
 

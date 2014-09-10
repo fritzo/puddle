@@ -11,9 +11,10 @@
  */
 'use strict';
 
-var _ = require('lodash');
+var _ = require('underscore');
 var assert = require('./assert');
 var compiler = require('./compiler');
+var test = require('./test').suite('tree');
 
 var loadSymbol = {};
 var dumpSymbol = {};
@@ -82,6 +83,22 @@ loadSymbol.VAR = function (term) {
 dumpSymbol.VAR = function (node) {
     return ['VAR', node.varName];
 };
+
+test('load, dump', function () {
+    var examples = [
+        'VAR x',
+        'QUOTE APP LAMBDA CURSOR VAR x VAR x HOLE',
+        'LETREC VAR i LAMBDA VAR x VAR x APP VAR i VAR i'
+    ];
+    for (var i = 0; i < examples.length; ++i) {
+        var lineno = 1 + i;
+        var string = examples[i];
+        var term = compiler.load(string);
+        var node = load(term);
+        var term2 = dump(node);
+        assert.equal(term2, term, 'Example ' + lineno);
+    }
+});
 
 var getRoot = function (node) {
     while (node.above !== null) {

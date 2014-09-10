@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash');
+var _ = require('underscore');
 
 var TOL = 1e-8;
 

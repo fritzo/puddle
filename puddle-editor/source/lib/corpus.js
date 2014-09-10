@@ -7,8 +7,8 @@
 
 var ajax = require('jquery').ajax;
 var _ = require('underscore');
-var syntax = require('./puddle-syntax-old');
-var tokens = require('./puddle-syntax-old').tokens;
+var syntax = require('./puddle-syntax-0.1.2');
+var tokens = require('./puddle-syntax-0.1.2').tokens;
 var assert = require('./assert');
 var assertNode = require('assert');
 var log = require('debug')('puddle:editor:corpus');

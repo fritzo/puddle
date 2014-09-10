@@ -1,15 +1,123 @@
 /* jshint unused: false */
 'use strict';
 
-var _ = require('lodash');
+var _ = require('underscore');
 var assert = require('./assert');
+var test = require('./test').suite('compiler');
 var TODO = require('./TODO');
 var pattern = require('./pattern');
-var serialize = require('./serialize');
-var test = require('./test').suite('compiler');
 
-var parse = serialize.parser();
-var print = serialize.printer();
+//--------------------------------------------------------------------------
+// Parse
+
+var parse = (function () {
+
+    var parseSymbol = {};
+
+    var symbolParser = function (name, arity) {
+        if (arity === 0) {
+            return function (parser) {
+                return name;
+            };
+        } else {
+            return function (parser) {
+                var parsed = [name];
+                for (var i = 0; i < arity; ++i) {
+                    parsed.push(parser.parse());
+                }
+                return parsed;
+            };
+        }
+    };
+
+    var Parser = function (tokens) {
+        if (_.isString(tokens)) {
+            tokens = tokens.split(' ');
+        }
+        this.tokens = tokens;
+        this.pos = 0;
+    };
+
+    Parser.prototype.pop = function () {
+        return this.tokens[this.pos++];
+    };
+
+    Parser.prototype.parse = function () {
+        var head = this.pop();
+        var parser = parseSymbol[head];
+        assert(parser !== undefined, 'unrecognized token: ' + head);
+        return parser(this);
+    };
+
+    var parse = function (string) {
+        var parser = new Parser(string);
+        return parser.parse();
+    };
+
+    parse.declareSymbol = function (name, arity, parser) {
+        assert(
+            parseSymbol[name] === undefined,
+            'duplicate symbol: ' + name);
+        parseSymbol[name] = parser || symbolParser(name, arity);
+    };
+
+    return parse;
+})();
+
+var parseLine = function (line) {
+    var name = line.name;
+    var body = parse(line.code);
+    if (name !== null) {
+        return DEFINE(VAR(name), body);
+    } else {
+        return ASSERT(body);
+    }
+};
+
+//--------------------------------------------------------------------------
+// Serialize
+
+var print = (function () {
+    var pushTokens = function (tokens, expr) {
+        if (_.isString(expr)) {
+            tokens.push(expr);
+        } else {
+            tokens.push(expr[0]);
+            for (var i = 1; i < expr.length; ++i) {
+                pushTokens(tokens, expr[i]);
+            }
+        }
+    };
+    return function (expr) {
+        var tokens = [];
+        pushTokens(tokens, expr);
+        return tokens.join(' ');
+    };
+})();
+
+test('parse', function () {
+    var examples = [
+        'VAR x',
+        'QUOTE APP LAMBDA CURSOR VAR x VAR x HOLE',
+        'LETREC VAR i LAMBDA VAR x VAR x APP VAR i VAR i',
+    ];
+    assert.inverses(parse, print, examples);
+});
+
+var printLine = function (term) {
+    var token = term[0];
+    if (token === 'ASSERT') {
+        return {
+            token: null,
+            code: print(term[1])
+        };
+    } else if (token === 'DEFINE') {
+        return {
+            name: term[1][1],
+            code: print(term[2])
+        };
+    }
+};
 
 //--------------------------------------------------------------------------
 // Symbols
@@ -117,6 +225,32 @@ test('stack', function () {
         stack('x', 'y', 'z', []),
         STACK('x', STACK('y', STACK('z', []))));
 });
+
+//----------------------------------------------------------------------------
+// Fragments
+
+var fragments = (function () {
+
+    var combinators = {};
+    var fragments = {
+        combinators: combinators,
+    };
+
+    _.each(symbols, function (symbol) {
+        if (_.isString(symbol)) {
+            combinators[symbol] = symbol;
+        }
+    });
+
+    combinators.APP = APP;
+    combinators.COMP = COMP;
+    combinators.JOIN = JOIN;
+    combinators.RAND = RAND;
+    combinators.QUOTE = QUOTE;
+    combinators.VAR = VAR;
+
+    return fragments;
+})();
 
 //--------------------------------------------------------------------------
 // Conversion : appTree <-> code
@@ -457,9 +591,9 @@ var normalizeAffineBetaEta = (function () {
         },
         stack(LAMBDA(VAR(name), app(x, VAR(name2))), tail), function (match) {
             if (match.name === match.name2 &&
-                countOccurrences(match.name, match.x) === 0)
+                    countOccurrences(match.name, match.x) === 0)
             {
-                return normalizeStack(stack(match.x, match.tail));
+                    return normalizeStack(stack(match.x, match.tail));
             }
         },
         stack(LAMBDA(VAR(name), x), VAR(name2), tail), function (match) {
@@ -488,7 +622,7 @@ var normalizeAffineBetaEta = (function () {
         //  return fromStack(stack(head, tail));
         //},
         stack(x, tail), function (match) {
-            return fromStack(stack(match.x, normalizeTail(match.tail)));
+                return fromStack(stack(match.x, normalizeTail(match.tail)));
         }
     );
 
@@ -545,6 +679,21 @@ var simplify = function (term) {
 
 //--------------------------------------------------------------------------
 // Convert : simple appTree -> lambda
+
+var lambdaSymbols = (function () {
+    var subset = [
+        'HOLE', 'TOP', 'BOT',
+        'I', //'K', 'B', 'C', 'W', 'S', 'Y', 'U', 'V', 'P', 'A', 'J', 'R',
+        'VAR', 'APP', 'COMP', 'LAMBDA', 'LETREC', 'JOIN', 'RAND',
+        'QUOTE', 'QLESS', 'QNLESS', 'QEQUAL', 'LESS', 'NLESS', 'EQUAL',
+        'ASSERT', 'DEFINE', 'CURSOR',
+    ];
+    var lambdaSymbols = {};
+    subset.forEach(function (name) {
+        lambdaSymbols[name] = symbols[name];
+    });
+    return lambdaSymbols;
+})();
 
 var decompile = (function () {
 
@@ -1328,18 +1477,28 @@ test('fold', function () {
 //------------------------------------------------------------------------
 
 module.exports = {
-    symbols: symbols,
-    parse: parse,
-    print: print,
+    fragments: fragments,
+    symbols: lambdaSymbols,
     load: function (string) {
         var code = parse(string);
         var term = decompile(code);
         return term;
     },
+    loadLine: function (line) {
+        var code = parseLine(line);
+        var term = decompile(code);
+        return term;
+    },
+    dumpLine: function (term) {
+        var code = compile(term);
+        var line = printLine(code);
+        return line;
+    },
     dump: function (term) {
         var code = compile(term);
         return print(code);
     },
+    print: print,
     enumerateFresh: fresh.enumerate,
     substitute: substitute,
     parenthesize: parenthesize,

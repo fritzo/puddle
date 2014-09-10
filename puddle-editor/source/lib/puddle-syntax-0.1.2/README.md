@@ -7,21 +7,19 @@
 Syntax tools for the
 [Puddle](https://github.com/fritzo/puddle) coding environment
 
-## API Reference
+## APi Reference
 
     var syntax = require('puddle-syntax');
 
-* [Data Formats](#formats): Codes, Terms, and Trees
-* [Module `syntax.compiler`](#compiler): syntactic algorithms
-* [Module `syntax.fragments`](#fragments): subsets of `compiler.symbols`
-* [Module `syntax.pretty`](#pretty): pretty printing
-* [Module `syntax.tree`](#tree): tree data structures
-* [Module `syntax.cursor`](#cursor): operations on cursor nodes
-* [Module `syntax.tokens`](#tokens): tools for token classification
+* [Data Formats](#formats)
+* [Module `syntax.compiler`](#compiler)
+* [Module `syntax.pretty`](#pretty)
+* [Module `syntax.tree`](#tree)
+* [Module `syntax.cursor`](#cursor)
 
 ### Data Formats <a name="formats"/>
 
-This module deals with three formats of data.
+This module deals with four formats of data.
 
 1.  Codes - Immutable space-delimited lists of tokens.
 
@@ -39,7 +37,28 @@ This module deals with three formats of data.
 
         "ASSERT EQUAL APP VAR two I I"
 
-2.  Terms - Immutable array-representations of abstract syntax trees.
+2.  Lines - Immutable objects with a `code` field and
+    a `name` field that is either `null` or a string.
+    Each line is either an assertion or a definition;
+    assertions have `name = null` and definitions define `name` by their `code`.
+
+    **JSON Serializable:** yes
+
+    **Examples:**
+
+        // a definition
+        {
+            "name": "two",
+            "code": "LAMBDA VAR f LAMBDA VAR x APP VAR f APP VAR x VAR x"
+        }
+
+        // an assertion
+        {
+            "name": null,
+            "code": "EQUAL APP VAR two I I"
+        }
+
+3.  Terms - Immutable array-representations of abstract syntax trees.
 
     **JSON Serializable:** yes
 
@@ -63,7 +82,7 @@ This module deals with three formats of data.
             ]
         ]
 
-3.  Trees - Mutable cross-linked abstract syntax trees for easy traversal.
+4.  Trees - Mutable cross-linked abstract syntax trees for easy traversal.
 
     **JSON Serializable:** no, because of cycles
 
@@ -87,10 +106,11 @@ This module deals with three formats of data.
 Signature:
 
     compiler.symbols : object(string | function) (constructors for terms)
+    compiler.load : code -> term
+    compiler.dump : term -> code
+    compiler.loadLine : line -> term
+    compiler.dumpLine : term -> line
     compiler.print : term -> string
-    compiler.parse : string -> term
-    compiler.load : code -> term  // compatible with pomagma analyst
-    compiler.dump : term -> code  // compatible with pomagma analyst
     compiler.enumerateFresh : int -> string (a variable name)
     compiler.substitute : name * term * term -> nil
     compiler.parenthesize : term -> term
@@ -109,13 +129,6 @@ Examples:
     compiler.enumerateFresh(2);  // = "c"
 
     compiler.substitute(name, def, body);
-
-### Module `syntax.fragments` <a name="fragments"/>
-
-Signature:
-
-    fragments.combinators : subset of compiler.symbols
-    fragments.lambda : subset of compiler.symbols
 
 ### Function `syntax.pretty` <a name="pretty"/>
 

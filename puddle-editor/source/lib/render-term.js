@@ -2,7 +2,7 @@
 
 var _ = require('underscore');
 var assert = require('assert');
-var syntax = require('./puddle-syntax-old');
+var syntax = require('./puddle-syntax-0.1.2');
 
 var template = function (string) {
     return function (args) {
