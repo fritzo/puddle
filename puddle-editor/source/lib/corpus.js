@@ -7,10 +7,10 @@
 
 var ajax = require('jquery').ajax;
 var _ = require('underscore');
-var syntax = require('./puddle-syntax-0.1.2');
 var tokens = require('./puddle-syntax-0.1.2').tokens;
 var assert = require('./assert');
 var log = require('debug')('puddle:editor:corpus');
+var hub = global.hub;
 
 
 //--------------------------------------------------------------------------
@@ -266,73 +266,15 @@ var state = (function () {
 //--------------------------------------------------------------------------
 // change propagation
 
-var sync = (function () {
-    var sync = {};
 
-    var changes = {};
+var sync = {
+    update: function (line) {
+        hub.update(line.id,line.code);
+    },
+    remove: function (line) {
+        hub.remove(line.id,line.code);
+    }};
 
-    sync.update = function (line) {
-        changes[line.id] = {type: 'update', line: line};
-    };
-
-    sync.remove = function (line) {
-        changes[line.id] = {type: 'remove'};
-    };
-
-    var delay = 1000;
-    var delayFail = 30000;
-
-    var pushChanges = function () {
-        _.map(changes, function (change, id) {
-            delete changes[id];
-            switch (change.type) {
-                case 'update':
-                    log('sending ' + JSON.stringify(change.line));
-                    ajax({
-                        type: 'PUT',
-                        url: 'corpus/line/' + id,
-                        data: JSON.stringify(change.line),
-                        contentType: 'application/json',
-                    })
-                        .fail(function (jqXHR, textStatus) {
-                            log('putChanges PUT failed: ' + textStatus);
-                            setTimeout(pushChanges, delayFail);
-                        })
-                        .done(function () {
-                            log('putChanges PUT succeeded: ' + id);
-                            setTimeout(pushChanges, 0);
-                        });
-                    return;
-
-                case 'remove':
-                    ajax({
-                        type: 'DELETE',
-                        url: 'corpus/line/' + id,
-                    })
-                        .fail(function (jqXHR, textStatus) {
-                            log('putChanges DELETE failed: ' + textStatus);
-                            setTimeout(pushChanges, delayFail);
-                        })
-                        .done(function () {
-                            log('putChanges DELETE succeeded: ' + id);
-                            setTimeout(pushChanges, 0);
-                        });
-                    return;
-
-                default:
-                    log('ERROR unknown change type: ' + change.type);
-            }
-        });
-        setTimeout(pushChanges, delay);
-    };
-
-    var init = function () {
-        setTimeout(pushChanges, 0);
-    };
-
-    init();
-    return sync;
-})();
 
 //--------------------------------------------------------------------------
 // interface

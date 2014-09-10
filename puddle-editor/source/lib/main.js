@@ -3,8 +3,7 @@
 var corpus = require('./corpus');
 var editor = require('./editor');
 var _ = require('underscore');
-var io = require('socket.io-client');
-var hub = require('puddle-hub').client(io);
+var hub = global.hub;
 var assertNode = require('assert');
 
 hub.on('reset', function (state) {

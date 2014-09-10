@@ -6,7 +6,7 @@ var $ = require('jquery');
 var io = require('socket.io-client');
 var assert = require('./assert');
 var keycode = require('./keycode');
-var log = require('./log');
+var log = require('debug')('puddle:editor:navigate');
 
 var socket = io();
 
@@ -115,7 +115,7 @@ var trigger = function (event) {
     for (var i = 0; i < events.length; ++i) {
         if (events[i].match(event)) {
             event.preventDefault();
-            console.log('matched ' + event.which);
+            log('matched ' + event.which);
             callbacks[i]();
             return;
         }
