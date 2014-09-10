@@ -1,0 +1,40 @@
+{
+  "name": "puddle-corpus",
+  "version": "1.0.0",
+  "description": "Corpus representaion stored in JSON and wrapped into Corpus CRUD API",
+  "main": "corpus/corpus.js",
+  "scripts": {
+    "coverage": "istanbul check-coverage _mocha",
+    "coveralls": "coveralls < ./coverage/lcov.info",
+    "jshint": "jshint .",
+    "mocha": "istanbul cover _mocha",
+    "test": "npm run mocha && npm run jshint && npm run coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pomagma/puddle-corpus"
+  },
+  "keywords": [
+    "pomagma",
+    "corpus"
+  ],
+  "author": "Fritz Obermeyer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pomagma/puddle-corpus/issues"
+  },
+  "homepage": "https://github.com/pomagma/puddle-corpus",
+  "dependencies": {
+    "puddle-crud": "^1.0.0"
+  },
+  "devDependencies": {
+    "coveralls": "^2.11.1",
+    "istanbul": "^0.3.0",
+    "jshint": "^2.5.5",
+    "lodash": "^2.4.1",
+    "mocha": "^1.21.4",
+    "node-uuid": "^1.4.1",
+    "rewire": "^2.1.0",
+    "sinon": "^1.10.3"
+  }
+}

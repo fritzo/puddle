@@ -1,0 +1,23 @@
+{
+    "camelcase": true,
+    "curly": true,
+    "eqeqeq": true,
+    "freeze": true,
+    "immed": true,
+    "indent": 4,
+    "newcap": false,
+    "noarg": true,
+    "nonew": true,
+    "quotmark": "single",
+    "maxdepth": 4,
+    "maxstatements": 50,
+    "maxlen": 80,
+    "eqnull": true,
+    "funcscope": true,
+    "strict": true,
+    "undef": true,
+    "unused": true,
+    "node": true,
+    "mocha": true,
+    "predef": ["window", "document"]
+}
