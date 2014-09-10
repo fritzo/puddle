@@ -7,9 +7,11 @@
 
 var ajax = require('jquery').ajax;
 var _ = require('underscore');
-var tokens = require('puddle-syntax').tokens;
+var tokens = require('./puddle-syntax-old').tokens;
 var assert = require('./assert');
-var log = require('./log');
+var log = require('debug')('puddle:editor:corpus');
+var io = require('socket.io-client');
+var hub = require('puddle-hub').client(io);
 
 //--------------------------------------------------------------------------
 // client state
@@ -132,20 +134,30 @@ var state = (function () {
         state.ready.set();
     };
 
+//    hub.on('reset', function (state) {
+//        var newData = [];
+//        _.each(state, function (code, id) {
+//            newData.push({id:id,});
+//        });
+//
+//        loadAll(data.data);
+//    });
+
     var init = function () {
-        ajax({
-            type: 'GET',
-            url: 'corpus/lines',
-            cache: false
-        })
-            .fail(function (jqXHR, textStatus) {
-                log('init GET failed: ' + textStatus);
-            })
-            .done(function (data) {
-                // FIXME this is not reached in express+zombie unit tests
-                log('init GET succeeded');
-                loadAll(data.data);
-            });
+//
+//        ajax({
+//            type: 'GET',
+//            url: 'corpus/lines',
+//            cache: false
+//        })
+//            .fail(function (jqXHR, textStatus) {
+//                log('init GET failed: ' + textStatus);
+//            })
+//            .done(function (data) {
+//                // FIXME this is not reached in express+zombie unit tests
+//                log('init GET succeeded');
+//                loadAll(data.data);
+//            });
     };
 
     state.insert = function (line, done, fail) {

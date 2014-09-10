@@ -1,0 +1,56 @@
+{
+  "name": "puddle-syntax",
+  "version": "0.1.7",
+  "description": "Syntax tools for the Puddle coding environment",
+  "main": "index.js",
+  "dependencies": {
+    "debug": "^1.0.4",
+    "lodash": "^2.4.1"
+  },
+  "devDependencies": {
+    "jshint": "^2.5.4",
+    "mocha": "^1.21.4"
+  },
+  "scripts": {
+    "lint": "jshint lib test *.js",
+    "test": "npm run lint && mocha --timeout 60000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fritzo/puddle-lang.git"
+  },
+  "keywords": [
+    "pomagma",
+    "puddle",
+    "language"
+  ],
+  "author": {
+    "name": "Fritz Obermeyer"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fritzo/puddle-lang/issues"
+  },
+  "homepage": "https://github.com/fritzo/puddle-lang",
+  "gitHead": "dea51e3a5f884d95126ed2e346ae75966247a144",
+  "_id": "puddle-syntax@0.1.7",
+  "_shasum": "4ed183ab042081d2181610acaedb1607fbe1b100",
+  "_from": "puddle-syntax@0.1.7",
+  "_npmVersion": "1.4.23",
+  "_npmUser": {
+    "name": "fritzo",
+    "email": "fritz.obermeyer@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "fritzo",
+      "email": "fritz.obermeyer@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "4ed183ab042081d2181610acaedb1607fbe1b100",
+    "tarball": "http://registry.npmjs.org/puddle-syntax/-/puddle-syntax-0.1.7.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/puddle-syntax/-/puddle-syntax-0.1.7.tgz"
+}

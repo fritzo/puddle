@@ -31,7 +31,6 @@
     "gulp": "^3.8.8",
     "jquery": "^2.1.1",
     "puddle-hub": "^1.0.0",
-    "puddle-syntax": "0.1.7",
     "socket.io-client": "^1.1.0",
     "underscore": "^1.7.0",
     "debug": "^2.0.0"
