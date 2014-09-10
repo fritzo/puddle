@@ -10,10 +10,8 @@ var _ = require('underscore');
 var syntax = require('./puddle-syntax-0.1.2');
 var tokens = require('./puddle-syntax-0.1.2').tokens;
 var assert = require('./assert');
-var assertNode = require('assert');
 var log = require('debug')('puddle:editor:corpus');
-var io = require('socket.io-client');
-var hub = require('puddle-hub').client(io);
+
 
 //--------------------------------------------------------------------------
 // client state
@@ -115,7 +113,7 @@ var state = (function () {
         return ready;
     }());
 
-    var loadAll = function (linesToLoad) {
+    state.loadAll = function (linesToLoad) {
         lines = {};
         definitions = {};
         occurrences = {};
@@ -135,36 +133,6 @@ var state = (function () {
         });
         state.ready.set();
     };
-
-    hub.on('reset', function (state) {
-        var loadStatement = (function () {
-            var switch_ = {
-                'ASSERT': function (body) {
-                    return {'name': null, 'code': body};
-                },
-                'DEFINE': function (body) {
-                    var varName = body.split(' ', 2);
-                    assertNode.deepEqual(varName[0], 'VAR');
-                    var name = varName[1];
-                    var code = body.slice(4 + name.length + 1);
-                    return {'name': name, 'code': code};
-                }
-            };
-            return function (string) {
-                var prefix = string.split(' ', 1)[0];
-                var body = string.slice(prefix.length + 1);
-                return switch_[prefix](body);
-            };
-        })();
-        var newData = [];
-        _.each(state, function (code, id) {
-            var line = loadStatement(code);
-            line.id = id;
-            newData.push(line);
-        });
-
-        loadAll(newData);
-    });
 
     state.insert = function (line, done, fail) {
         // FIXME getting an id from the server like this adds latency
@@ -382,4 +350,5 @@ module.exports = {
     insert: state.insert,
     update: state.update,
     remove: state.remove,
+    loadAll: state.loadAll
 };
