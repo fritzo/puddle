@@ -5,8 +5,10 @@ var editor = require('./editor');
 var _ = require('underscore');
 var hub = global.hub;
 var assertNode = require('assert');
+var log = require('debug')('puddle:editor:main');
 
-hub.on('reset', function (state) {
+var reinitEditor = function () {
+    log('Reinit editor');
     var loadStatement = (function () {
         var switch_ = {
             'ASSERT': function (body) {
@@ -27,7 +29,7 @@ hub.on('reset', function (state) {
         };
     })();
     var newData = [];
-    _.each(state, function (code, id) {
+    _.each(hub.getState(), function (code, id) {
         var line = loadStatement(code);
         line.id = id;
         newData.push(line);
@@ -35,7 +37,11 @@ hub.on('reset', function (state) {
 
     corpus.loadAll(newData);
     editor.main();
-});
+};
+hub.on('reset', reinitEditor);
+hub.on('create', reinitEditor);
+hub.on('update', reinitEditor);
+hub.on('remove', reinitEditor);
 
 
 
