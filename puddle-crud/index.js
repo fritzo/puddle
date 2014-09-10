@@ -18,6 +18,7 @@ var stateValidate = function (state) {
     return hash;
 };
 
+/** @constructor */
 module.exports = function (hash) {
     assert(this, 'Constructor can\'t be called without New');
     this.hash = stateValidate(hash);
