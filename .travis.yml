@@ -9,4 +9,3 @@ env:
   - MODULE='puddle-html5'
   - MODULE='puddle-hub'
   - MODULE='puddle-server'
-

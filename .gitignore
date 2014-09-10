@@ -15,8 +15,4 @@ logs
 results
 
 npm-debug.log
-#node_modules
-public/index.html
-public/main.css
-public/main.css.map
-public/main.js
+node_modules/*
