@@ -8,7 +8,7 @@ This repository has documentation on Puddle and overwiew of other puddle modules
 While puddle modules are being actievely developed they are checked into this repo as well.
 
 
-The following puddle- modules are in `node_modules/`:
+The following puddle- modules are included in this repository:
 
 - puddle-hub <sup>1</sup>  // synchronization
 - puddle-corpus <sup>1</sup> [![Coverage Status](https://img.shields.io/coveralls/pomagma/puddle-corpus.svg)](https://coveralls.io/r/pomagma/puddle-corpus) // storage

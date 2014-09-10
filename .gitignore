@@ -16,12 +16,3 @@ results
 
 npm-debug.log
 node_modules/*
-!node_modules/puddle-corpus
-!node_modules/puddle-crud
-!node_modules/puddle-html5
-!node_modules/puddle-hub
-!node_modules/puddle-server
-public/index.html
-public/main.css
-public/main.css.map
-public/main.js
