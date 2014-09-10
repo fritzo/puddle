@@ -3,6 +3,8 @@ node_js:
   - "0.10"
 cache:
   apt: true
+install:
+  - for i in `ls node_modules`; do (cd node_modules/$i; npm install); done
 env:
   - MODULE='puddle-crud'
   - MODULE='puddle-corpus'
