@@ -166,23 +166,6 @@ var state = (function () {
         loadAll(newData);
     });
 
-    var init = function () {
-//
-//        ajax({
-//            type: 'GET',
-//            url: 'corpus/lines',
-//            cache: false
-//        })
-//            .fail(function (jqXHR, textStatus) {
-//                log('init GET failed: ' + textStatus);
-//            })
-//            .done(function (data) {
-//                // FIXME this is not reached in express+zombie unit tests
-//                log('init GET succeeded');
-//                loadAll(data.data);
-//            });
-    };
-
     state.insert = function (line, done, fail) {
         // FIXME getting an id from the server like this adds latency
         //   and prevents offline creation of lines
@@ -309,8 +292,6 @@ var state = (function () {
     };
 
     state.DEBUG_LINES = lines;
-
-    init();
     return state;
 })();
 
