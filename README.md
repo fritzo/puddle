@@ -8,7 +8,7 @@ This repository has documentation on Puddle and overwiew of other puddle modules
 While puddle modules are being actievely developed they are checked into this repo as well.
 
 
-There are following puddle- repos:
+The following puddle- modules are in `node_modules/`:
 
 - puddle-hub <sup>1</sup>  // synchronization
 - puddle-corpus <sup>1</sup> [![Coverage Status](https://img.shields.io/coveralls/pomagma/puddle-corpus.svg)](https://coveralls.io/r/pomagma/puddle-corpus) // storage
@@ -21,7 +21,19 @@ There are following puddle- repos:
 
 1: Implements Corpus CRUD API
 
-Please reffer to the [./doc](./doc) for features, architecture, contributing, etc.
+Please refer to the [./doc](./doc) for features, architecture, contributing, etc.
+
+## Quick Start
+
+Install and build client code
+    $ npm install
+    $ npm develop           # Ctrl-C to stop
+
+In another terminal
+
+    $ npm start             # Ctrl-C to stop
+
+Then navigate to <http://localhost:34934/>
 
 
 ## Demo of how to use local modules:
@@ -41,8 +53,11 @@ Please reffer to the [./doc](./doc) for features, architecture, contributing, et
     $ git commit -m 'Add local npm link to puddle-corpus'
     
 ## Travis
-With current setup of submodules travis uses an ENV variable MODULES and it has to be defined before npm test
 
-    MODULE='puddle-corpus' npm test // that means run npm test for './puddle-corpus' only
+Travis currently uses a test matrix to test each module individually.
+To test a single modules, set the environment variable `MODULE`, for example
 
-Make sure to declare env variables for each of sub modules within .travis.yml 
+    MODULE=puddle-corpus npm test  # run tests puddle-corpus only
+
+Make sure to declare environment variables for each of sub modules
+within `.travis.yml`.

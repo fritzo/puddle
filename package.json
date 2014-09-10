@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "install": "for i in `ls node_modules`; do (cd node_modules/$i; npm install); done",
+    "develop": "cd node_modules/puddle-html5; npm run develop",
+    "start": "cd node_modules/puddle-server; npm run start",
     "test": "cd node_modules/$MODULE; npm test"
   },
   "repository": {
