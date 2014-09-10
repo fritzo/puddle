@@ -9,7 +9,7 @@
     "jshint": "jshint .",
     "mocha": "istanbul cover _mocha",
     "start": "gulp",
-    "develop": "gulp develop",
+    "develop": "gulp develop --dev=true",
     "test": "npm run jshint"
   },
   "repository": {
@@ -29,7 +29,11 @@
   "homepage": "https://github.com/pomagma/puddle-editor",
   "dependencies": {
     "gulp": "^3.8.8",
-    "puddle-hub": "^1.0.0"
+    "jquery": "^2.1.1",
+    "puddle-hub": "^1.0.0",
+    "puddle-syntax": "^0.1.8",
+    "socket.io-client": "^1.1.0",
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
     "debug": "^2.0.0",

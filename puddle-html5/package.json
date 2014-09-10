@@ -9,7 +9,7 @@
     "jshint": "jshint .",
     "mocha": "istanbul cover _mocha",
     "start": "gulp",
-    "develop": "gulp develop",
+    "develop": "gulp develop --dev=true",
     "test": "npm run jshint"
   },
   "repository": {

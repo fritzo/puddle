@@ -24,10 +24,15 @@ var watcher = function (tasks, paths) {
     };
 };
 
-gulp.task('less', function () {
+gulp.task('less', ['lessCopy'], function () {
     //process LESS -> CSS
     return gulp.src('./source/main.less')
         .pipe(less())
+        .pipe(gulp.dest('./build'));
+});
+gulp.task('lessCopy', function () {
+    //copy LESS for sourcemaps
+    return gulp.src('./source/main.less')
         .pipe(gulp.dest('./build'));
 });
 
@@ -38,6 +43,7 @@ gulp.task('copyHtml', function () {
 });
 
 gulp.task('browserify', function () {
+    gutil.log('Dev mode', argv.dev);
     //Browserify
     return gulp.src('./source/app.js')
         .pipe(browserify({
@@ -56,7 +62,6 @@ gulp.task('watchHTML', watcher(['copyHtml'], ['./source/**/*.html']));
 gulp.task('watchLESS', watcher(['less'], ['./source/**/*.less']));
 
 gulp.task('develop', ['default'], function () {
-    argv.dev = true;
     gulp.start('watchJS');
     gulp.start('watchHTML');
     gulp.start('watchLESS');
