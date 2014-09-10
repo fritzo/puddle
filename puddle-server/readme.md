@@ -18,7 +18,9 @@ Server to store corpus and sync it over multiple clients and pomagma backend.
     
 ###Usage:    
                                         
-    npm start
+    npm start       # Alias for node server/server.js
+                    # If you get 'Cant GET /' error make sure that ./public folder exists.
+                    # And if it is a link make sure it liks to existing folder
     
 ####Development mode
 Development mode includes livereload of client side and restart of the server upon changes detected

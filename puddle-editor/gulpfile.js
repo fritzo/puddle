@@ -26,7 +26,7 @@ var watcher = function (tasks, paths) {
 
 gulp.task('less', function () {
     //process LESS -> CSS
-    return gulp.src('./source/styles/style.less')
+    return gulp.src('./source/main.less')
         .pipe(less())
         .pipe(gulp.dest('./build'));
 });
@@ -39,7 +39,7 @@ gulp.task('copyHtml', function () {
 
 gulp.task('browserify', function () {
     //Browserify
-    return gulp.src('./source/app/app.js')
+    return gulp.src('./source/app.js')
         .pipe(browserify({
             exclude: ['mocha'],
             debug: argv.dev
