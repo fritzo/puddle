@@ -145,7 +145,7 @@ var commitLine = function () {
 var revertLine = function () {
     var id = ids[cursorPos];
     var line = corpus.findLine(id);
-    var lambda = syntax.syntax.compiler.loadLine(line);
+    var lambda = syntax.compiler.loadLine(line);
     var root = syntax.tree.load(lambda);
     syntax.cursor.remove(cursor);
     syntax.cursor.insertAbove(cursor, root);
