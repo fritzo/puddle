@@ -8,7 +8,7 @@ var assert = require('./assert');
 var view = require('./view');
 var menu = require('./menu');
 var corpus = require('./corpus');
-var log = require('./log');
+var debug = require('debug')('puddle:editor');
 
 var ids = [];
 var trees = {};  // id -> tree
@@ -44,7 +44,7 @@ var replaceBelow = function (newLambda, subsForDash) {
             '&mdash;',
             subsForDash, newLambda);
     }
-    //log('replacing ' + syntax.compiler.print(cursor.below[0]) +
+    //debug('replacing ' + syntax.compiler.print(cursor.below[0]) +
     //    'with: ' + syntax.compiler.print(newLambda));
     var newTerm = syntax.tree.load(newLambda);
     cursor = syntax.cursor.replaceBelow(cursor, newTerm);
@@ -91,7 +91,7 @@ var insertLine = function (line, done, fail) {
             }
         },
         function () {
-            log('failed to insert line');
+            debug('failed to insert line');
             if (fail !== undefined) {
                 fail();
             }
@@ -162,7 +162,7 @@ var pollValidities = (function () {
 
     var poll = function () {
         polling = false;
-        log('polling');
+        debug('polling');
         $.ajax({
             type: 'GET',
             url: 'corpus/validities',
@@ -170,13 +170,13 @@ var pollValidities = (function () {
         })
             /*jslint unparam: true*/
             .fail(function (jqXHR, textStatus) {
-                log('pollValidities GET failed: ' + textStatus);
+                debug('pollValidities GET failed: ' + textStatus);
                 polling = true;
                 setTimeout(poll, delayFail);
             })
             /*jslint unparam: false*/
             .done(function (data) {
-                log('pollValidities GET succeeded');
+                debug('pollValidities GET succeeded');
                 data.data.forEach(function (validity) {
                     var id = validity.id;
                     delete validity.id;

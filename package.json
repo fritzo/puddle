@@ -48,7 +48,7 @@
     "mocha": "gulp mocha",
     "test": "npm run gulp && npm run lint && npm run mocha",
     "start": "gulp serve --dev=true",
-    "dev": "gulp serve --dev=true",
+    "develop": "DEBUG='puddle:*' gulp serve --dev=true",
     "clean": "cd public && rm -f index.html main.css* main.js"
   },
   "repository": {

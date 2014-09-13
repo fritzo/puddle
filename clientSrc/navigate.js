@@ -6,7 +6,7 @@ var $ = require('jquery');
 var io = require('socket.io-client');
 var assert = require('./assert');
 var keycode = require('./keycode');
-var log = require('./log');
+var debug = require('debug')('puddle:editor:navigate');
 
 var socket = io();
 
@@ -115,12 +115,12 @@ var trigger = function (event) {
     for (var i = 0; i < events.length; ++i) {
         if (events[i].match(event)) {
             event.preventDefault();
-            console.log('matched ' + event.which);
+            debug('matched ' + event.which);
             callbacks[i]();
             return;
         }
     }
-    console.log('unmatched ' + event.which);
+    debug('unmatched ' + event.which);
 };
 
 //--------------------------------------------------------------------------
@@ -144,14 +144,14 @@ var search = (function () {
             }
         });
         $matches.children().first().addClass('selected');
-        log('DEBUG ' + matches);
+        debug('DEBUG ' + matches);
     };
 
     var cancelCallback;
     var acceptCallback;
     var accept = function () {
         if (matches.length) {
-            log('DEBUG accepting ' + matches[0]);
+            debug('DEBUG accepting ' + matches[0]);
             acceptCallback(matches[0]);
         } else {
             cancelCallback();
@@ -191,7 +191,7 @@ var choose = (function () {
     var acceptCallback;
     var accept = function () {
         if (valid) {
-            log('DEBUG choosing ' + input);
+            debug('DEBUG choosing ' + input);
             acceptCallback(input);
         } else {
             cancelCallback();
