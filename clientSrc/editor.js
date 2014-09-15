@@ -57,6 +57,9 @@ var insertAssert = function (done, fail) {
     var ASSERT = syntax.compiler.symbols.ASSERT;
     var lambda = ASSERT(HOLE);
     var line = syntax.compiler.dumpLine(lambda);
+    //TODO fix that bug in syntax code
+    //line.name has to be null, not undefined
+    line.name=null;
     insertLine(line, done, fail);
 };
 
