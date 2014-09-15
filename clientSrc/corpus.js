@@ -9,7 +9,7 @@ var ajax = require('jquery').ajax;
 var _ = require('underscore');
 var tokens = require('puddle-syntax').tokens;
 var assert = require('./assert');
-var log = require('./log');
+var debug = require('debug')('puddle:editor:corpus');
 
 //--------------------------------------------------------------------------
 // client state
@@ -67,6 +67,7 @@ var state = (function () {
     };
 
     var insertLine = function (line) {
+        debug('Insert line',line);
         var id = line.id;
         assert(!_.has(lines, id));
         lines[id] = line;
@@ -80,6 +81,7 @@ var state = (function () {
     };
 
     var removeLine = function (line) {
+        debug('Remove line',line);
         var id = line.id;
         assert(_.has(lines, id));
         delete lines[id];
@@ -102,7 +104,7 @@ var state = (function () {
             }
         };
         ready.set = function () {
-            log('corpus is ready');
+            debug('corpus is ready');
             isReady = true;
             while (readyQueue.length) {
                 setTimeout(readyQueue.pop(), 0);
@@ -118,6 +120,7 @@ var state = (function () {
         linesToLoad.forEach(function (line) {
             var id = line.id;
             lines[id] = line;
+            debug(line);
             if (line.name !== null) {
                 insertDefinition(line.name, id);
             }
@@ -139,11 +142,11 @@ var state = (function () {
             cache: false
         })
             .fail(function (jqXHR, textStatus) {
-                log('init GET failed: ' + textStatus);
+                debug('init GET failed: ' + textStatus);
             })
             .done(function (data) {
                 // FIXME this is not reached in express+zombie unit tests
-                log('init GET succeeded');
+                debug('init GET succeeded');
                 loadAll(data.data);
             });
     };
@@ -159,11 +162,11 @@ var state = (function () {
             contentType: 'application/json',
         })
             .fail(function (jqXHR, textStatus) {
-                log('insert POST failed: ' + textStatus);
+                debug('insert POST failed: ' + textStatus);
                 fail();
             })
             .done(function (data) {
-                log('insert POST succeded: ' + data.id);
+                debug('insert POST succeded: ' + data.id);
                 line.id = data.id;
                 insertLine(line);
                 done(line);
@@ -196,7 +199,7 @@ var state = (function () {
     };
 
     state.validate = function () {
-        log('validating corpus');
+        debug('validating corpus');
         for (var id in lines) {
             var line = lines[id];
             var name = line.name;
@@ -226,7 +229,7 @@ var state = (function () {
                         'missing occurrence: ' + name);
             }
         }
-        log('corpus is valid');
+        debug('corpus is valid');
     };
 
 
@@ -303,7 +306,7 @@ var sync = (function () {
             delete changes[id];
             switch (change.type) {
                 case 'update':
-                    log('sending ' + JSON.stringify(change.line));
+                    debug('sending ' + JSON.stringify(change.line));
                     ajax({
                         type: 'PUT',
                         url: 'corpus/line/' + id,
@@ -311,11 +314,11 @@ var sync = (function () {
                         contentType: 'application/json',
                     })
                         .fail(function (jqXHR, textStatus) {
-                            log('putChanges PUT failed: ' + textStatus);
+                            debug('putChanges PUT failed: ' + textStatus);
                             setTimeout(pushChanges, delayFail);
                         })
                         .done(function () {
-                            log('putChanges PUT succeeded: ' + id);
+                            debug('putChanges PUT succeeded: ' + id);
                             setTimeout(pushChanges, 0);
                         });
                     return;
@@ -326,17 +329,17 @@ var sync = (function () {
                         url: 'corpus/line/' + id,
                     })
                         .fail(function (jqXHR, textStatus) {
-                            log('putChanges DELETE failed: ' + textStatus);
+                            debug('putChanges DELETE failed: ' + textStatus);
                             setTimeout(pushChanges, delayFail);
                         })
                         .done(function () {
-                            log('putChanges DELETE succeeded: ' + id);
+                            debug('putChanges DELETE succeeded: ' + id);
                             setTimeout(pushChanges, 0);
                         });
                     return;
 
                 default:
-                    log('ERROR unknown change type: ' + change.type);
+                    debug('ERROR unknown change type: ' + change.type);
             }
         });
         setTimeout(pushChanges, delay);

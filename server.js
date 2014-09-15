@@ -33,9 +33,8 @@ db.once('open', function () {
 
 var app = express();
 app.use(liveReload);
-app.use(bodyParser.urlencoded({extended: false}));
-app.use('/', express.static(path.join(__dirname, 'public'))); // HACK for index
-app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
+app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.get('/corpus/lines', function (req, res) {
     debug('GET lines');
@@ -118,13 +117,11 @@ var userId = 0;
 io.on('connection', function (socket) {
     var id = userId++;
     var logAction = function (action) {
-        console.log('Logger: user:', id, ' action:', action);
+        debug('Logger: user:', id, ' action:', action);
         var log = new Log({user: id, action: action});
         log.save();
     };
     logAction('connected');
-    socket.on('disconnect', function () {
-        logAction('disconnected');
-    });
+    socket.on('disconnect', logAction);
     socket.on('action', logAction);
 });
