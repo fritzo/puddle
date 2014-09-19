@@ -19,8 +19,8 @@ Following modules have ther own repositories:
 
 - [puddle-syntax](https://github.com/pomagma/puddle-syntax) // conversion from one courpus form to another
 - [puddle-corpus](https://github.com/pomagma/puddle-corpus) // storage
-- [puddle-crud](https://github.com/pomagma/puddle-crud) // standard API wrapper
-- [puddle-hub](https://github.com/pomagma/puddle-hub) // synchronization
+- [puddle-crud](https://github.com/pomagma/puddle-socket) // socket.IO sync server <=> clients
+- [puddle-hub](https://github.com/pomagma/puddle-hub) //standard API wrapper
 
 
 Please refer to the [./doc](./doc) for features, architecture, contributing, etc.
