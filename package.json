@@ -1,59 +1,17 @@
 {
   "name": "puddle",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "A responsive editor built on Pomagma",
-  "main": "server.js",
-  "dependencies": {
-    "amdefine": "=0.1.0",
-    "body-parser": "^1.6.1",
-    "debug": "^1.0.4",
-    "express": "^4.8.3",
-    "gulp": "^3.8.7",
-    "gulp-browserify": "^0.5.0",
-    "gulp-if": "^1.2.4",
-    "gulp-jshint": "^1.8.4",
-    "gulp-less-sourcemap": "^1.3.3",
-    "gulp-nodemon": "^1.0.4",
-    "gulp-uglify": "^0.3.1",
-    "jquery": "^2.1.1",
-    "less": "^1.7.4",
-    "mongoose": "~3.8.15",
-    "pomagma": ">=0.1.8",
-    "puddle-syntax": "0.1.2",
-    "socket.io": "^1.0.6",
-    "socket.io-client": "^1.0.6",
-    "underscore": "^1.6.0",
-    "yargs": "^1.3.1"
-  },
-  "devDependencies": {
-    "connect-livereload": "^0.4.0",
-    "gulp-mocha": "^1.0.0",
-    "gulp-util": "^3.0.0",
-    "jshint": "^2.5.4",
-    "karma": "^0.12.22",
-    "karma-chrome-launcher": "^0.1.4",
-    "karma-firefox-launcher": "^0.1.3",
-    "karma-mocha": "^0.1.9",
-    "karma-phantomjs-launcher": "^0.1.4",
-    "mocha": "^1.21.4",
-    "phantomjs": "^1.9.7-15",
-    "rewire": "^2.1.0",
-    "sinon": "^1.10.3",
-    "tiny-lr": "^0.1.0"
-  },
+  "main": "",
   "scripts": {
-    "karma": "karma start",
-    "lint": "gulp lint",
-    "gulp": "gulp",
-    "mocha": "gulp mocha",
-    "test": "npm run gulp && npm run lint && npm run mocha",
-    "start": "gulp serve --dev=true",
-    "develop": "DEBUG='puddle:*' gulp serve --dev=true",
-    "clean": "cd public && rm -f index.html main.css* main.js"
+    "test": "cd $MODULE; npm install; npm test;",
+    "start": "cd puddle-server; npm start",
+    "develop-server": "cd puddle-server; DEBUG='puddle:*' npm run develop",
+    "develop-editor": "cd puddle-editor; npm run develop"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/fritzo/puddle"
+    "url": "git://github.com/pomagma/puddle"
   },
   "keywords": [
     "editor",
@@ -63,7 +21,7 @@
   "author": "Fritz Obermeyer",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fritzo/puddle/issues"
+    "url": "https://github.com/pomagma/puddle/issues"
   },
-  "homepage": "https://github.com/fritzo/puddle"
+  "homepage": "https://github.com/pomagma/puddle"
 }
