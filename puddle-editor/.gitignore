@@ -10,10 +10,12 @@ lib-cov
 .DS_Store
 workspace.xml
 
+
 pids
 logs
 results
 
+coverage
+build
 npm-debug.log
 node_modules/*
-.c9

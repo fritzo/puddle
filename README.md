@@ -1,51 +1,78 @@
-[![Build Status](https://travis-ci.org/fritzo/puddle.svg?branch=master)](http://travis-ci.org/fritzo/puddle)
-[![NPM Version](https://badge.fury.io/js/puddle.svg)](https://www.npmjs.org/package/puddle)
-[![NPM Dependencies](https://david-dm.org/fritzo/puddle.svg)](https://www.npmjs.org/package/puddle)
+[![Build Status](https://travis-ci.org/pomagma/puddle.svg?branch=master)](http://travis-ci.org/pomagma/puddle)
 
 # Puddle
 
-Puddle is a reactive coding environment backed by the
-[Pomagma](https://github.com/fritzo/pomagma) inference engine.
+This is a main Puddle repository.
 
-## Installing
+This repository has documentation on Puddle and overwiew of other puddle modules.
+While puddle modules are being actievely developed they are checked into this repo as well.
 
-Install node, npm, and mongodb (listening at localhost). Then
 
-    git clone https://github.com/fritzo/puddle
-    cd puddle
-    npm install
-    npm test        # optional
+The following puddle- modules are included in this repository:
+
+- puddle-editor // in memory editor
+- puddle-server // serves files and proxies requests to pomagma backend
+- puddle-cli // simple command line client to puddle-editor
+- puddle-d3 // view only client to puddle-editor
+
+Following modules have ther own repositories:
+
+- [puddle-syntax](https://github.com/pomagma/puddle-syntax) // conversion from one courpus form to another
+- [puddle-corpus](https://github.com/pomagma/puddle-corpus) // storage
+- [puddle-crud](https://github.com/pomagma/puddle-crud) // standard API wrapper
+- [puddle-hub](https://github.com/pomagma/puddle-hub) // synchronization
+
+
+Please refer to the [./doc](./doc) for features, architecture, contributing, etc.
 
 ## Quick Start
 
-To run a local Puddle server using the public Pomagma server:
+Install:
+ 
+    $ npm install
+Run:
+ 
+    $ npm start
 
-1.  Install Puddle as above
+Then navigate to <http://localhost:34934/>
+    
+## Develop mode:
+    
+    $ npm run develop-editor       # Ctrl-C to stop
+        
+In another terminal
 
-3.  Start a Puddle server
+    $ npm run develop-server       # Ctrl-C to stop
 
-        npm start                   # Ctrl-C to stop
 
-4.  In a browser, navigate to http://localhost:34934
 
-To optionally run a local Pomagma server
 
-5.  Install [Pomagma](https://github.com/fritzo/pomagma)
+## Demo of how to use local modules:
 
-6.  Start a Pomagma analyst server
+    $ git clone git@github.com:pomagma/puddle
+    $ cd puddle
+    $ ls
+      puddle-corpus
+      puddle-hub
+      puddle-editor
+    $ cd puddle-editor
+    $ mkdir -p node_modules
+    $ cd node_modules
+    $ ln -s ../../puddle-corpus  # relative link
+    $ cd ..
+    $ git add node_modules/puddle-corpus  # so other devs can use this
+    $ git commit -m 'Add local npm link to puddle-corpus'
+    
+## Travis
 
-        python -m pomagma analyze   # Ctrl-C to stop
+Travis currently uses a test matrix to test each module individually.
+To test a single modules, set the environment variable `MODULE`, for example
 
-7.  Restart puddle pointing to the local server
+    MODULE=puddle-corpus npm test  # run tests puddle-corpus only
 
-        POMAGMA_ANALYST_ADDRESS=tcp://localhost:34936 nodejs main.js
+Make sure to declare environment variables for each of sub modules
+within `.travis.yml`.
 
-## Documentation
-
-- [Introduction](/doc/intro.md)
-- [Using Puddle](/doc/using.md)
-- [API Reference](/doc/reference.md)
-- [Contributing](/doc/contributing.md)
 
 ## Contributors
 
@@ -53,6 +80,7 @@ To optionally run a local Pomagma server
 - Yan T. <https://github.com/yangit>
 
 Puddle was factored out of [Pomagma](https://github.com/fritzo/pomagma) in 2014.
+
 
 ## License
 
