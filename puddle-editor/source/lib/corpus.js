@@ -10,7 +10,7 @@ var uuid = require('node-uuid');
 var tokens = require('./puddle-syntax-0.1.2').tokens;
 var assert = require('./assert');
 var debug = require('debug')('puddle:editor:corpus');
-var hub = global.hub;
+var puddleSocket = global.puddleSocket;
 var trace = require('./trace')(debug);
 var serverSyntax = require('./server-syntax');
 
@@ -34,15 +34,15 @@ var serverSyntax = require('./server-syntax');
 var sync = {
     create: function (line) {
         trace('Sync Create', arguments);
-        hub.create(line.id, serverSyntax.dumpStatement(line),'editor');
+        puddleSocket.create(line.id, serverSyntax.dumpStatement(line),'editor');
     },
     remove: function (line) {
         trace('Sync Remove', arguments);
-        hub.remove(line.id,'editor');
+        puddleSocket.remove(line.id,'editor');
     },
     update: function (line) {
         trace('Sync Update', arguments);
-        hub.update(line.id, serverSyntax.dumpStatement(line),'editor');
+        puddleSocket.update(line.id, serverSyntax.dumpStatement(line),'editor');
     }
 };
 
