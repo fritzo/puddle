@@ -20,9 +20,9 @@ var corpus = require('puddle-corpus')(
     path.join(__dirname, '../corpus/main.json')
 );
 debug('Corpus crud id', corpus.nodeId);
-var hub = require('puddle-hub').server(io);
-debug('Hub crud id', hub.nodeId);
-hub.connect(corpus);
+var puddleSocket = require('puddle-socket').server(io);
+debug('puddleSocket id', puddleSocket.nodeId);
+puddleSocket.connect(corpus);
 
 var analyst = pomagma.analyst.connect(
         process.env.POMAGMA_ANALYST_ADDRESS ||
@@ -55,7 +55,7 @@ if (argv.withLiveReload) {
 
 app.get('/corpus/validities', function (req, res) {
     debug('GET validities');
-    var state = hub.getState();
+    var state = puddleSocket.getState();
     var lines = [];
     var ids = [];
     //TODO fix inconsistency between Analyst, puddle-hub and puddle-syntax API
