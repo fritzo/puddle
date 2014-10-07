@@ -2,6 +2,8 @@
 
 var corpus = global.corpus = require('./corpus');
 var editor = global.editor = require('./editor');
+var Menu = require('./menu/menu');
+var menuRenderer = require('./menu/menuRenderer');
 var serverSyntax = require('./server-syntax');
 var _ = require('lodash');
 var puddleSocket = global.puddleSocket;
@@ -9,6 +11,7 @@ var puddleSocket = global.puddleSocket;
 var debug = require('debug')('puddle:editor:main');
 var trace = require('./trace')(debug);
 
+//TODO refactor editor to expose reset method
 var initEditor = _.once(function () {
     trace('Init editor');
     var newData = [];
@@ -20,6 +23,9 @@ var initEditor = _.once(function () {
 
     corpus.loadAll(newData);
     editor.main();
+    //TODO refactor for better API
+    var menu = Menu(editor);
+    menuRenderer(menu, editor);
 });
 
 var reinitEditor = function () {
@@ -42,6 +48,7 @@ puddleSocket.on('update', function (id, obj) {
     trace('Hub update');
     editor.crud.update(id, obj);
 }, 'editor');
+
 
 
 

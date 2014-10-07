@@ -5,9 +5,10 @@ var $ = require('jquery');
 var io = require('socket.io-client');
 var syntax = require('./puddle-syntax-0.1.2');
 var syntaxNew = require('puddle-syntax');
+var EventEmitter = require('events').EventEmitter;
+var emitter = new EventEmitter();
 var assert = require('./assert');
 var view = require('./view');
-var menu = global.menu = require('./menu');
 var corpus = require('./corpus');
 var debug = require('debug')('puddle:editor');
 var trace = require('./trace')(debug);
@@ -75,7 +76,7 @@ var insertLine = function (line, done, fail) {
 };
 
 // incoming create
-var onInsertLine = function (id,line) {
+var onInsertLine = function (id, line) {
     ids.push(id);
     var churchTerm = syntaxNew.compiler.load(line);
     var root = syntax.tree.load(churchTerm);
@@ -223,6 +224,7 @@ var initCursor = function () {
 
 var moveCursorLine = function (delta) {
     trace('moveCursorLine', arguments);
+
     if (lineChanged) {
         commitLine();
     }
@@ -250,7 +252,9 @@ var moveCursor = function (direction) {
         }
     };
 };
-shared.actions = {
+
+
+var pureActions = {
     commitLine: commitLine,
     revertLine: function () {
         trace('revertLine', arguments);
@@ -324,6 +328,13 @@ shared.actions = {
     widenSelection: moveCursor('U')
 };
 
+var sharedActions = _.each(pureActions, function (value, key, hash) {
+    hash[key] = function () {
+        value.apply(this,_.toArray(arguments));
+        emitter.emit('update');
+    };
+});
+
 module.exports = {
     main: function () {
         loadAllLines();
@@ -343,7 +354,6 @@ module.exports = {
             }
         });
         initCursor();
-        menu.init(shared);
     },
     getTerms: function () {
         return ids.map(function (id) {
@@ -355,6 +365,16 @@ module.exports = {
         remove: onRemoveLine,
         update: onUpdateLine
     },
-    shared: shared
+    getActions: function () {
+        return sharedActions;
+    },
+    on: _.bind(emitter.on, emitter),
+    getCursor: function () {
+        return shared.cursor;
+    },
+    //TODO this function has to be replaced by methods of forest.
+    getCorpus: function () {
+        return corpus;
+    }
 
 };
