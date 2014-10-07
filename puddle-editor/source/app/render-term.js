@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var assert = require('assert');
-var syntax = require('./puddle-syntax-0.1.2');
+var syntax = require('puddle-syntax');
 
 var template = function (string) {
     return function (args) {
@@ -41,9 +41,7 @@ var templates = {
     }
 };
 
-var render = syntax.compiler.fold(function (token, args) {
+module.exports = syntax.compiler.fold(function (token, args) {
     assert(_.has(templates, token), 'unknown token: ' + token);
     return templates[token](args);
 });
-
-module.exports = render;

@@ -1,14 +1,16 @@
 'use strict';
 
-var corpus = global.corpus = require('./corpus');
-var editor = global.editor = require('./editor');
 var Menu = require('./menu/menu');
 var menuRenderer = require('./menu/menuRenderer');
+var View = require('./view');
 var serverSyntax = require('./server-syntax');
 var _ = require('lodash');
-var puddleSocket = global.puddleSocket;
-
-var debug = require('debug')('puddle:editor:main');
+var io = require('socket.io-client');
+var puddleSocket = global.puddleSocket = require('puddle-socket').client(io);
+var corpus = global.corpus = require('./corpus');
+var editor = global.editor = require('./editor');
+var debugModule = global.debug = require('debug');
+var debug = debugModule('puddle:editor:main');
 var trace = require('./trace')(debug);
 
 //TODO refactor editor to expose reset method
@@ -26,6 +28,7 @@ var initEditor = _.once(function () {
     //TODO refactor for better API
     var menu = Menu(editor);
     menuRenderer(menu, editor);
+    View(editor);
 });
 
 var reinitEditor = function () {

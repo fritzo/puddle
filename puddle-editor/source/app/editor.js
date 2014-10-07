@@ -3,12 +3,10 @@
 var _ = require('lodash');
 var $ = require('jquery');
 var io = require('socket.io-client');
-var syntax = require('./puddle-syntax-0.1.2');
-var syntaxNew = require('puddle-syntax');
+var syntax = require('puddle-syntax');
 var EventEmitter = require('events').EventEmitter;
 var emitter = new EventEmitter();
 var assert = require('./assert');
-var view = require('./view');
 var corpus = require('./corpus');
 var debug = require('debug')('puddle:editor');
 var trace = require('./trace')(debug);
@@ -50,7 +48,6 @@ var insertLine = function (line, done, fail) {
         line,
         function (line) {
             syntax.cursor.remove(cursor);
-            view.update(ids[cursorPos]);
             cursorPos += 1;
             var id = line.id;
             ids = ids.slice(0, cursorPos).concat([id], ids.slice(cursorPos));
@@ -60,8 +57,6 @@ var insertLine = function (line, done, fail) {
             trees[id] = root;
             validities[id] = _.clone(UNKNOWN);
             pollValidities();
-            view.insertAfter(ids[cursorPos - 1], id);
-            scrollToCursor();
             if (done !== undefined) {
                 done();
             }
@@ -78,13 +73,11 @@ var insertLine = function (line, done, fail) {
 // incoming create
 var onInsertLine = function (id, line) {
     ids.push(id);
-    var churchTerm = syntaxNew.compiler.load(line);
+    var churchTerm = syntax.compiler.load(line);
     var root = syntax.tree.load(churchTerm);
     trees[id] = root;
     validities[id] = _.clone(UNKNOWN);
     pollValidities();
-    view.insertAfter(ids[ids.length - 2], id);
-    scrollToCursor();
 };
 
 // incoming remove
@@ -98,8 +91,6 @@ var onRemoveLine = function (id) {
     ids = ids.slice(0, pos).concat(ids.slice(pos + 1));
     delete trees[id];
     delete validities[id];
-    view.remove(id);
-    scrollToCursor();
 };
 
 // outgoing update
@@ -110,12 +101,11 @@ var onUpdateLine = function (id, line) {
     } else if (pos < cursorPos) {
         cursorPos -= 1;
     }
-    var churchTerm = syntaxNew.compiler.load(line);
+    var churchTerm = syntax.compiler.load(line);
     var root = syntax.tree.load(churchTerm);
     trees[id] = root;
     validities[id] = _.clone(UNKNOWN);
     pollValidities();
-    view.update(id);
 };
 
 
@@ -142,7 +132,6 @@ var commitLine = function () {
         validities[id] = _.clone(UNKNOWN);
     }
     pollValidities();
-    view.update(id);
     lineChanged = false;
 };
 
@@ -178,7 +167,7 @@ var pollValidities = (function () {
                     if (oldValidity !== undefined) {
                         if (!_.isEqual(oldValidity, validity)) {
                             validities[id] = validity;
-                            view.update(id);
+                            emitter.emit('updateValidity');
                         }
                     }
                 });
@@ -204,12 +193,6 @@ var pollValidities = (function () {
 //--------------------------------------------------------------------------
 // Cursor Movement
 
-var scrollToCursor = function () {
-    trace('scrollToCursor', arguments);
-    var pos = $('span.cursor').offset().top - $(window).height() / 2;
-    $(document.body).animate({scrollTop: pos}, 50);
-};
-
 var initCursor = function () {
     trace('initCursor', arguments);
     cursor = shared.cursor = syntax.cursor.create();
@@ -218,25 +201,18 @@ var initCursor = function () {
     var id = ids[cursorPos];
     socket.emit('action', {'moveTo': id});
     syntax.cursor.insertAbove(cursor, trees[id]);
-    view.update(id);
-    scrollToCursor();
 };
 
 var moveCursorLine = function (delta) {
-    trace('moveCursorLine', arguments);
-
     if (lineChanged) {
         commitLine();
     }
     if (0 <= cursorPos + delta && cursorPos + delta < ids.length) {
         syntax.cursor.remove(cursor);
-        view.update(ids[cursorPos]);
         cursorPos = (cursorPos + ids.length + delta) % ids.length;
         var id = ids[cursorPos];
         socket.emit('action', {'moveTo': id});
         syntax.cursor.insertAbove(cursor, trees[id]);
-        view.update(id);
-        scrollToCursor();
     }
 };
 
@@ -246,10 +222,7 @@ var moveCursorLine = function (delta) {
 
 var moveCursor = function (direction) {
     return function () {
-        trace('moveCursor', arguments);
-        if (syntax.cursor.tryMove(cursor, direction)) {
-            view.update(ids[cursorPos]);
-        }
+        syntax.cursor.tryMove(cursor, direction);
     };
 };
 
@@ -265,7 +238,6 @@ var pureActions = {
         syntax.cursor.remove(cursor);
         syntax.cursor.insertAbove(cursor, root);
         trees[id] = root;
-        view.update(id);
         lineChanged = false;
     },
     removeLine: function () {
@@ -277,19 +249,16 @@ var pureActions = {
             .concat(ids.slice(cursorPos + 1));
         delete trees[id];
         delete validities[id];
-        view.remove(id);
         if (cursorPos === ids.length) {
             cursorPos -= 1;
         }
         id = ids[cursorPos];
         syntax.cursor.insertAbove(cursor, trees[id]);
-        view.update(id);
-        scrollToCursor();
     },
     insertAssert: function (done, fail) {
         trace('insertAssert', arguments);
-        var HOLE = syntax.compiler.symbols.HOLE;
-        var ASSERT = syntax.compiler.symbols.ASSERT;
+        var HOLE = syntax.compiler.fragments.church.HOLE;
+        var ASSERT = syntax.compiler.fragments.church.ASSERT;
         var churchTerm = ASSERT(HOLE);
         var line = syntax.compiler.dumpLine(churchTerm);
         line.name = null;
@@ -297,9 +266,9 @@ var pureActions = {
     },
     insertDefine: function (varName, done, fail) {
         trace('insertDefine', arguments);
-        var VAR = syntax.compiler.symbols.VAR;
-        var HOLE = syntax.compiler.symbols.HOLE;
-        var DEFINE = syntax.compiler.symbols.DEFINE;
+        var VAR = syntax.compiler.fragments.church.VAR;
+        var HOLE = syntax.compiler.fragments.church.HOLE;
+        var DEFINE = syntax.compiler.fragments.church.DEFINE;
         var churchTerm = DEFINE(VAR(varName), HOLE);
         var line = syntax.compiler.dumpLine(churchTerm);
         insertLine(line, done, fail);
@@ -315,7 +284,6 @@ var pureActions = {
         cursor = shared.cursor = syntax.cursor
             .replaceBelow(cursor, newTerm);
         lineChanged = true;
-        view.update(ids[cursorPos]);
     },
     moveUp: function () {
         moveCursorLine(-1);
@@ -325,45 +293,51 @@ var pureActions = {
     },
     moveLeft: moveCursor('L'),
     moveRight: moveCursor('R'),
+    moveCursorLine: moveCursorLine,
     widenSelection: moveCursor('U')
 };
 
-var sharedActions = _.each(pureActions, function (value, key, hash) {
-    hash[key] = function () {
-        value.apply(this,_.toArray(arguments));
+var wrap = function (callback) {
+    return function () {
+        trace('editor update');
+        callback.apply(this, _.toArray(arguments));
         emitter.emit('update');
     };
+};
+
+var sharedActions = {};
+_.each(pureActions, function (value, key) {
+    sharedActions[key] = wrap(value);
 });
+
+var sortLines = function (lines) {
+    /*
+     Return a heuristically sorted list of definitions.
+
+     TODO use approximately topologically-sorted order.
+     (R1) "A Technique for Drawing Directed Graphs" -Gansner et al
+     http://www.graphviz.org/Documentation/TSE93.pdf
+     (R2) "Combinatorial Algorithms for Feedback Problems in Directed Graphs"
+     -Demetrescu and Finocchi
+     http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.1.9435
+     */
+    return lines;
+};
 
 module.exports = {
     main: function () {
         loadAllLines();
-        view.init({
-            lines: corpus.findAllLines(),
-            events: {'click': function (id) {
-                trace('moveCursorTo', arguments);
-                var newPos = _.indexOf(ids, id);
-                var delta = newPos - cursorPos;
-                moveCursorLine(delta);
-            }},
-            getLine: function (id) {
-                return syntax.tree.dump(syntax.tree.getRoot(trees[id]));
-            },
-            getValidity: function (id) {
-                return validities[id];
-            }
-        });
         initCursor();
     },
     getTerms: function () {
         return ids.map(function (id) {
-            return syntaxNew.tree.dump(trees[id]);
+            return syntax.tree.dump(trees[id]);
         });
     },
     crud: {
-        create: onInsertLine,
-        remove: onRemoveLine,
-        update: onUpdateLine
+        create: wrap(onInsertLine),
+        remove: wrap(onRemoveLine),
+        update: wrap(onUpdateLine)
     },
     getActions: function () {
         return sharedActions;
@@ -375,6 +349,18 @@ module.exports = {
     //TODO this function has to be replaced by methods of forest.
     getCorpus: function () {
         return corpus;
+    },
+    getValidity: function (id) {
+        return validities[id];
+    },
+    getLine: function (id) {
+        return syntax.tree.dump(syntax.tree.getRoot(trees[id]));
+    },
+    getIds: function () {
+        return sortLines(_.cloneDeep(ids));
+    },
+    getCursorId: function () {
+        return ids[cursorPos];
     }
 
 };

@@ -7,7 +7,7 @@
 
 var _ = require('lodash');
 var uuid = require('node-uuid');
-var tokens = require('./puddle-syntax-0.1.2').tokens;
+var tokens = require('puddle-syntax').tokens;
 var assert = require('./assert');
 var debug = require('debug')('puddle:editor:corpus');
 var puddleSocket = global.puddleSocket;

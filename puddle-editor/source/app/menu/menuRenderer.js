@@ -3,92 +3,18 @@
 var debug = require('debug')('puddle:editor:menuRenderer');
 var _ = require('lodash');
 var $ = require('jquery');
-var io = require('socket.io-client');
-var assert = require('../assert');
-var keycode = require('../keycode');
+var keypress = require('../../lib/keypress').keypress;
+var keyListener = new keypress.Listener();
 var trace = require('../trace')(debug);
-var socket = io();
+
 var renderTerm = require('../render-term.js');
-var syntax = require('../puddle-syntax-0.1.2/index.js');
-var symbols = syntax.compiler.symbols;
-var VAR = symbols.VAR;
+var VAR = require('puddle-syntax').compiler.fragments.church.VAR;
 
 
 module.exports = function (menu, editor) {
-    /** @constructor */
-    var KeyEvent = function (which, modifiers) {
-        if (modifiers === undefined) {
-            modifiers = {};
-        }
-        this.state = [
-            which,
-                modifiers.shift || false,
-                modifiers.ctrl || false,
-                modifiers.alt || false,
-                modifiers.meta || false
-        ];
-    };
-
-    KeyEvent.prototype = {
-        match: function (event) {
-            var state = this.state;
-            return (
-                state[0] === event.which &&
-                state[1] === event.shiftKey &&
-                state[2] === event.ctrlKey &&
-                state[3] === event.altKey &&
-                state[4] === event.metaKey
-                );
-        }
-    };
-
-    var cases = (function () {
-        var cases = {};
-        for (var name in keycode) {
-            var which = keycode[name];
-            cases[name] = new KeyEvent(which);
-            cases['shift+' + name] = new KeyEvent(which, {'shift': true});
-            cases['ctrl+' + name] = new KeyEvent(which, {'ctrl': true});
-        }
-
-        _.forEach('ABCDEFGHIJKLMNOPQRSTUVWXYZ', function (name) {
-            cases[name] = cases['shift+' + name.toLowerCase()];
-        });
-
-        var aliases = {
-            ' ': 'space',
-            '{': 'shift+openbracket',
-            '\\': 'backslash',
-            '/': 'slash',
-            '|': 'shift+backslash',
-            '=': 'equal',
-            '+': 'shift+equal',
-            '<': 'shift+comma',
-            '>': 'shift+period',
-            '_': 'shift+dash',
-            '.': 'period',
-            '(': 'shift+9',
-            ')': 'shift+0',
-            '?': 'shift+slash'
-        };
-        _.each(aliases, function (alias, actual) {
-            cases[actual] = cases[alias];
-        });
-
-        return cases;
-    })();
-
-    var icons = {};
-    _.each(cases, function (unused, name) {
-        var escaped = name.replace(/\b\+\b/g, '</span>+<span>');
-        icons[name] = $('<th>').html('<span>' + escaped + '</span>');
-    });
-
 //--------------------------------------------------------------------------
 // Event Handling
 
-    var events = [];
-    var callbacks = [];
     var search = function (acceptMatch) {
         trace('Search init');
         var strings = [];
@@ -170,11 +96,27 @@ module.exports = function (menu, editor) {
             update();
         };
     };
-
+    var upperCaseAliases = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ?><\":{}|~+_!@#$%^&*()';
     var on = function (name, callback, description) {
         trace('on');
-        assert(_.has(cases, name));
-        events.push(cases[name]);
+        var listenKey;
+        if (_.contains(upperCaseAliases, name)) {
+            listenKey = 'shift ' + name.toLowerCase();
+        } else {
+            listenKey = name.replace(/\+/g, ' ');
+        }
+
+        //Ignore because of non_camel_case code.
+        /* jshint ignore:start */
+        keyListener.register_combo({
+            'keys': listenKey,
+            'on_keydown': function () {
+                callback();
+            },
+            is_solitary: true
+        });
+        /* jshint ignore:end */
+
 
         //TODO this is a hack to add UI wrapper for some functions
         //which require special input parameters or extra UI
@@ -185,24 +127,24 @@ module.exports = function (menu, editor) {
             callback = search(callback);
         }
 
-        var loggedCallback = function () {
-            socket.emit('action', name);
-            callback();
-        };
-        callbacks.push(loggedCallback);
+
         if (description !== undefined) {
+            if (_.isArray(description)) {
+                description = renderTerm(description);
+            }
+            var escaped = name.replace(/\b\+\b/g, '</span>+<span>');
+            var icon = $('<th>').html('<span>' + escaped + '</span>');
             $('#navigate table').append(
                 $('<tr>')
-                    .on('click', loggedCallback)
-                    .append(icons[name], $('<td>')
+                    .on('click', callback)
+                    .append(icon, $('<td>')
                         .html(description)));
         }
     };
 
     var off = function () {
         trace('off');
-        events = [];
-        callbacks = [];
+        keyListener.reset();
         $('#navigate').empty().append($('<table>'));
     };
 
@@ -213,19 +155,6 @@ module.exports = function (menu, editor) {
             on(action[0], action[1], action[2]);
         });
     };
-
-    //Hook events dispatcher to keydown event
-    $(window).off('keydown').on('keydown', function (event) {
-        for (var i = 0; i < events.length; ++i) {
-            if (events[i].match(event)) {
-                event.preventDefault();
-                trace('matched', event.which);
-                callbacks[i]();
-                return;
-            }
-        }
-        trace('unmatched ', event.which);
-    });
 
     var reRender = function () {
         render(menu.getActions());

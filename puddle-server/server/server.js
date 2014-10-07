@@ -88,6 +88,14 @@ http.listen(PORT, FROM_LOCALHOST, function () {
     console.log('serving puddle at http://localhost:' + PORT);
 });
 
+io.on('connection', function (socket) {
+    console.log('a user connected');
+    socket.on('action', function (action) {
+        debug('Action', action);
+    });
+
+});
+
 
 
 

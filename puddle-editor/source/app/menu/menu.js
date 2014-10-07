@@ -1,65 +1,66 @@
 'use strict';
 
 var _ = require('lodash');
-var $ = require('jquery');
 var assert = require('assert');
-var syntax = require('../puddle-syntax-0.1.2/index.js');
-var renderTerm = require('../render-term.js');
-
+var syntax = require('puddle-syntax');
+var io = require('socket.io-client');
+var socket = io();
 var debug = require('debug')('puddle:editor:menu');
 var trace = require('../trace')(debug);
 var EventEmitter = require('events').EventEmitter;
 var emitter = new EventEmitter();
 
-var symbols = syntax.compiler.symbols;
+var fragments = syntax.compiler.fragments.church;
 
-var HOLE = symbols.HOLE;
-var TOP = symbols.TOP;
-var BOT = symbols.BOT;
-var VAR = symbols.VAR;
-var LAMBDA = symbols.LAMBDA;
-var LETREC = symbols.LETREC;
-var APP = symbols.APP;
-var JOIN = symbols.JOIN;
-var RAND = symbols.RAND;
-var QUOTE = symbols.QUOTE;
-var EQUAL = symbols.EQUAL;
-var LESS = symbols.LESS;
-var NLESS = symbols.NLESS;
-var ASSERT = symbols.ASSERT;
-var DEFINE = symbols.DEFINE;
-var CURSOR = symbols.CURSOR;
+var HOLE = fragments.HOLE;
+var TOP = fragments.TOP;
+var BOT = fragments.BOT;
+var VAR = fragments.VAR;
+var LAMBDA = fragments.LAMBDA;
+var LETREC = fragments.LETREC;
+var APP = fragments.APP;
+var JOIN = fragments.JOIN;
+var RAND = fragments.RAND;
+var QUOTE = fragments.QUOTE;
+var EQUAL = fragments.EQUAL;
+var LESS = fragments.LESS;
+var NLESS = fragments.NLESS;
+var ASSERT = fragments.ASSERT;
+var DEFINE = fragments.DEFINE;
+var CURSOR = fragments.CURSOR;
 var DASH = VAR('&mdash;');
 
-var generic;
 
 module.exports = function (editor) {
     trace('Menu init');
     var actions = editor.getActions();
-
-    var render = function (term) {
-        trace('render');
-        return $('<pre>').html(renderTerm(term));
+    var socketLogWrapper = function (actions) {
+        return actions.map(function (action) {
+            var name = action[0];
+            var callback = function () {
+                socket.emit('action', action[0]);
+                action[1].apply(this, _.toArray(arguments));
+            };
+            var description = action[2];
+            return [name, callback, description];
+        });
     };
 
-    var initGeneric = function () {
-        generic = [
-            ['enter', actions.commitLine, 'commit line'],
-            ['tab', actions.revertLine, 'revert line'],
-            ['up', actions.moveUp, 'move up'],
-            ['down', actions.moveDown, 'move down'],
-            ['left', actions.moveLeft, 'move left'],
-            ['right', actions.moveRight, 'move right'],
-            ['shift+left', actions.widenSelection, 'widen selection'],
-            ['shift+right', actions.widenSelection, 'widen selection']
-        ];
-        generic.push(
-            ['A', actions.insertAssert,
-                render(ASSERT(CURSOR(HOLE)))]);
-        generic.push(
-            ['D', actions.insertDefine,
-                render(DEFINE(CURSOR(VAR('...')), HOLE))]);
-    };
+
+    var generic = [
+        ['enter', actions.commitLine, 'commit line'],
+        ['tab', actions.revertLine, 'revert line'],
+        ['up', actions.moveUp, 'move up'],
+        ['down', actions.moveDown, 'move down'],
+        ['left', actions.moveLeft, 'move left'],
+        ['right', actions.moveRight, 'move right'],
+        ['shift+left', actions.widenSelection, 'widen selection'],
+        ['shift+right', actions.widenSelection, 'widen selection'],
+        ['A', actions.insertAssert,
+            ASSERT(CURSOR(HOLE))],
+        ['D', actions.insertDefine,
+            DEFINE(CURSOR(VAR('...')), HOLE)]
+    ];
 
     var getActions = function () {
         trace('getActions');
@@ -70,7 +71,7 @@ module.exports = function (editor) {
                 function () {
                     actions.replaceBelow(term, subsForDash);
                 },
-                render(term)
+                term
             ]);
         };
         var term = editor.getCursor().below[0];
@@ -134,16 +135,13 @@ module.exports = function (editor) {
             on('<', LESS(DASH, CURSOR(HOLE)), dumped);
             on('>', NLESS(DASH, CURSOR(HOLE)), dumped);
         }
-        return generic.concat(actionsArray);
+        return socketLogWrapper(generic.concat(actionsArray));
     };
 
-    var build = function () {
+    editor.on('update', function () {
         trace('build');
         emitter.emit('update', getActions());
-    };
-
-    initGeneric();
-    editor.on('update', build);
+    });
 
     return {
         on: _.bind(emitter.on, emitter),
