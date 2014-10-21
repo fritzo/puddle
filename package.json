@@ -4,10 +4,7 @@
   "description": "A responsive editor built on Pomagma",
   "main": "",
   "scripts": {
-    "test": "cd $MODULE; npm install; npm test;",
-    "start": "cd puddle-server; npm start",
-    "develop-server": "cd puddle-server; DEBUG='puddle:*' npm run develop",
-    "develop-editor": "cd puddle-editor; npm run develop"
+    "test": "cd $MODULE; npm install; npm test;"
   },
   "repository": {
     "type": "git",

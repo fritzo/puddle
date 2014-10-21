@@ -21,6 +21,14 @@ module.exports = {
         };
     })(),
     dumpStatement : function (statement) {
+        //TODO this is an API difference hot-fix
+        //syntax.compiler.dumpLine should give output compatible
+        //with analyst and server-syntax?
+        delete statement.token;
+        if (!statement.name) {
+            statement.name = null;
+        }
+
         if (statement.name === null) {
             return 'ASSERT ' + statement.code;
         } else {

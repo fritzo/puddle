@@ -1,20 +1,23 @@
 /**
  * Corpus of lines of code.
- *
- * FIXME this is all concurrency-unsafe; client assumes it is the only writer.
  */
 'use strict';
 
 var _ = require('lodash');
 var uuid = require('node-uuid');
-var tokens = require('puddle-syntax').tokens;
+var syntax = require('puddle-syntax');
+var tokens = syntax.tokens;
 var assert = require('./assert');
 var debug = require('debug')('puddle:editor:corpus');
-var puddleSocket = global.puddleSocket;
+var io = require('socket.io-client');
+var puddleSocket = require('puddle-socket').client(io);
+var EventEmitter = require('events').EventEmitter;
+var emitter = new EventEmitter();
 var trace = require('./trace')(debug);
+var $ = require('jquery');
 var serverSyntax = require('./server-syntax');
-
-
+trace('corpus init');
+var checkedOut = {};
 //--------------------------------------------------------------------------
 // client state
 
@@ -24,269 +27,356 @@ var serverSyntax = require('./server-syntax');
     'name': 'div',      // or null for anonymous lines
     'code': 'APP V K',  // compiled code
     'free': {}          // set of free variables in line : string -> null
+    'validity': {is_top: null, is_bot: null, pending: true} //default value
 };
  */
 
+
 //--------------------------------------------------------------------------
-// change propagation
+var corpus = {};
 
+// These maps fail with names like 'constructor';
+// as a hack we require a '.' in all names in corpus.
+var lines = corpus.lines = {};  // id -> line
+var definitions = {};  // name -> id
+var occurrences = {};  // name -> (set id)
 
-var sync = {
-    create: function (line) {
-        trace('Sync Create', arguments);
-        puddleSocket.create(line.id, serverSyntax.dumpStatement(line),'editor');
-    },
-    remove: function (line) {
-        trace('Sync Remove', arguments);
-        puddleSocket.remove(line.id,'editor');
-    },
-    update: function (line) {
-        trace('Sync Update', arguments);
-        puddleSocket.update(line.id, serverSyntax.dumpStatement(line),'editor');
+var insertDefinition = function (name, id) {
+    assert(tokens.isGlobal(name));
+    assert(definitions[name] === undefined);
+    assert(occurrences[name] === undefined);
+    definitions[name] = id;
+    occurrences[name] = {};
+};
+
+var removeDefinition = function (name) {
+    assert(definitions[name] !== undefined);
+    assert(occurrences[name] !== undefined);
+    assert(_.isEmpty(occurrences[name]));
+    delete definitions[name];
+    delete occurrences[name];
+};
+
+var insertOccurrence = function (name, id) {
+    var occurrencesName = occurrences[name];
+    assert(occurrencesName !== undefined);
+    assert(occurrencesName[id] === undefined);
+    occurrences[name][id] = null;
+};
+
+var removeOccurrence = function (name, id) {
+    var occurrencesName = occurrences[name];
+    assert(occurrencesName !== undefined);
+    assert(occurrencesName[id] !== undefined);
+    delete occurrencesName[id];
+};
+
+var createLine = function (line) {
+    trace('insertLine', arguments);
+    var id = line.id;
+    /* jshint camelcase: false */
+    line.validity = {is_top: null, is_bot: null, pending: true};
+    /* jshint camelcase: true */
+    assert(!_.has(lines, id));
+    lines[id] = line;
+    if (line.name !== null) {
+        insertDefinition(line.name, id);
     }
+    line.free = tokens.getFreeVariables(line.code);
+    for (var name in line.free) {
+        insertOccurrence(name, id);
+    }
+    pollValidities();
+    emitter.emit('create', line);
+};
+
+var removeLine = function (id) {
+    trace('remove', arguments);
+    assert(_.has(lines, id));
+    var line = lines[id];
+    delete lines[id];
+    for (var name in line.free) {
+        removeOccurrence(name, id);
+    }
+    if (line.name !== null) {
+        removeDefinition(line.name);
+    }
+    pollValidities();
+    emitter.emit('remove', id);
+};
+
+var updateLine = function (newline) {
+    trace('update', arguments);
+    var name;
+    var id = newline.id;
+    assert(id !== undefined, 'expected .id field in updated line');
+    var line = lines[id];
+    for (name in line.free) {
+        removeOccurrence(name, id);
+    }
+    line.code = newline.code;
+    line.free = tokens.getFreeVariables(line.code);
+    for (name in line.free) {
+        insertOccurrence(name, id);
+    }
+    pollValidities();
+    emitter.emit('update', line);
 };
 
 
-//--------------------------------------------------------------------------
-// interface
+puddleSocket.on('create', function (id, code) {
+    trace('Hub incoming create');
+    var line = serverSyntax.loadStatement(code);
+    line.id = id;
+    createLine(line);
+}, 'corpus');
 
-module.exports = (function () {
-    trace('State init', arguments);
-    var state = {};
+puddleSocket.on('remove', function (id) {
+    trace('Hub incoming remove');
+    removeLine(id);
+}, 'corpus');
 
-    // These maps fail with names like 'constructor';
-    // as a hack we require a '.' in all names in corpus.
-    var lines = state.lines = {};  // id -> line
-    var definitions = state.definitions = {};  // name -> id
-    var occurrences = state.occurrences = {};  // name -> (set id)
+puddleSocket.on('update', function (id, code) {
+    trace('Hub incoming update');
+    var line = serverSyntax.loadStatement(code);
+    line.id = id;
+    updateLine(line);
+}, 'corpus');
 
-    state.canDefine = function (name) {
-        return tokens.isGlobal(name) && definitions[name] === undefined;
-    };
 
-    var insertDefinition = function (name, id) {
-        trace('insertDefinition', arguments);
-        assert(tokens.isGlobal(name));
-        assert(definitions[name] === undefined);
-        assert(occurrences[name] === undefined);
-        definitions[name] = id;
-        occurrences[name] = {};
-    };
+puddleSocket.on('reset', function (codes) {
+    trace('Hub reset');
 
-    var insertOccurrence = function (name, id) {
-        trace('insertOccurrence', arguments);
-        var occurrencesName = occurrences[name];
-        assert(occurrencesName !== undefined);
-        assert(occurrencesName[id] === undefined);
-        occurrences[name][id] = null;
-    };
+    lines = corpus.lines = {};
+    definitions = {};
+    occurrences = {};
 
-    var removeOccurrence = function (name, id) {
-        trace('removeOccurrence', arguments);
-        var occurrencesName = occurrences[name];
-        assert(occurrencesName !== undefined);
-        assert(occurrencesName[id] !== undefined);
-        delete occurrencesName[id];
-    };
-
-    var removeDefinition = function (name) {
-        trace('removeDefinition', arguments);
-        assert(definitions[name] !== undefined);
-        assert(occurrences[name] !== undefined);
-        assert(_.isEmpty(occurrences[name]));
-        delete definitions[name];
-        delete occurrences[name];
-    };
-
-    var insertLine = function (line) {
-        trace('insertLine', arguments);
-        var id = line.id;
-        assert(!_.has(lines, id));
+    _.each(codes, function (code, id) {
+        var line = serverSyntax.loadStatement(code);
+        line.id = id;
         lines[id] = line;
+    });
+
+    //insert all defenitions
+    _.each(lines, function (line, id) {
         if (line.name !== null) {
             insertDefinition(line.name, id);
         }
+    });
+
+    //insert all occurences of these defenitions
+    _.each(lines, function (line, id) {
         line.free = tokens.getFreeVariables(line.code);
         for (var name in line.free) {
             insertOccurrence(name, id);
         }
-    };
+    });
+    emitter.emit('reset', lines);
+    validate();
+    pollValidities();
+});
 
-    var removeLine = function (line) {
-        trace('removeLine', arguments);
-        var id = line.id;
-        assert(_.has(lines, id));
-        delete lines[id];
-        for (var name in line.free) {
-            removeOccurrence(name, id);
+
+var validate = function () {
+    trace('validating corpus', arguments);
+    for (var id in lines) {
+        var line = lines[id];
+        var name = line.name;
+        if (name !== null) {
+            assert(
+                tokens.isGlobal(name),
+                    'name is not global: ' + name);
+            assert(
+                !tokens.isKeyword(name),
+                    'name is keyword: ' + name);
+            assert(
+                    definitions[name] === line.id,
+                    'missing definition: ' + name);
         }
-        if (line.name !== null) {
-            removeDefinition(line.name);
+        var free = tokens.getFreeVariables(line.code);
+        assert.equal(line.free, free, 'wrong free variables:');
+        for (name in free) {
+            assert(
+                tokens.isGlobal(name),
+                    'name is not global: ' + name);
+            var occurrencesName = occurrences[name];
+            assert(
+                    occurrencesName !== undefined,
+                    'missing occurrences: ' + name);
+            assert(
+                    occurrencesName[id] === null,
+                    'missing occurrence: ' + name);
         }
-    };
+    }
+};
 
-    state.ready = (function () {
-        trace('State ready', arguments);
-        var isReady = false;
-        var readyQueue = [];
-        var ready = function (cb) {
-            if (isReady) {
-                setTimeout(cb, 0);
-            } else {
-                readyQueue.push(cb);
-            }
-        };
-        ready.set = function () {
-            trace('State ready set', arguments);
-            isReady = true;
-            while (readyQueue.length) {
-                setTimeout(readyQueue.pop(), 0);
-            }
-        };
-        return ready;
-    }());
+var pollValidities = (function () {
+    var delay = 500;
+    var delayFail = 15000;
+    var polling = false;
 
-    state.loadAll = function (linesToLoad) {
-        trace('State loadAll', arguments);
-        lines = state.lines = {};
-        definitions = state.definitions = {};
-        occurrences = state.occurrences = {};
-        linesToLoad.forEach(function (line) {
-            var id = line.id;
-            lines[id] = line;
-            if (line.name !== null) {
-                insertDefinition(line.name, id);
-            }
+    var poll = function () {
+        polling = true;
+        debug('...polling...');
+        var ids = [];
+        var linesForAnalyst = _.map(lines, function (line, id) {
+            ids.push(id);
+            //TODO why line.name is undefined after syntax.compiler.dumpLine?
+            //Should not dumpLine be compatible with analyst?
+            return {name: line.name || null, code: line.code};
         });
-        linesToLoad.forEach(function (line) {
-            var id = line.id;
-            line.free = tokens.getFreeVariables(line.code);
-            for (var name in line.free) {
-                insertOccurrence(name, id);
-            }
-        });
-        state.ready.set();
+        $.ajax({
+            url: '/analyst/validities',
+            cache: false,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(linesForAnalyst)
+        })
+            /*jslint unparam: true*/
+            .fail(function (jqXHR, textStatus) {
+                debug('pollValidities failed: ' + textStatus);
+                setTimeout(poll, delayFail);
+            })
+            /*jslint unparam: false*/
+            .done(function (validities) {
+                var updated = [];
+                polling = false;
+                debug('...validities received');
+
+                validities.forEach(function (validity, index) {
+                    var line = lines[ids[index]];
+                    if (!_.isEqual(line.validity, validity)) {
+                        line.validity = validity;
+                        updated.push(line);
+                    }
+                });
+
+                if (updated.length) {
+                    emitter.emit('updateValidity', updated);
+                }
+                if (_.find(validities, 'pending')) {
+                    polling = true;
+                    setTimeout(poll, delay);
+                }
+
+            });
     };
-
-    state.insert = function (line, done) {
-        trace('State insert', arguments);
-        line.id = uuid();
-        sync.create(line);
-        insertLine(line);
-        done(line);
-    };
-
-    state.update = function (newline) {
-        trace('State update', arguments);
-        var name;
-        var id = newline.id;
-        assert(id !== undefined, 'expected .id field in updated line');
-        var line = lines[id];
-        assert(line !== undefined, 'bad id: ' + id);
-        for (name in line.free) {
-            removeOccurrence(name, id);
-        }
-        line.code = newline.code;
-        line.free = tokens.getFreeVariables(line.code);
-        for (name in line.free) {
-            insertOccurrence(name, id);
-        }
-        sync.update(line);
-        return line;
-    };
-
-    state.remove = function (id) {
-        trace('remove', arguments);
-        assert(_.has(lines, id));
-        var line = lines[id];
-        removeLine(line);
-        sync.remove(line);
-    };
-
-    state.validate = function () {
-        trace('validating corpus', arguments);
-        for (var id in lines) {
-            var line = lines[id];
-            var name = line.name;
-            if (name !== null) {
-                assert(
-                    tokens.isGlobal(name),
-                        'name is not global: ' + name);
-                assert(
-                    !tokens.isKeyword(name),
-                        'name is keyword: ' + name);
-                assert(
-                        definitions[name] === line.id,
-                        'missing definition: ' + name);
-            }
-            var free = tokens.getFreeVariables(line.code);
-            assert.equal(line.free, free, 'wrong free variables:');
-            for (name in free) {
-                assert(
-                    tokens.isGlobal(name),
-                        'name is not global: ' + name);
-                var occurrencesName = occurrences[name];
-                assert(
-                        occurrencesName !== undefined,
-                        'missing occurrences: ' + name);
-                assert(
-                        occurrencesName[id] === null,
-                        'missing occurrence: ' + name);
-            }
-        }
-        trace('corpus is valid', arguments);
-    };
-
-
-    state.findLine = function (id) {
-        trace('findLine', arguments);
-        var line = lines[id];
-        return {
-            name: line.name,
-            code: line.code,
-            free: _.extend({}, line.free)
-        };
-    };
-
-    state.findAllLines = function () {
-        trace('findAllLines', arguments);
-        return _.keys(lines);
-    };
-
-    state.findAllNames = function () {
-        trace('findAllNames', arguments);
-        var result = [];
-        for (var id in lines) {
-            var name = lines[id].name;
-            if (name) {
-                result.push(name);
-            }
-        }
-        return result;
-    };
-
-    state.findDefinition = function (name) {
-        trace('findDefinition', arguments);
-        var id = definitions[name];
-        if (id !== undefined) {
-            return id;
+    return function () {
+        trace('PollingValidities...');
+        if (!polling) {
+            poll();
         } else {
-            return null;
+            debug('...skip polling');
         }
     };
-
-    state.findOccurrences = function (name) {
-        trace('findOccurrences', arguments);
-        assert(_.has(definitions, name));
-        return _.keys(occurrences[name]);
-    };
-
-    state.hasOccurrences = function (name) {
-        trace('hasOccurrences', arguments);
-        assert(_.has(definitions, name));
-        return !_.isEmpty(occurrences[name]);
-    };
-
-    state.DEBUG_LINES = lines;
-    return state;
 })();
+
+// API
+
+corpus.create = function (line) {
+    line.id = uuid();
+    createLine(line);
+    puddleSocket.create(line.id, serverSyntax.dumpStatement(line), 'corpus');
+    return line;
+};
+
+corpus.remove = function (id) {
+    removeLine(id);
+    puddleSocket.remove(id, 'corpus');
+};
+
+//not exposed as API, called by corpus.checkIn
+var update = function (line) {
+    updateLine(line);
+    puddleSocket.update(line.id, serverSyntax.dumpStatement(line), 'corpus');
+    return line;
+};
+
+corpus.id = function (id) {
+    return lines[id];
+};
+
+corpus.findAllLines = function () {
+    trace('findAllLines', arguments);
+    return _.keys(lines);
+};
+corpus.findDefinition = function (name) {
+    trace('findDefinition', arguments);
+    var id = definitions[name];
+    if (id !== undefined) {
+        return id;
+    } else {
+        return null;
+    }
+};
+corpus.canDefine = function (name) {
+    return syntax.tokens.isGlobal(name) &&
+        definitions[name] === undefined;
+};
+corpus.getDefinitions = function () {
+    return definitions;
+};
+
+corpus.findOccurrences = function (name) {
+    trace('findOccurrences', arguments);
+    assert(_.has(definitions, name));
+    return _.keys(occurrences[name]);
+};
+
+corpus.hasOccurrences = function (name) {
+    trace('hasOccurrences', arguments);
+    assert(_.has(definitions, name));
+    return !_.isEmpty(occurrences[name]);
+};
+
+corpus.insertDefine = function (varName) {
+    var VAR = syntax.compiler.fragments.church.VAR;
+    var HOLE = syntax.compiler.fragments.church.HOLE;
+    var DEFINE = syntax.compiler.fragments.church.DEFINE;
+    var churchTerm = DEFINE(VAR(varName), HOLE);
+    var line = syntax.compiler.dumpLine(churchTerm);
+    return corpus.create(line);
+};
+
+corpus.insertAssert = function () {
+    var HOLE = syntax.compiler.fragments.church.HOLE;
+    var ASSERT = syntax.compiler.fragments.church.ASSERT;
+    var churchTerm = ASSERT(HOLE);
+    var line = syntax.compiler.dumpLine(churchTerm);
+    line.name = null;
+    return corpus.create(line);
+};
+
+corpus.checkOut = function (tree) {
+    trace('checkout');
+    var id = tree.id;
+    assert(id);
+    assert(!checkedOut[id]);
+    checkedOut[id] = syntax.compiler.dumpLine(syntax.tree.dump(tree));
+};
+
+//used when there was no change to the line
+corpus.unCheckOut = function (tree) {
+    trace('unCheckOut');
+    var id = tree.id;
+    assert(id);
+    assert(checkedOut[id]);
+    delete checkedOut[id];
+};
+
+corpus.checkIn = function (updatedTree) {
+    trace('checkin');
+    var id = updatedTree.id;
+    var oldLine = checkedOut[id];
+    assert(oldLine);
+    var newLine = syntax.compiler.dumpLine(syntax.tree.dump(updatedTree));
+    if (!_.isEqual(oldLine, newLine)) {
+        newLine.id = id;
+        update(newLine);
+    }
+    delete checkedOut[id];
+};
+
+corpus.on = _.bind(emitter.on, emitter);
+
+module.exports = corpus;

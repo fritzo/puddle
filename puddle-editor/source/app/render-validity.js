@@ -23,10 +23,11 @@ var table = {
     'false-null-false': svg('yellow', 'delta'),
     'null-null-true': svg('gray', 'square'),
     'null-false-true': svg('gray', 'nabla'),
-    'false-null-true': svg('gray', 'delta'),
+    'false-null-true': svg('gray', 'delta')
 };
 
 module.exports = function (validity) {
+    validity = validity || {is_top: null, is_bot: null, pending: true};
     return table[
         validity.is_top + '-' + validity.is_bot + '-' + validity.pending
         ];
