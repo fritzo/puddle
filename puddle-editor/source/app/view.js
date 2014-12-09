@@ -57,7 +57,7 @@ var render = function () {
 var renderValidities = function (updatedLines) {
     updatedLines.forEach(function (line) {
         var $validity = $('#line' + line.id + ' .validity');
-        $validity.html(renderValidity(line.validity));
+        $validity.replaceWith(renderValidity(line.validity));
     });
 };
 
