@@ -34,7 +34,7 @@
     "jquery": "^2.1.1",
     "lodash": "^2.4.1",
     "node-uuid": "^1.4.1",
-    "puddle-socket": "0.0.1",
+    "puddle-socket": "0.0.2",
     "puddle-syntax": "^0.1.9",
     "socket.io-client": "^1.1.0"
   },
