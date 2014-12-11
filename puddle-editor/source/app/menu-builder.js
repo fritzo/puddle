@@ -88,7 +88,7 @@ var getActions = function () {
     trace('getActions');
     var node = cursor.node;
     var actionsArray = [];
-    var on = function (name, term, cursorAddress, subsForDash) {
+    var on = function (name, term, subsForDash) {
         actionsArray.push([
             name,
             function () {
@@ -97,19 +97,10 @@ var getActions = function () {
                         '&mdash;',
                         subsForDash, term);
                 }
-                var newNode = syntax.tree.load(term);
-
-                //TODO reconsider cursor rendering
-                //so that we do not have to remove it here
-                if (cursorAddress) {
-                    var cursorNode = cursor.getRelative(cursorAddress, newNode);
-                    assert(cursorNode.name === 'CURSOR');
-                    syntax.cursor.remove(cursorNode);
-                }
-                cursor.replaceBelow(newNode);
-
-                if (cursorAddress) {
-                    cursor.moveTo(cursor.getRelative(cursorAddress));
+                var decomposed = syntax.cursorTerm.removeCursor(term);
+                cursor.replaceBelow(syntax.tree.load(decomposed.term));
+                if (decomposed.address) {
+                    cursor.moveTo(cursor.getRelative(decomposed.address));
                 }
             },
             term
@@ -130,17 +121,17 @@ var getActions = function () {
         on('T', TOP);
         on('_', BOT);
 
-        on('\\', LAMBDA(fresh, CURSOR(HOLE)), [1]);
-        on('W', LETREC(fresh, CURSOR(HOLE), HOLE), [1]);
-        on('L', LETREC(fresh, HOLE, CURSOR(HOLE)), [2]);
-        on('space', APP(HOLE, CURSOR(HOLE)), [1]);
-        on('(', APP(CURSOR(HOLE), HOLE), [0]);
-        on('|', JOIN(CURSOR(HOLE), HOLE), [0]);
-        on('+', RAND(CURSOR(HOLE), HOLE), [0]);
-        on('{', QUOTE(CURSOR(HOLE)), [0]);
-        on('=', EQUAL(CURSOR(HOLE), HOLE), [0]);
-        on('<', LESS(CURSOR(HOLE), HOLE), [0]);
-        on('>', NLESS(CURSOR(HOLE), HOLE), [0]);
+        on('\\', LAMBDA(fresh, CURSOR(HOLE)));
+        on('W', LETREC(fresh, CURSOR(HOLE), HOLE));
+        on('L', LETREC(fresh, HOLE, CURSOR(HOLE)));
+        on('space', APP(HOLE, CURSOR(HOLE)));
+        on('(', APP(CURSOR(HOLE), HOLE));
+        on('|', JOIN(CURSOR(HOLE), HOLE));
+        on('+', RAND(CURSOR(HOLE), HOLE));
+        on('{', QUOTE(CURSOR(HOLE)));
+        on('=', EQUAL(CURSOR(HOLE), HOLE));
+        on('<', LESS(CURSOR(HOLE), HOLE));
+        on('>', NLESS(CURSOR(HOLE), HOLE));
 
         // TODO filter globals and locals by future validity
         actionsArray.push([
@@ -165,17 +156,17 @@ var getActions = function () {
         // TODO define context-specific deletions
         on('X', HOLE);
 
-        on('\\', LAMBDA(fresh, CURSOR(DASH)), [1], dumped);
-        on('W', LETREC(fresh, CURSOR(HOLE), DASH), [1], dumped);
-        on('L', LETREC(fresh, DASH, CURSOR(HOLE)), [2], dumped);
-        on('space', APP(DASH, CURSOR(HOLE)), [1], dumped);
-        on('(', APP(CURSOR(HOLE), DASH), [0], dumped);
-        on('|', JOIN(DASH, CURSOR(HOLE)), [1], dumped);
-        on('+', RAND(DASH, CURSOR(HOLE)), [1], dumped);
-        on('{', QUOTE(CURSOR(DASH)), [0], dumped);
-        on('=', EQUAL(DASH, CURSOR(HOLE)), [1], dumped);
-        on('<', LESS(DASH, CURSOR(HOLE)), [1], dumped);
-        on('>', NLESS(DASH, CURSOR(HOLE)), [1], dumped);
+        on('\\', LAMBDA(fresh, CURSOR(DASH)), dumped);
+        on('W', LETREC(fresh, CURSOR(HOLE), DASH), dumped);
+        on('L', LETREC(fresh, DASH, CURSOR(HOLE)), dumped);
+        on('space', APP(DASH, CURSOR(HOLE)), dumped);
+        on('(', APP(CURSOR(HOLE), DASH), dumped);
+        on('|', JOIN(DASH, CURSOR(HOLE)),  dumped);
+        on('+', RAND(DASH, CURSOR(HOLE)), dumped);
+        on('{', QUOTE(CURSOR(DASH)), dumped);
+        on('=', EQUAL(DASH, CURSOR(HOLE)), dumped);
+        on('<', LESS(DASH, CURSOR(HOLE)), dumped);
+        on('>', NLESS(DASH, CURSOR(HOLE)), dumped);
     }
     return socketLogWrapper(generic.concat(actionsArray));
 };

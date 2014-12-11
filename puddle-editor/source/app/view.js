@@ -14,16 +14,10 @@ trace('view init');
 
 var renderLine = function (tree) {
     var id = tree.id;
-    var term;
-    //TODO reconsider cursor rendering
-    //injecting old style cursor if it is in the same tree
+    var term  = syntax.tree.dump(tree);
+    //inject CURSOR in term if necessary.
     if (cursor.tree() === tree) {
-        var tempCursor = syntax.cursor.create();
-        syntax.cursor.insertAbove(tempCursor, cursor.node);
-        term = syntax.tree.dump(syntax.tree.getRoot(tree));
-        syntax.cursor.remove(tempCursor);
-    } else {
-        term = syntax.tree.dump(tree);
+        term = syntax.cursorTerm.insertCursor(term, cursor.getAddressInTree());
     }
 
     var line = syntax.compiler.parenthesize(term);

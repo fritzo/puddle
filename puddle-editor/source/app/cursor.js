@@ -44,6 +44,19 @@ cursor.getRelative = function (route, node) {
     });
     return finish;
 };
+cursor.getAddressInTree = function () {
+    var tree = cursor.tree();
+    var current = cursor.node;
+    var last;
+    var address = [];
+    while (current !== tree) {
+        last = current;
+        current = current.above;
+        //note adding +1, this is because in TERM 0-th index is always string
+        address.unshift(current.below.indexOf(last) + 1);
+    }
+    return address;
+};
 
 cursor.replaceBelow = function (node) {
     var above = cursor.node.above;
