@@ -27,22 +27,33 @@ Please refer to the [./doc](./doc) for features, architecture, contributing, etc
 
 ## Quick Start
 
-Install:
- 
-    $ npm install
-Run:
- 
-    $ npm start
+###Install:
+
+    cd puddle-server
+    npm install
+    cd ..
+    cd puddle-editor
+    npm install
+
+###Run:
+   Two terminal windows:
+
+   One:
+
+    cd puddle-server
+    npm run develop            # Ctrl-C to stop
+
+   Two:
+
+    cd puddle-editor
+    npm run develop            # Ctrl-C to stop
 
 Then navigate to <http://localhost:34934/>
     
-## Develop mode:
-    
-    $ npm run develop-editor       # Ctrl-C to stop
-        
-In another terminal
+## Deploy mode:
 
-    $ npm run develop-server       # Ctrl-C to stop
+  Same as above but you can use `npm start` istead of `npm run develop`
+
 
 
 

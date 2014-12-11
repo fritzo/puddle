@@ -5,8 +5,8 @@ HTML app to be served by puddle-server
 
 ###Features:    
 
-    [ ] Working version of editor, navigator using same render as before
-    [ ] Built on top of puddle-hub
+    [X] Working version of editor, navigator using same render as before
+    [X] Built on top of puddle-hub
     
     
 ###Installation:

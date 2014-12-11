@@ -5,20 +5,18 @@
 * [Server socket.io API](#server-socketio)
 * [Client `TODO.js`](#todojs)
 * [Client `assert.js`](#assertjs)
-* [Client `log.js`](#logjs)
-* [Client `keycode.js`](#keycodejs)
-* [Client `test.js`](#testjs)
+* [Client `trace.js`](#tracejs)
 * [Client `corpus.js`](#corpusjs)
-* [Client `navigate.js`](#navigatejs)
+* [Client `forest.js`](#forestjs)
+* [Client `cursor.js`](#cursorjs)
 * [Client `view.js`](#viewjs)
-* [Client `menu.js`](#menujs)
-* [Client `editor.js`](#editorjs)
-* [Client `main.js`](#mainjs)
+* [Client `menu-builder.js`](#menubuilder)
+* [Client `menu-renderer.js`](#menurenderer)
 
 Related documentation:
 
-* [puddle-syntax](https://github.com/fritzo/puddle-syntax)
-* [pomagma client](https://github.com/fritzo/pomagma/blob/master/doc/client.md)
+* [puddle-syntax](https://github.com/pomagma/puddle-syntax)
+* [pomagma client](https://github.com/pomagma/blob/master/doc/client.md)
 
 ## Server
 
@@ -131,118 +129,73 @@ Related documentation:
     var assert = require('./assert');
     assert(condition, message);
     assert.equal(actual, expected);
-    assert.forward(fwd, listOfPairs);  // fwd(x) === y for each pair [x, y]
-    assert.backward(bwd, listOfPairs);  // x === bwd(y) for each pair [x, y]
-    assert.inverses(fwd, bwd, listOfPairs);  // fwd(x) === y && x === bwd(y)
 
-### `log.js` <a name="logjs"/>
+### `trace.js` <a name="tracejs"/>
 
-    var log = require('./log');
-    log('just like console.log, bug works in web workers');
+Convenience method for debugging.
+Allows to quikly show trace and arguments passed into function.
 
-### `keycode.js` <a name="keycodejs"/>
-
-Just a static dictionary of ascii key codes.
-
-    {
-        'backspace': 8,
-        'tab': 9,
-        'enter': 13,
-        'shift': 16,
-        ...
-    }
-
-### `test.js` <a name="testjs"/>
-
-Unit testing library.
-
-    var test = require('./test');
-
-    test('test title', callback);       // declares synchronous test
-    test.async('test title', callback); // declares async test
-    test.runAll();                      // run all unit tests
-
-    console.log(test.testing());        // prints whether tests are being run
-    console.log(test.hasRun());         // prints whether tests have finished
-    console.log(test.testCount());      // prints cumulative test count
-    console.log(test.failCount());      // prints cumulative failed test count
-
-Utilities for performing functions on trees.
-
-    var root = arborist.getRoot(indexed);
-    var varList = arborist.getBoundAbove(term);  // -> ['a', 'b']
-    var varSet = arborist.getVars(term);         // -> {'a': null, 'b': null}
-    var name = arborist.getFresh(term);          // -> 'c'
+    var debug = require('debug')('puddle:editor');
+    var trace = require('./trace')(debug);
+    
+    //Will output to console 'puddle:editor Hello'
+    //arguments converted to array.
+    //if third parameter is true will do console.trace() as well. 
+    //Second and third arguments are optional
+    trace('Hello', arguments, true)
+    
 
 ### `corpus.js` <a name="corpusjs"/>
+	
+    Uses puddle-socket to fetch data from server
+    Stores corpus as `lines` internally
+    Provides knowledge of defenitions/occurrences
+    Fetches validities, emits 'updateValidity' event.
+    Exposes CRUD API and emits CRUD events for corpus lines.
+    Handles checkin/checkout of lines (w/o real blocking on server yet)
+    Does not care about any other modules.
+	
 
-Editor's view of the server-side corpus.
-Each client stores an in-memory copy.
+### `forest.js` <a name="forestjs"/>
 
-    var corpus = require('./corpus');
-    corpus.ready(cb);       // calls cb after client loads corpus from server
-    corpus.validate();      // validates corpus, throws AssertError if invalid
-    var line = corpus.findLine(id);
-    var lines = corpus.findAllLines();
-    var names = corpus.findAllNames();
-    var id = corpus.findDefinition(name);
-    if (corpus.canDefine(name)) {
-        // we can create a new definition of name
-    }
-    var ids = corpus.findOccurrences(name);
-    if (corpus.hasOccurrences(name)) {
-        // we cannot delete the definition of name
-    }
-    corpus.insert(line, done, fail);
-    corpus.update(newLine);
-    corpus.remove(id);
+    Stores corpus as trees internally
+    Keeps trees sorted
+    Listens for CRUD events from Corpus and reemits them as trees
 
-### `navigate.js` <a name="navigatejs"/>
 
-    var navigate = require('./navagate');
-    navigate.on(name, callback, description);   // add callback
-    navigate.off();                             // clear callbacks
-    navigate.trigger(event);
+### `cursor.js` <a name="cursorjs"/>
+	
+    Stores/shares pointer to node in a Forest.
+    Does not affect nodes in any way.
+    Exposes various methods to move itself between nodes of Forest
+    Notifies corpus of check-ins, check-outs
+    Exposes .replaceBelow to alter trees.
+    Listens to Forest changes to avoid being in orphan nodes.
+    Emits `move` event.
 
-    // search for global variable
-    navigate.search(rankedStrings, acceptMatch, cancel, renderString);
-
-    // create new global variable name
-    navigate.choose(isValidFilter, acceptName, cancel);
 
 ### `view.js` <a name="viewjs"/>
 
-The view object is the pane on the left showing the corpus.
+    The view object is the pane on the left showing the corpus.
+    Renders corpus using trees from Forest
+    Listens for forest CRUD events.
+    Listens for cursor moves.
+    Listens for validities update.	
+    Uses DOM as internal state.
+    Does not have API   
 
-    var view = require('./view');
-    view.init({
-        getLine: ...,
-        getValidity: ...,
-        lines: ...
-    });
 
-    view.insertAfter(prevId, id);
-    view.update(id);
-    view.remove(id);
+### `menu-builder.js` <a name="menubuilder"/>
+ 
+    Aware of cursor position in a forest
+    Knows mapping of keys <=> UI actions
+    Builds UI action functions using Forest and Cursor API and module.exports them	 
+    Logs every user action to server via socket.io
+    Does not have internal state.
 
-### `menu.js` <a name="menujs"/>
 
-The menu object is the pane on the right.
-It rebuilds itself at every action.
-The menu is the sole form of input to puddle, by design.
+### `menu-renderer.js` <a name="menurenderer"/> 
 
-    var menu = require('./menu');
-    menu.init({
-        actions = {...},                // callbacks bound to actions
-        getCursor = function () {...}   // returns cursor
-    });
-
-### `editor.js` <a name="editorjs"/>
-
-    var editor = require('./editor');
-    editor.main();                      // start puddle editor
-
-### `main.js` <a name="mainjs"/>
-
-Main entry point, either starts unit tests or starts editor,
-depending on whether `location.hash === '#test'`.
+    Takes array of actions/keys from menu-builder and renders it into HTML with onKeyPress events.
+    Listens for Cursor 'move' event to rerender menu.
+    Does not have internal state or API

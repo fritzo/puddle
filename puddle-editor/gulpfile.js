@@ -40,7 +40,7 @@ gulp.task('copyHtml', function () {
 });
 
 gulp.task('browserify', function () {
-    return gulp.src('./source/app.js')
+    return gulp.src('./source/app/main.js')
         .pipe(browserify({
             exclude: ['mocha'],
             debug: true

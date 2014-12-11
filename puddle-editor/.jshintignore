@@ -1,4 +1,4 @@
 node_modules
 coverage
 build
-source/lib/puddle-syntax-0.1.2/node_modules
+source/lib
