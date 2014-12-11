@@ -10,6 +10,7 @@ var tokens = syntax.tokens;
 var assert = require('./assert');
 var debug = require('debug')('puddle:editor:corpus');
 var io = require('socket.io-client');
+var socket = io();
 var puddleSocket = require('puddle-socket').client(io);
 var EventEmitter = require('events').EventEmitter;
 var emitter = new EventEmitter();
@@ -350,6 +351,7 @@ corpus.insertAssert = function () {
 corpus.checkOut = function (tree) {
     trace('checkout');
     var id = tree.id;
+    socket.emit('checkOut', id);
     assert(id);
     assert(!checkedOut[id]);
     checkedOut[id] = syntax.compiler.dumpLine(syntax.tree.dump(tree));
@@ -359,6 +361,7 @@ corpus.checkOut = function (tree) {
 corpus.unCheckOut = function (tree) {
     trace('unCheckOut');
     var id = tree.id;
+    socket.emit('checkIn', id);
     assert(id);
     assert(checkedOut[id]);
     delete checkedOut[id];
@@ -367,6 +370,7 @@ corpus.unCheckOut = function (tree) {
 corpus.checkIn = function (updatedTree) {
     trace('checkin');
     var id = updatedTree.id;
+    socket.emit('checkIn', id);
     var oldLine = checkedOut[id];
     assert(oldLine);
     var newLine = syntax.compiler.dumpLine(syntax.tree.dump(updatedTree));

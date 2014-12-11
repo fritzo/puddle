@@ -6,15 +6,18 @@ var forest = require('./forest');
 var corpus = require('./corpus');
 var cursor = require('./cursor');
 var syntax = require('puddle-syntax');
+var io = require('socket.io-client');
+var socket = io();
 var renderTerm = require('./render-term.js');
 var renderValidity = require('./render-validity.js');
 var debug = require('debug')('puddle:editor:view');
 var trace = require('./trace')(debug);
 trace('view init');
+var checkInOutState = {};
 
 var renderLine = function (tree) {
     var id = tree.id;
-    var term  = syntax.tree.dump(tree);
+    var term = syntax.tree.dump(tree);
     //inject CURSOR in term if necessary.
     if (cursor.tree() === tree) {
         term = syntax.cursorTerm.insertCursor(term, cursor.getAddressInTree());
@@ -24,6 +27,16 @@ var renderLine = function (tree) {
     var $line = $('<pre>').attr('id', 'line' + id);
     var validityHtml = renderValidity(corpus.id(id).validity);
     $line.html(validityHtml + renderTerm(line));
+
+    //add marker if line is checked out.
+    if (checkInOutState[id]) {
+        $line = $line.prepend(
+            '<span class="checkInOutState" title="' + checkInOutState[id] +
+            '"><svg width="12" height="12">' +
+            '<circle cx="6" cy="6" r="6" fill="blue" />' +
+            '</svg></span>');
+    }
+
     $line.on('click', function () {
         cursor.moveTo(tree);
     });
@@ -90,7 +103,7 @@ var cursorMove = function (newNode, oldNode) {
 };
 
 //this is nice to see how long does rendering take
-var logger = function (event, cb) {
+var timeLogger = function (event, cb) {
     return function () {
         trace('Render ' + event + ' start...');
         cb.apply(this, _.toArray(arguments));
@@ -98,11 +111,29 @@ var logger = function (event, cb) {
     };
 };
 
-forest.on('create', logger('forest create', createLine));
-forest.on('remove', logger('forest remove', removeLine));
-forest.on('update', logger('forest update', updateLine));
-forest.on('reset', logger('forest reset', render));
+forest.on('create', timeLogger('forest create', createLine));
+forest.on('remove', timeLogger('forest remove', removeLine));
+forest.on('update', timeLogger('forest update', updateLine));
+forest.on('reset', timeLogger('forest reset', render));
 
-cursor.on('move', logger('cursor move', cursorMove));
+cursor.on('move', timeLogger('cursor move', cursorMove));
 
-corpus.on('updateValidity', logger('updateValidity', renderValidities));
+corpus.on('updateValidity', timeLogger('updateValidity', renderValidities));
+
+socket.on('checkInOutUpdate', timeLogger('checkInOutUpdate', function (state) {
+
+    var toBeUpdated = _.uniq(_.keys(checkInOutState).concat(_.values(state)));
+
+    //inverse hash from clientId=>lineId to lineId=>clientId
+    checkInOutState = {};
+    _.each(state, function (value, key) {
+        checkInOutState[value] = key;
+    });
+    toBeUpdated.forEach(function (id) {
+        var tree = forest.id(id);
+        if (tree) {
+            updateLine(tree);
+        }
+    });
+
+}));

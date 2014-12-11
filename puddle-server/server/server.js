@@ -64,10 +64,33 @@ http.listen(PORT, FROM_LOCALHOST, function () {
     debug('serving puddle at http://localhost:' + PORT);
 });
 
+
+var checkInOutState = {};
+var checkInOutUpdate = function () {
+    io.emit('checkInOutUpdate', checkInOutState);
+};
+
 io.on('connection', function (socket) {
     debug('a user connected');
     socket.on('action', function (action) {
         debug('Action', action);
+    });
+
+    checkInOutUpdate();
+    var checkIn = function (id) {
+        debug('checkIn', id, 'by', socket.id);
+        delete checkInOutState[socket.id];
+        checkInOutUpdate();
+    };
+    socket.on('checkIn', checkIn);
+    socket.on('checkOut', function (id) {
+        debug('checkOut', id, 'by', socket.id);
+        checkInOutState[socket.id] = id;
+        checkInOutUpdate();
+    });
+    socket.on('disconnect', function () {
+        checkIn();
+        debug('Client',socket.id, 'disconnected');
     });
 
 });
